@@ -23,7 +23,7 @@ http{{ if .Values.adminWeb.ingress.tls }}s{{ end }}://tockstudio-{{ .Release.Nam
 {{- end }}
 
 
-The default login/password is admin@app.com/password.
+The default login/password is admin@app.com/password. 
 
 
 Bot api can be reach through the following url:

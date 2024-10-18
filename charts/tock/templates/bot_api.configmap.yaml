@@ -20,6 +20,7 @@ data:
     tock_websocket_enabled: '{{ default "true" .Values.botApi.environment.tock_websocket_enabled }}'
     tock_api_timout_in_s: '{{ default "10" .Values.botApi.environment.tock_api_timout_in_s }}'
     tock_bot_api_timeout_in_ms: '{{ default "5000" .Values.botApi.environment.tock_bot_api_timeout_in_ms }}'
+    tock_bot_api_actions_history_to_client_bus: '{{ default "false" .Values.botApi.environment.tock_bot_api_actions_history_to_client_bus }}'
     tock_web_sse: '{{ default "true" .Values.botApi.environment.tock_web_sse }}'
     tock_web_use_default_cors_handler: '{{ default "true" .Values.botApi.environment.tock_web_use_default_cors_handler }}'
     tock_web_use_default_cors_handler_url: '{{ default "*" .Values.botApi.environment.tock_web_use_default_cors_handler_url }}'

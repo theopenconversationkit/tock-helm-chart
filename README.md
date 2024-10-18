@@ -9,7 +9,7 @@ Tock can integrate and experiment with both classic and Generative AI (LLM, RAG)
 ## Quick start
 
 ```console 
-$ helm install mytork ./charts/tock
+$ helm install mytock ./charts/tock
 ```
 
 ## DLDR

@@ -33,7 +33,7 @@ data:
 {{- end }}
     botadminverticle_body_limit : '{{ default "-1" .Values.adminWeb.environment.botadminverticle_body_limit . }}'
     tock_https_env: '{{ default "prod" .Values.adminWeb.environment.tock_https_env }}'
-    tock_bot_api: '{{ default "true" .Values.adminWeb.environment.tock_bot_api }}'
+    tock_bot_api: '{{ default "false" .Values.adminWeb.environment.tock_bot_api }}'
     tock_env: '{{ default "false" .Values.adminWeb.environment.tock_env }}'
     tock_default_log_level: '{{ default "info" .Values.adminWeb.environment.tock_default_log_level }}'
 {{ if .Values.global.tockMongodbFront}}

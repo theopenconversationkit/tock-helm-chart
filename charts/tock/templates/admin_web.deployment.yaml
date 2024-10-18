@@ -114,7 +114,7 @@ spec:
                 name: {{ .Release.Name }}-admin-web-cfg
            {{- if .Values.adminWeb.authCongifMap }} 
             - configMapRef:
-                name: {{ .Values.adminWeb.authCongifMap }}
+                name: {{ .Values.adminWeb.authConfigfMap }}
            {{- end }}
       {{- if .Values.adminWeb.resources }}
           resources: {{- toYaml .Values.adminWeb.resources | nindent 14 }}
