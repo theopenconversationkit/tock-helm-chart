@@ -1,0 +1,8 @@
+charts/tock/README-Origin.md
+.DS_Store
+/tmp
+
+### Helm ###
+# Chart dependencies
+**/charts/*.tgz
+packages/
