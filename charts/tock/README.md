@@ -165,11 +165,16 @@ This creates values, but sectioned into own section tables if a section comment 
 | genAiOrchestrator.environment.tock_gen_ai_orchestrator_em_provider_timeout | int | `120` | llm embedding retries |
 | genAiOrchestrator.environment.tock_gen_ai_orchestrator_llm_provider_max_retries | int | `0` | llm retries |
 | genAiOrchestrator.environment.tock_gen_ai_orchestrator_llm_provider_timeout | int | `120` | llm timeout |
-| genAiOrchestrator.environment.tock_gen_ai_orchestrator_open_search_host | string | `"opensearch-node1"` | Opensearch host |
-| genAiOrchestrator.environment.tock_gen_ai_orchestrator_open_search_port | int | `9200` | Opensearch port |
-| genAiOrchestrator.environment.tock_gen_ai_orchestrator_open_search_pwd | string | `"admin"` | Opensearch password |
-| genAiOrchestrator.environment.tock_gen_ai_orchestrator_open_search_timeout | int | `5` | Opensearch timeout |
-| genAiOrchestrator.environment.tock_gen_ai_orchestrator_open_search_user | string | `"admin"` | Opensearch login |
+| genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_credentials_secret_name | string | `""` | Vector Store secret manager secret name |
+| genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_database | string | `nil` | Vector Store index |
+| genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_k | int | `4` | Vector K |
+| genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_port | int | `9200` | Vector Store port |
+| genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_provider | string | `"OpenSearch"` | Vector Store host, Cloud be OpenSearch or PGVector |
+| genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_pwd | string | `"admin"` | Vector Store password |
+| genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_secret_manager_provider | string | `"AWS_SECRETS_MANAGER"` | Vector Store secret manager provider. Values could be AWS_SECRETS_MANAGER or GCP_SECRET_MANAGER |
+| genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_test_query | string | `"What knowledge do you have?"` | Vector Store test query |
+| genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_timeout | int | `5` | Vector Store timeout |
+| genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_user | string | `"admin"` | Vector Store login |
 | genAiOrchestrator.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
 | genAiOrchestrator.image.registry | string | `"docker.io"` | Docker image registry |
 | genAiOrchestrator.image.repository | string | `"tock/gen-ai-orchestrator-server"` | Docker image name |
@@ -283,6 +288,7 @@ This creates values, but sectioned into own section tables if a section comment 
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_host | string | `"opensearch-node1"` |  |
 | opensearch.extraEnvs[0].name | string | `"OPENSEARCH_INITIAL_ADMIN_PASSWORD"` |  |
 | opensearch.extraEnvs[0].value | string | `"DoThisOne12+"` |  |
 

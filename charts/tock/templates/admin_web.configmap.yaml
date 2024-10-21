@@ -32,10 +32,11 @@ data:
     tock_configuration_bot_default_base_url: 'http://{{ .Release.Name }}-bot-api:8080'
 {{- end }}
     botadminverticle_body_limit : '{{ default "-1" .Values.adminWeb.environment.botadminverticle_body_limit . }}'
-    tock_https_env: '{{ default "prod" .Values.adminWeb.environment.tock_https_env }}'
+    tock_https_env: '{{ default "false" .Values.adminWeb.environment.tock_https_env }}'
     tock_bot_api: '{{ default "false" .Values.adminWeb.environment.tock_bot_api }}'
-    tock_env: '{{ default "false" .Values.adminWeb.environment.tock_env }}'
+    tock_env: '{{ default "prod" .Values.adminWeb.environment.tock_env }}'
     tock_default_log_level: '{{ default "info" .Values.adminWeb.environment.tock_default_log_level }}'
+    tock_service_log_level: '{{ default "info" .Values.adminWeb.environment.tock_service_log_level }}'
 {{ if .Values.global.tockMongodbFront}}
     tock_front_mongo_db: '{{ tpl .Values.global.tockMongodbFront . }}'
 {{- end }}
@@ -55,3 +56,4 @@ data:
     tock_gen_ai_orchestrator_client_request_timeout_ms: '{{ default "55000" .Values.adminWeb.environment.tock_gen_ai_orchestrator_client_request_timeout_ms }}'
     tock_gen_ai_orchestrator_secret_storage_type: '{{ default "Raw" .Values.adminWeb.environment.tock_gen_ai_orchestrator_secret_storage_type }}'
     tock_gen_ai_orchestrator_technical_error: '{{ default "Technical error :( sorry!" .Values.adminWeb.environment.tock_gen_ai_orchestrator_technical_error }}'
+    tock_gen_ai_orchestrator_vector_store_provider: '{{ default "OpenSearch" .Values.adminWeb.environment.tock_gen_ai_orchestrator_vector_store_provider }}'

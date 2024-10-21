@@ -107,7 +107,8 @@ adminWeb:
     # -- Have to be set if tock studio is deployed as subdomain https://sssss/tockstudio
     # @section -- adminWeb
     botadminverticle_base_href : ""
-
+  
+  
     # Following values are per default computed by the chart
     # nlp_duckling_url: http://duckling:8080
     # tock_bot_admin_rest_default_base_url: http://bot-api:8080
@@ -747,31 +748,51 @@ genAiOrchestrator:
     # -- DEV or PROD in uppercase only
     # @section -- genAiOrchestrator
     tock_gen_ai_orchestrator_application_environment: DEV # DEV or PROD in uppercase only
-    # -- Opensearch host
+       # -- llm embedding retries
     # @section -- genAiOrchestrator
-    tock_gen_ai_orchestrator_open_search_host: opensearch-node1
-    # -- Opensearch port
-    # @section -- genAiOrchestrator
-    tock_gen_ai_orchestrator_open_search_port: 9200
-    # -- Opensearch password
-    # @section -- genAiOrchestrator
-    tock_gen_ai_orchestrator_open_search_pwd: admin
-    # -- Opensearch login
-    # @section -- genAiOrchestrator
-    tock_gen_ai_orchestrator_open_search_user: admin
-    # -- Opensearch timeout
-    # @section -- genAiOrchestrator
-    tock_gen_ai_orchestrator_open_search_timeout: 5
+    tock_gen_ai_orchestrator_em_provider_timeout: 120
     # -- llm timeout
     # @section -- genAiOrchestrator
     tock_gen_ai_orchestrator_llm_provider_timeout: 120
     # -- llm retries
     # @section -- genAiOrchestrator
     tock_gen_ai_orchestrator_llm_provider_max_retries: 0
-    # -- llm embedding retries
-    # @section -- genAiOrchestrator
-    tock_gen_ai_orchestrator_em_provider_timeout: 120
+
     # OPENAI_API_BASE: "http://host.docker.internal:8080/v1"
+
+    # -- Vector Store host, Cloud be OpenSearch or PGVector
+    # @section -- genAiOrchestrator
+    tock_gen_ai_orchestrator_vector_store_provider: OpenSearch
+
+    # @section -- genAiOrchestrator
+    tock_gen_ai_orchestrator_vector_store_host: opensearch-node1
+    # -- Vector Store port
+    # @section -- genAiOrchestrator
+    tock_gen_ai_orchestrator_vector_store_port: 9200
+    # -- Vector Store password
+    # @section -- genAiOrchestrator
+    tock_gen_ai_orchestrator_vector_store_pwd: admin
+    # -- Vector Store login
+    # @section -- genAiOrchestrator
+    tock_gen_ai_orchestrator_vector_store_user: admin
+    # -- Vector Store index
+    # @section -- genAiOrchestrator
+    tock_gen_ai_orchestrator_vector_store_database: 
+    # -- Vector Store timeout
+    # @section -- genAiOrchestrator
+    tock_gen_ai_orchestrator_vector_store_timeout: 5
+    # -- Vector K
+    # @section -- genAiOrchestrator
+    tock_gen_ai_orchestrator_vector_store_k: 4
+    # -- Vector Store test query
+    # @section -- genAiOrchestrator
+    tock_gen_ai_orchestrator_vector_store_test_query: "What knowledge do you have?"
+    # -- Vector Store secret manager provider. Values could be AWS_SECRETS_MANAGER or GCP_SECRET_MANAGER
+    # @section -- genAiOrchestrator
+    tock_gen_ai_orchestrator_vector_store_secret_manager_provider: "AWS_SECRETS_MANAGER"
+    # -- Vector Store secret manager secret name
+    # @section -- genAiOrchestrator
+    tock_gen_ai_orchestrator_vector_store_credentials_secret_name: ""
 
   # -- should be > 1 in production
   # @section -- genAiOrchestrator

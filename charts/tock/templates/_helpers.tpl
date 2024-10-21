@@ -82,9 +82,9 @@ Create the full URI for Mongo service
 {{- end -}}
 
 {{/*
-Create the full URI for Opensearch service
+Create the full URI for Vector Store service , OpenSearch or PGVector
 */}}
-{{- define "urls.opensearch" -}}
+{{- define "urls.vectorstore" -}}
 {{- if .Values.global.deployOpenSearch.enabled -}}
 {{/* - $opensearch1 := printf "%s-%s.%s-%s.%s.svc.%s" .Release.Name "opensearch-cluster-master-0" .Release.Name "opensearch-cluster-master-headless" .Release.Namespace .Values.global.clusterDomain - */}}
 {{- $opensearch1 := printf "%s.%s.%s.svc.%s" "opensearch-cluster-master-0" "opensearch-cluster-master-headless" .Release.Namespace .Values.global.clusterDomain -}}
@@ -95,9 +95,9 @@ Create the full URI for Opensearch service
 {{- end -}}
 
 {{/*
-Get Opensearch Port
+Get Vector Store Port
 */}}
-{{- define "port.opensearch" -}}
+{{- define "port.vectorstore" -}}
 {{- if .Values.global.deployOpenSearch.enabled -}}
 {{- default "9200" .Values.opensearch.httpPort -}}
 {{- else -}}
@@ -107,16 +107,16 @@ Get Opensearch Port
 
 
 {{/*
-Get Opensearch user
+Get Vector Store user
 */}}
-{{- define "user.opensearch" -}}
+{{- define "user.vectorstore" -}}
 {{- printf "%s" "admin" -}}
 {{- end -}}
 
 {{/*
-Get Opensearch password
+Get Vector Store password
 */}}
-{{- define "pwd.opensearch" -}}
+{{- define "pwd.vectorstore" -}}
 {{- if .Values.global.deployOpenSearch.enabled -}}
 {{- range .Values.opensearch.extraEnvs }}
   {{- if eq .name "OPENSEARCH_INITIAL_ADMIN_PASSWORD" }}

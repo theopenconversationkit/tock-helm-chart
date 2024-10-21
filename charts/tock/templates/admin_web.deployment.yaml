@@ -99,7 +99,11 @@ spec:
               containerPort: 8080
           livenessProbe:
             httpGet:
+            {{ if .Values.adminWeb.environment.botadminverticle_base_href}}
+              path: {{ .Values.adminWeb.environment.botadminverticle_base_href }}/rest/admin/healthcheck
+            {{- else }}
               path: /rest/admin/healthcheck
+            {{- end }}
               port: 8080
               scheme: HTTP
             initialDelaySeconds: 180

@@ -35,7 +35,7 @@ data:
     tock_gen_ai_orchestrator_document_number_neighbors: '{{ default "1" .Values.botApi.environment.tock_gen_ai_orchestrator_document_number_neighbors }}'
     tock_gen_ai_orchestrator_dialog_number_messages: '{{ default "5" .Values.botApi.environment.tock_gen_ai_orchestrator_dialog_number_messages }}'
     tock_gen_ai_orchestrator_rag_debug_enabled: '{{ default "false" .Values.botApi.environment.tock_gen_ai_orchestrator_rag_debug_enabled }}' 
-
+    tock_gen_ai_orchestrator_vector_store_provider: '{{ default "OpenSearch" .Values.botApi.environment.tock_gen_ai_orchestrator_vector_store_provider }}'
 {{ if .Values.global.tockMongodbFront}}
     tock_front_mongo_db: '{{ tpl .Values.global.tockMongodbFront . }}'
 {{- end }}
