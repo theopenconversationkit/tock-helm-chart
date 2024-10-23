@@ -10,7 +10,7 @@ To install the chart with the release name `my-release`:
 
 ```console
 $ helm registry login -u myuser registry.hub.docker.com
-$ helm install my-release  oci://registry.hub.docker.com/onelans/tock --version 0.4.2
+$ helm install my-release  oci://registry.hub.docker.com/onelans/tock --version 0.4.4
 ```
 
 ## Introduction
@@ -21,7 +21,8 @@ This chart helps to setup a Tock environnement.
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://charts.bitnami.com/bitnami | mongodb | 13.6.8 |
+| https://charts.bitnami.com/bitnami | mongodb | 14.8.3 |
+| https://charts.bitnami.com/bitnami | postgresql | 13.4.4 |
 | https://opensearch-project.github.io/helm-charts/ | opensearch | 2.21.0 |
 | https://opensearch-project.github.io/helm-charts/ | opensearch-dashboards | 2.19.0 |
 
@@ -200,6 +201,7 @@ This creates values, but sectioned into own section tables if a section comment 
 | global.deployOpenSearch.openSearchPort | string | `"9200"` | for an existing opensearch cluster |
 | global.deployOpenSearch.openSearchPwd | string | `"admin"` | for an existing opensearch cluster |
 | global.deployOpenSearch.openSearchUser | string | `"admin"` | for an existing opensearch cluster |
+| global.deployPgVector.enabled | bool | `false` | If true Deploy PgVector and Postgresql subchart |
 | global.imagePullSecrets | list | `[]` | Glocal Image pull secret E.g. imagePullSecrets:   - myRegistryKeySecretName  |
 | global.imageRegistry | string | `""` | Global Docker image registry |
 | global.initContainerImage | object | `{"containerSecurityContext":{"enabled":true,"runAsGroup":99,"runAsNonRoot":true,"runAsUser":99},"pullPolicy":"IfNotPresent","pullSecrets":[],"registry":"docker.io","repository":"busybox","tag":"1.36.1"}` | initcontainer images |
@@ -334,12 +336,12 @@ https://github.com/bitnami/charts/issues/12834
 
 For Arm, the image used in value must be changed and the following Mongodb chart image should be used instead.
 
-https://artifacthub.io/packages/helm/bitnami/mongodb/13.6.8
+https://artifacthub.io/packages/helm/bitnami/mongodb/14.8.3
 
-## Deployment sample on Rancher Desktop
+## Deployment sample on Rancher Desktop or k3s
 
 ```console
-$ helm install mytock oci://registry.hub.docker.com/onelans/tock --version 0.3.4 -f ./rancher-values.yaml
+$ helm install mytock oci://registry.hub.docker.com/onelans/tock --version 0.4.4 -f ./rancher-values.yaml
 ```
 
 `rancher-values.yaml`
@@ -364,8 +366,8 @@ mongodb:
     enabled: false
     size: 1Gi
   image:
-    repository: zcube/bitnami-compat-mongodb
-    tag: 6.0.5
+    repository: xavidop/mongodb
+    tag: 7.0.14
 
 nlpApi:
   environment:
@@ -387,7 +389,7 @@ adminWeb:
 ## Deployment sample on GKE
 
 ```console
-$ helm install mytock oci://registry.hub.docker.com/onelans/tock --version 0.3.4 -f ./gke-values.yaml
+$ helm install mytock oci://registry.hub.docker.com/onelans/tock --version 0.4.4 -f ./gke-values.yaml
 ```
 
 `gke-values.yaml`

@@ -11,7 +11,7 @@ To install the chart with the release name `my-release`:
 
 ```console
 $ helm registry login -u myuser registry.hub.docker.com 
-$ helm install my-release  oci://registry.hub.docker.com/onelans/{{ template "chart.name" . }} --version 0.4.2
+$ helm install my-release  oci://registry.hub.docker.com/onelans/{{ template "chart.name" . }} --version 0.4.4
 ```
 
 ## Introduction
@@ -71,12 +71,12 @@ https://github.com/bitnami/charts/issues/12834
 
 For Arm, the image used in value must be changed and the following Mongodb chart image should be used instead.
 
-https://artifacthub.io/packages/helm/bitnami/mongodb/13.6.8
+https://artifacthub.io/packages/helm/bitnami/mongodb/14.8.3
 
-## Deployment sample on Rancher Desktop 
+## Deployment sample on Rancher Desktop or k3s
 
 ```console
-$ helm install mytock oci://registry.hub.docker.com/onelans/{{ template "chart.name" . }} --version 0.3.4 -f ./rancher-values.yaml
+$ helm install mytock oci://registry.hub.docker.com/onelans/{{ template "chart.name" . }} --version 0.4.4 -f ./rancher-values.yaml
 ```
 
 `rancher-values.yaml`
@@ -102,8 +102,8 @@ mongodb:
     enabled: false
     size: 1Gi
   image:
-    repository: zcube/bitnami-compat-mongodb
-    tag: 6.0.5
+    repository: xavidop/mongodb
+    tag: 7.0.14
 
 nlpApi:
   environment:
@@ -126,7 +126,7 @@ adminWeb:
 ## Deployment sample on GKE
 
 ```console
-$ helm install mytock oci://registry.hub.docker.com/onelans/{{ template "chart.name" . }} --version 0.3.4 -f ./gke-values.yaml
+$ helm install mytock oci://registry.hub.docker.com/onelans/{{ template "chart.name" . }} --version 0.4.4 -f ./gke-values.yaml
 ```
 
 `gke-values.yaml`

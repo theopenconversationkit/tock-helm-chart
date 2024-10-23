@@ -10,8 +10,8 @@ maintainers:
 
 dependencies:
 - name: mongodb
-  version: 13.6.8
-  #version: 14.8.3
+  #version: 13.6.8
+  version: 14.8.3
   repository : https://charts.bitnami.com/bitnami
   condition: global.deployMongoDb.enabled
   tags: 
@@ -23,6 +23,13 @@ dependencies:
   condition: global.deployOpenSearch.enabled
   tags: 
     - opensearch
+
+- name: postgresql
+  version: 13.4.4
+  repository : https://charts.bitnami.com/bitnami
+  condition: global.deployPgVector.enabled
+  tags: 
+    - postgres 
 
 - name: opensearch-dashboards
   version: 2.19.0

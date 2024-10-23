@@ -36,6 +36,10 @@ global:
     # -- for an existing opensearch cluster
     # @section -- Global
     openSearchPwd : admin
+  deployPgVector:
+    # -- If true Deploy PgVector and Postgresql subchart
+    # @section -- Global
+    enabled: false
   # -- If mongoDB is not deployed by the chart, you can use this to connect to an external mongoDB
   # @section -- Global
   #mongodbUrls: mongodb://myuser:mypass@fqdn-node1:27017,fqdn-node2:27017,fqdn-node3:27017/mydb?replicaSet=rs0
@@ -108,7 +112,7 @@ adminWeb:
     # @section -- adminWeb
     botadminverticle_base_href : ""
   
-  
+
     # Following values are per default computed by the chart
     # nlp_duckling_url: http://duckling:8080
     # tock_bot_admin_rest_default_base_url: http://bot-api:8080

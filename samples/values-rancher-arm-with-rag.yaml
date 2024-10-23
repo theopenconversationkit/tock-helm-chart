@@ -24,8 +24,8 @@ mongodb:
     enabled: false
     size: 1Gi
   image:
-    repository: zcube/bitnami-compat-mongodb
-    tag: 6.0.5
+    repository: xavidop/mongodb
+    tag: 7.0.14
   
 opensearch: 
      singleNode: true
