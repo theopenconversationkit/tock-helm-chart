@@ -21,6 +21,8 @@ global:
     # -- If true Deploy OpenSearch subchart
     # @section -- Global
     enabled: false
+    # -- If true use an existing OpenSearch cluster
+    useExisting: false
     # -- If true Deploy OpenSearch Dashboard as subchart
     # @section -- Global
     dashboardEnabled: false
@@ -40,6 +42,21 @@ global:
     # -- If true Deploy PgVector and Postgresql subchart
     # @section -- Global
     enabled: false
+    # -- If true use settings for an existing PgVector
+    # @section -- Global
+    useExisting: false
+    # -- for an existing pgVector cluster
+    # @section -- Global
+    pgVectorPort: "5432"
+    # -- for an existing pgVector cluster
+    # @section -- Global
+    pgVectorHost: pgvector-node1
+    # -- for an existing pgVector cluster
+    # @section -- Global
+    pgVectorUser: postgres
+    # -- for an existing pgVector cluster
+    # @section -- Global
+    pgVectorPwd: postgres
   # -- If mongoDB is not deployed by the chart, you can use this to connect to an external mongoDB
   # @section -- Global
   #mongodbUrls: mongodb://myuser:mypass@fqdn-node1:27017,fqdn-node2:27017,fqdn-node3:27017/mydb?replicaSet=rs0

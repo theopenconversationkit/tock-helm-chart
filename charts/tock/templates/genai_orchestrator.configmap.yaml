@@ -14,7 +14,7 @@ data:
     tock_gen_ai_orchestrator_em_provider_timeout: '{{ default "120" .Values.genAiOrchestrator.environment.tock_gen_ai_orchestrator_em_provider_timeout . }}'
     tock_gen_ai_orchestrator_llm_provider_timeout: '{{ default "120" .Values.genAiOrchestrator.environment.tock_gen_ai_orchestrator_llm_provider_timeout . }}'
     tock_gen_ai_orchestrator_llm_provider_max_retries: '{{ default "0" .Values.genAiOrchestrator.environment.tock_gen_ai_orchestrator_llm_provider_max_retries . }}'
-    tock_gen_ai_orchestrator_vector_store_provider: '{{ default "OpenSearch" .Values.genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_provider . }}'
+    tock_gen_ai_orchestrator_vector_store_provider: '{{ template "provider.vectorstore" . }}'
     tock_gen_ai_orchestrator_vector_store_host: '{{ template "urls.vectorstore" . }}'
     tock_gen_ai_orchestrator_vector_store_port: '{{ template "port.vectorstore" . }}'
     tock_gen_ai_orchestrator_vector_store_user: '{{ template "user.vectorstore" . }}'

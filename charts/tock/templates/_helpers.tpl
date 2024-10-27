@@ -79,6 +79,19 @@ Create the full URI for Mongo service
 {{- end -}}
 {{- end -}}
 
+
+{{/*
+Set Vector Store Provider , OpenSearch or PGVector
+*/}}
+{{- define "provider.vectorstore" -}}
+{{- if or .Values.global.deployOpenSearch.enabled .Values.global.deployOpenSearch.useExisting  -}}
+{{- printf "OpenSearch" -}}
+{{- else if or .Values.global.deployPgVector.enabled .Values.global.deployPgVector.useExisting -}}
+{{- printf "PGVector" -}}
+{{- else -}}
+{{- printf "" -}}
+{{- end -}}
+{{- end -}}
 {{/*
 Create the full URI for Vector Store service , OpenSearch or PGVector
 */}}
@@ -87,8 +100,14 @@ Create the full URI for Vector Store service , OpenSearch or PGVector
 {{/* - $opensearch1 := printf "%s-%s.%s-%s.%s.svc.%s" .Release.Name "opensearch-cluster-master-0" .Release.Name "opensearch-cluster-master-headless" .Release.Namespace .Values.global.clusterDomain - */}}
 {{- $opensearch1 := printf "%s.%s.%s.svc.%s" "opensearch-cluster-master-0" "opensearch-cluster-master-headless" .Release.Namespace .Values.global.clusterDomain -}}
 {{- printf "%s" $opensearch1 -}}
-{{- else -}}
+{{- else if .Values.global.deployOpenSearch.useExisting -}}
 {{- printf "%s" .Values.global.deployOpenSearch.openSearchHost -}}
+{{- else if .Values.global.deployPgVector.enabled -}}
+{{- printf "%s-%s.%s.svc.%s" .Release.Name "postgresql" .Release.Namespace .Values.global.clusterDomain -}}
+{{- else if .Values.global.deployPgVector.useExisting -}}
+{{- printf "%s" .Values.global.deployPgVector.pgVectorHost -}}
+{{- else -}}
+{{- printf "" -}}
 {{- end -}}
 {{- end -}}
 
@@ -98,8 +117,14 @@ Get Vector Store Port
 {{- define "port.vectorstore" -}}
 {{- if .Values.global.deployOpenSearch.enabled -}}
 {{- default "9200" .Values.opensearch.httpPort -}}
+{{ else if .Values.global.deployOpenSearch.useExisting -}}
+{{- default "9200" .Values.global.deployOpenSearch.openSearchPort -}}
+{{ else if .Values.global.deployPgVector.enabled -}}
+{{- default "5432" .Values.postgresql.primary.service.ports.postgresql -}}
+{{- else if .Values.global.deployPgVector.useExisting -}}
+{{- default "5432" .Values.global.deployPgVector.pgVectorPort -}}
 {{- else -}}
-{{- printf "%s" .Values.global.deployOpenSearch.openSearchPort -}}
+{{- printf "" -}}
 {{- end -}}
 {{- end -}}
 
@@ -108,6 +133,20 @@ Get Vector Store Port
 Get Vector Store user
 */}}
 {{- define "user.vectorstore" -}}
+{{- if .Values.global.deployOpenSearch.enabled -}}
+{{- printf "%s" "admin" -}}
+{{ else if .Values.global.deployOpenSearch.useExisting -}}
+{{- default "admin" .Values.global.deployOpenSearch.openSearchUser -}}
+{{ else if .Values.global.deployPgVector.enabled -}}
+{{- default "postgres" .Values.postgresql.auth.username -}}
+{{ else if .Values.global.deployPgVector.useExisting -}}
+{{- default "postgres" .Values.global.deployPgVector.pgVectorUser -}}
+{{- else -}}
+{{- printf "%s" "" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 {{- printf "%s" "admin" -}}
 {{- end -}}
 
@@ -117,12 +156,18 @@ Get Vector Store password
 {{- define "pwd.vectorstore" -}}
 {{- if .Values.global.deployOpenSearch.enabled -}}
 {{- range .Values.opensearch.extraEnvs }}
-  {{- if eq .name "OPENSEARCH_INITIAL_ADMIN_PASSWORD" }}
-    {{-  printf "%s" .value -}}
-  {{- end }}
+{{- if eq .name "OPENSEARCH_INITIAL_ADMIN_PASSWORD" }}
+{{-  printf "%s" .value -}}
 {{- end }}
+{{- end }}
+{{ else if .Values.global.deployOpenSearch.useExisting -}}
+{{- printf "%s" .Values.global.deployOpenSearch.openSearchPassword -}}
+{{ else if .Values.global.deployPgVector.enabled -}}
+{{- printf "%s" .Values.postgresql.auth.postgresPassword -}}
+{{ else if .Values.global.deployPgVector.useExisting -}}
+{{- printf "%s" .Values.global.deployPgVector.pgVectorPassword -}}
 {{- else -}}
-{{- default "admin" .Values.global.deployOpenSearch.openSearchPassword -}}
+{{-  printf "%s" .value -}}
 {{- end -}}
 {{- end -}}
 

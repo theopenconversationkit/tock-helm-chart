@@ -31,6 +31,9 @@ mongodb:
   
 postgresql:
   architecture: standalone
+  auth:
+    postgresPassword: secretpassword
+    database: postgres
   image:
     repository: onelans/pgvector
     tag: pg16
