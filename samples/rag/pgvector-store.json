@@ -1,0 +1,11 @@
+{
+    "provider": "PGVector",
+    "host": "host.docker.internal",
+    "port": 5432,
+    "username": "postgres",
+    "password": {
+        "type": "Raw",
+        "value": "secretpassword"
+    },
+    "database": "postgres"
+}

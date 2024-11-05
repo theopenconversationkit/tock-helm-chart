@@ -1,0 +1,10 @@
+{
+    "provider": "OpenSearch",
+    "host": "host.docker.internal",
+    "port": 9200,
+    "username": "admin",
+    "password": {
+      "type": "Raw",
+      "value": "DoThisOne12+"
+    }
+}
