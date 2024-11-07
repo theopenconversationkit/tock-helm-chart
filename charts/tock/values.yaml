@@ -1,0 +1,965 @@
+# Default values for tork.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+global:
+  # -- Default domain used for ingress
+  # @section -- Global
+  wildcardDomain: rancher.localhost # ingress domain name
+  # -- Default Kubernetes cluster domain
+  # @section -- Global
+  clusterDomain: cluster.local
+  NetworkPolicy: 
+    # -- Enable creation of NetworkPolicy resources
+    # @section -- Global
+    enabled: false 
+  deployMongoDb:
+    # -- If true Deploy MongoDB subchart
+    # @section -- Global
+    enabled: true
+  deployOpenSearch:
+    # -- If true Deploy OpenSearch subchart
+    # @section -- Global
+    enabled: false
+    # -- If true use an existing OpenSearch cluster
+    useExisting: false
+    # -- If true Deploy OpenSearch Dashboard as subchart
+    # @section -- Global
+    dashboardEnabled: false
+    # -- for an existing opensearch cluster
+    # @section -- Global
+    openSearchPort : "9200"
+    # -- for an existing opensearch cluster
+    # @section -- Global
+    openSearchHost : opensearch-node1
+    # -- for an existing opensearch cluster
+    # @section -- Global
+    openSearchUser : admin
+    # -- for an existing opensearch cluster
+    # @section -- Global
+    openSearchPwd : admin
+  deployPgVector:
+    # -- If true Deploy PgVector and Postgresql subchart
+    # @section -- Global
+    enabled: false
+    # -- If true use settings for an existing PgVector
+    # @section -- Global
+    useExisting: false
+    # -- for an existing pgVector cluster
+    # @section -- Global
+    pgVectorPort: "5432"
+    # -- for an existing pgVector cluster
+    # @section -- Global
+    pgVectorHost: pgvector-node1
+    # -- for an existing pgVector cluster
+    # @section -- Global
+    pgVectorUser: postgres
+    # -- for an existing pgVector cluster
+    # @section -- Global
+    pgVectorPwd: postgres
+  # -- If mongoDB is not deployed by the chart, you can use this to connect to an external mongoDB
+  # @section -- Global
+  #mongodbUrls: mongodb://myuser:mypass@fqdn-node1:27017,fqdn-node2:27017,fqdn-node3:27017/mydb?replicaSet=rs0
+  mongodbUrls: "mongodb://myuser:mypass@xx.xx.xx.xx:27017,xx.xx.xx.xx:27017,xx.xx.xx.xx:27017/mydb?replicaSet=rs0"
+  # -- If mongoDB is not deployed by the chart, the node use to check if the mongodb is up
+  # @section -- Global
+  mongodbcheckfqdn: fqdn-node1
+  # -- If mongoDB is not deployed by the chart, the mongodb port
+  # @section -- Global
+  mongodbPort: "27017"
+  ## MongoDb datsets names. Chaque base de données est utilisée pour une fonctionnalité spécifique, cepandant, il est possible de les regrouper dans une seule base de données.
+  ## Un composant peut utiliser une base de données spécifique, ou toutes les bases de données. Les valeurs pa defaut dans le code sont les suivantes: tock_front, tock_model, tock_cache, tock_bot
+  ## la base des phrases qualifiées
+  #tockMongodbFront: "tock_front"
+  ## la base pour stocker les modèles
+  #tockMongodbModel: "tock_model"
+  ## la base de cache (peu utilisée)
+  #tockMongdbCache: "tock_cache"
+  ## la base de la partie conversationnelle
+  #tockMongodbBot: "tock_bot"
+
+  # -- Global Docker image registry
+  # @section -- Global
+  imageRegistry: ""
+  # -- Glocal Image pull secret
+  # E.g.
+  # imagePullSecrets:
+  #   - myRegistryKeySecretName 
+  # @section -- Global
+  imagePullSecrets: []
+  # -- initcontainer images
+  # @raw
+  # @section -- Global
+  initContainerImage:
+    registry: docker.io
+    repository: busybox
+    #tag: latest
+    tag: "1.36.1"
+    pullPolicy: IfNotPresent
+    pullSecrets: []
+    # -- Configure Container Security Context
+    # @section -- Global
+    # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+    # @param containerSecurityContext.enabled Enabled init containers' Security Context
+    # @param containerSecurityContext.runAsUser Set init container Server containers' Security Context runAsUser
+    containerSecurityContext:
+      enabled: true
+      runAsUser: 99
+      runAsGroup: 99
+      runAsNonRoot: true
+  
+# ==============================================
+#  AdminWeb Settings
+# ==============================================
+adminWeb:
+  environment:
+    # -- botadminverticle_body_limit
+    # @section -- adminWeb
+    botadminverticle_body_limit: "-1"
+    # -- Environment
+    # @section -- adminWeb
+    tock_https_env: "prod"
+    # -- tock_env
+    # @section -- adminWeb
+    tock_env: "false"
+    # -- log level
+    # @section -- adminWeb
+    tock_default_log_level: "info"
+    # -- Have to be set if tock studio is deployed as subdomain https://sssss/tockstudio
+    # @section -- adminWeb
+    botadminverticle_base_href : ""
+  
+
+    # Following values are per default computed by the chart
+    # nlp_duckling_url: http://duckling:8080
+    # tock_bot_admin_rest_default_base_url: http://bot-api:8080
+    # tock_bot_compiler_service_url: http://kotlin-compiler:8080
+    # tock_configuration_bot_default_base_url: http://bot-api:8080
+    # tock_mongo_url: mongodb://mongodb:27017/?replicaSet=tock
+    # tock_web_use_default_cors_handler: "true"
+    # tock_bot_api: "true" # Default value should be false to allow namespace creation.
+    
+  
+  
+  # Add the configuration in the form of key value pair in a configmap.
+  # If authCongifMap is not set default values are used.
+  # ref: https://doc.tock.ai/tock/fr/admin/securite/
+  # `
+  # apiVersion: v1
+  #  kind: ConfigMap
+  #  metadata:
+  #    name: admin-web-auth-cfg
+  #  labels:
+  #    app.kubernetes.io/name: admin-web-auth
+  #    app.kubernetes.io/component: admin-web
+  #    data:
+  #      tock_users:  "alice@tock.ai,bob@tock.ai" # Identifiants (séparés par des virgules). Valeur par defaut `admin@app.com`
+  #      tock_passwords: "secret1,secret2" # Mots de passe (séparés par des virgules). Valleur par defaut `password`` 
+  #      tock_organizations: "tock,tock" # Organisations (séparées par des virgules). Valleur par defaut `app``
+  #      tock_roles: "botUser,nlpUser|botUser|admin|technicalAdmin" #  Rôles séparés par des | (puis par des virgules). Valeur par defaut vide
+  # `
+  # Dans cet exemple, Alice a le rôle botUser, alors que Bob a tous les rôles.
+  # Pour définir l'identité et les rôles de plusieurs utilisateurs, on sépare les valeurs par des virgules.
+  # -- Authentification configurations, set confimap name. cf README to have a sample.
+  # @section -- adminWeb
+  authConfigfMap: ""
+
+  # -- Replication settings, should be = 1 in production
+  # @section -- adminWeb
+  replicas: 1 # should be = 1 in production
+  
+  image:
+    # -- Docker image registry
+    # @section -- adminWeb
+    registry: docker.io
+    # -- Docker docker image name
+    # @section -- adminWeb
+    repository: tock/bot_admin 
+    # -- Docker image tag
+    # @section -- adminWeb
+    tag: 24.9.3
+    # -- Optionally specify an array of imagePullSecrets.
+    # Secrets must be manually created in the namespace.
+    # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    # e.g:
+    # pullSecrets:
+    #   - myRegistryKeySecretName
+    # @section -- adminWeb
+    pullSecrets: []
+
+  containerSecurityContext:
+      # -- Configure containers' Security Context
+      # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+      # @section -- adminWeb
+      enabled: true
+      # -- Run as non root
+      # @section -- adminWeb
+      runAsNonRoot: true
+      # -- Run as user id
+      # @section -- adminWeb
+      runAsUser: 99
+      # -- Run as group id
+      # @section -- adminWeb
+      runAsGroup: 99
+
+  podSecurityContext:
+    # -- Configure Pod Security Context
+    # @section -- adminWeb
+    enabled: true
+    # -- fsGroup
+    # @section -- adminWeb
+    fsGroup: 99
+    # -- sysctls
+    # @section -- adminWeb
+    sysctls: []
+
+  service:
+    # -- kubernetes service type
+    # @section -- adminWeb
+    type: ClusterIP
+    # -- kubernetes service port
+    # @section -- adminWeb
+    port: 8080
+
+  ingress:
+    # -- enable the ingress
+    # @section -- adminWeb
+    enabled: true
+    
+    # -- set to true for deployement on cluster version < 1.19 (apiVersion: networking.k8s.io/v1beta1 vs apiVersion: networking.k8s.io/v1)
+    # @section -- adminWeb
+    deprecated: false
+    
+    # -- ingress annotations
+    # annotations:
+    #  kubernetes.io/ingress.class: traefik
+    #  kubernetes.io/ingress.class: nginx
+    #  kubernetes.io/tls-acme: "true"
+    # @section -- adminWeb
+    annotations: {}
+  
+    # -- ingress path
+    # @section -- adminWeb
+    path: / # ingress path
+  
+    #hosts:
+    #  - chart-example.local
+
+    # -- TLS secrets and which hosts they sould be use for
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+    # @section -- adminWeb
+    tls: []  
+    
+
+  ## adminWeb resource requests and limits
+  ## ref: https://kubernetes.io/docs/user-guide/compute-resources/
+  ## @param resources.limits The resources limits for the haproxy containers
+  ## @param resources.requests The requested resources for the haproxy containers
+  ##
+  resources: 
+    # -- resources limits
+    # @section -- adminWeb
+    limits: {}
+    # -- resources requests
+    # @section -- adminWeb
+    requests: {}
+
+  # -- node selector
+  # @section -- adminWeb
+  nodeSelector: {} # node selector
+  # -- tolerations
+  # @section -- adminWeb
+  tolerations: [] # tolerations
+  # -- affinity
+  # @section -- adminWeb
+  affinity: {} # affinity
+
+# ==============================================
+#  BotApi Settings
+# ==============================================
+botApi:
+  environment:
+    # -- tock environment (prod, dev, integ)
+    # @section -- botApi
+    tock_env: integ
+    # -- bot api log level
+    # @section -- botApi
+    tock_default_log_level: info
+    # -- CORS handler
+    # @section -- botApi
+    tock_web_use_default_cors_handler: "true"
+    # -- CORS handler URL
+    # @section -- botApi
+    tock_web_use_default_cors_handler_url: '*'
+    # -- CORS handler with credentials
+    # @section -- botApi
+    tock_web_use_default_cors_handler_with_credentials: "false"
+    # -- Enable websocket
+    # @section -- botApi
+    tock_websocket_enabled: "true"
+    # -- CORS handler allowed methods
+    # Slould be set to "GET, POST, PUT, DELETE, OPTIONS, HEAD"
+    # @section -- botApi
+    tock_web_use_default_cors_handler_allowed_methods : ""
+    # -- Enable markdown
+    # @section -- botApi
+    tock_web_enable_markdown: "false"
+    # -- Enable Server Sent Event
+    # @section -- botApi
+    tock_web_sse: true
+    # -- Timeout in seconds for websocket service, default is 10
+    # @section -- botApi
+    tock_api_timout_in_s: "10" 
+    # -- Timeout in milliseconds for webhook service, default is 5000
+    # @section -- botApi
+    tock_bot_api_timeout_in_ms: "5000"
+    # -- Set to true if you want to transfer action history in UserRequest context (payload is larger), default is false
+    # @section -- botApi
+    tock_bot_api_actions_history_to_client_bus: "false"
+  # Sould be tested
+  # tock_web_enable_markdown_in_text_message: "true"
+  # Computer by the chart if not set
+  #  tock_web_use_default_cors_handler_allowed_headers : "Content-Type, Authorization, Content-Length, X-Requested-With"
+  #  tock_nlp_service_url: http://nlp-api:8080
+  
+  # -- should be > 1 in production
+  # @section -- botApi
+  replicas: 1 
+  image:
+    # -- Docker image registry
+    # @section -- botApi
+    registry: docker.io
+    # -- Docker image name
+    # @section -- botApi
+    repository: tock/bot_api # docker image name
+    # -- Docker image tag
+    # @section -- botApi
+    tag: 24.9.3
+    # -- Optionally specify an array of imagePullSecrets.
+    # Secrets must be manually created in the namespace.
+    # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    # e.g:
+    # pullSecrets:
+    #   - myRegistryKeySecretName
+    # @section -- botApi
+    pullSecrets: []
+
+  containerSecurityContext:
+      # -- Configure Container Security Context
+      # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+      # @section -- botApi
+      enabled: true
+      # -- Run as non root
+      # @section -- botApi
+      runAsNonRoot: true
+      # -- Run as user id
+      # @section -- botApi
+      runAsUser: 99
+      # -- Run as Group id
+      # @section -- botApi
+      runAsGroup: 99
+
+  podSecurityContext:
+    # -- Configure Pod Security Context
+    # @section -- botApi
+    enabled: true
+    # -- fsGroup
+    # @section -- botApi
+    fsGroup: 99
+    # -- sysctls
+    # @section -- botApi
+    sysctls: []
+
+  service:
+    # -- kubernetes service type
+    # @section -- botApi
+    type: ClusterIP
+    # -- kubernetes service port
+    # @section -- botApi
+    port: 8080 
+  
+  ingress:
+    # --  enable bot api the ingress
+    # @section -- botApi
+    enabled: true
+    # -- set to true for deployement on cluster version < 1.19 (apiVersion: networking.k8s.io/v1beta1 vs apiVersion: networking.k8s.io/v1)
+    # @section -- botApi
+    deprecated: false  # set to true for deployement on cluster version < 1.19 (apiVersion: networking.k8s.io/v1beta1 vs apiVersion: networking.k8s.io/v1)
+    # -- annotations:
+    # kubernetes.io/ingress.class: traefik
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+    # @section -- botApi
+    annotations: {} # ingress annotations
+    # -- ingress path
+    # @section -- botApi
+    path: /
+    #hosts:
+    #  - chart-example.local
+
+    # -- TLS secrets and which hosts they sould be use for
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+    # @section -- botApi
+    tls: [] 
+   
+  # -- botApi resource requests and limits
+  # ref: https://kubernetes.io/docs/user-guide/compute-resources/
+  # @section -- botApi
+  resources: # resources limits and request
+    limits: {} # resources limits
+    requests: {}  # resources requests
+
+  # -- node selector
+  # @section -- botApi
+  nodeSelector: {} 
+
+  # -- tolerations
+  # @section -- botApi
+  tolerations: [] 
+  
+  # -- affinity
+  # @section -- botApi
+  affinity: {} # affinity
+
+# ==============================================
+#  BuildWorker Settings
+# ==============================================
+buildWorker:
+  environment:
+    # -- tock environment (prod, dev, integ)
+    # @section -- buildWorker
+    tock_env: prod
+    # -- log level
+    # @section -- buildWorker
+    tock_default_log_level: info
+    # -- JAVA_ARGS
+    # @section -- buildWorker
+    JAVA_ARGS: -Xmx1g -XX:MaxMetaspaceSize=256m
+
+  image:
+    # -- Docker image registry
+    # @section -- buildWorker
+    registry: docker.io
+    # -- Docker image name
+    # @section -- buildWorker
+    repository: tock/build_worker
+    # -- Docker image tag
+    # @section -- buildWorker
+    tag: 24.9.3
+    # -- Optionally specify an array of imagePullSecrets.
+    # Secrets must be manually created in the namespace.
+    # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    # e.g:
+    # pullSecrets:
+    #   - myRegistryKeySecretName
+    # @section -- buildWorker
+    pullSecrets: []
+
+
+  containerSecurityContext:
+      # -- Configure Container Security Context
+      # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+      # @section -- buildWorker
+      enabled: true
+      # -- Run as non root
+      # @section -- buildWorker
+      runAsNonRoot: true
+      # -- Run as user id
+      # @section -- buildWorker
+      runAsUser: 99
+      # -- Run as Group id
+      # @section -- buildWorker
+      runAsGroup: 99
+
+  podSecurityContext:
+      # -- Configure Pod Security Context
+      # @section -- buildWorker
+      enabled: true
+      # -- fsGroup
+      # @section -- buildWorker
+      fsGroup: 99
+      # -- sysctls
+      # @section -- buildWorker
+      sysctls: []
+
+  # -- buildWorker resource requests and limits
+  # ref: https://kubernetes.io/docs/user-guide/compute-resources/
+  # @section -- buildWorker
+  resources: #resources limits and request
+    limits: {} # resources limits
+    requests: {}  # resources requests
+
+  # -- node selector
+  # @section -- buildWorker
+  nodeSelector: {}
+
+  # -- tolerations
+  # @section -- buildWorker
+  tolerations: []
+
+  # -- affinity
+  # @section -- buildWorker
+  affinity: {}
+
+# ==============================================
+#  Duckling Settings
+# ==============================================
+duckling:
+  environment:
+    # -- tock environment (prod, dev, integ)
+    # @section -- Duckling
+    tock_env: prod
+    # -- log level
+    # @section -- Duckling
+    tock_default_log_level: info
+
+  # -- should be > 1 in production
+  # @section -- Duckling
+  replicas:
+  image:
+    # -- Docker image registry
+    # @section -- Duckling
+    registry: docker.io
+    # -- Docker image name
+    # @section -- Duckling
+    repository: tock/duckling
+    # -- Docker image tag
+    # @section -- Duckling
+    tag: 24.9.3
+    # -- Optionally specify an array of imagePullSecrets.
+    # Secrets must be manually created in the namespace.
+    # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    # e.g:
+    # pullSecrets:
+    #   - myRegistryKeySecretName
+    # @section -- Duckling
+    pullSecrets: []
+  
+  containerSecurityContext:
+      # -- Configure Container Security Context
+      # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+      # @section -- Duckling
+      enabled: true
+      # -- Run as non root
+      # @section -- Duckling
+      runAsNonRoot: true
+      # -- Run as user id
+      # @section -- Duckling
+      runAsUser: 99
+      # -- Run as Group id
+      # @section -- Duckling
+      runAsGroup: 99
+
+  podSecurityContext:
+      # -- Configure Pod Security Context
+      # @section -- Duckling
+      enabled: true
+      # -- fsGroup
+      # @section -- Duckling
+      fsGroup: 99
+      # -- sysctls
+      # @section -- Duckling
+      sysctls: []
+
+  # -- Duckling resource requests and limits
+  # ref: https://kubernetes.io/docs/user-guide/compute-resources/
+  # @section -- Duckling
+  resources: #resources limits and request
+    limits: {} # resources limits
+    requests: {}  # resources requests
+
+  # -- node selector
+  # @section -- Duckling
+  nodeSelector: {}
+
+  # -- tolerations
+  # @section -- Duckling
+  tolerations: []
+
+  # -- affinity
+  # @section -- Duckling
+  affinity: {}
+
+
+# ==============================================
+#  KotlinCompiler Settings
+# ==============================================
+kotlinCompiler:
+  environment:
+    # -- tock environment (prod, dev, integ)
+    # @section -- KotlinCompiler
+    tock_env: prod
+    # -- log level
+    # @section -- KotlinCompiler
+    tock_default_log_level: info
+    # -- compiler classpath
+    # @section -- KotlinCompiler
+    tock_kotlin_compiler_classpath: /maven
+
+  image:
+    # -- Docker image registry
+    # @section -- KotlinCompiler
+    registry: docker.io
+    # -- Docker image name
+    # @section -- KotlinCompiler
+    repository: tock/kotlin_compiler
+    # -- Docker image tag
+    # @section -- KotlinCompiler
+    tag: 24.9.3
+    # -- Optionally specify an array of imagePullSecrets.
+    # Secrets must be manually created in the namespace.
+    # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    # e.g:
+    # pullSecrets:
+    #   - myRegistryKeySecretName
+    # @section -- KotlinCompiler
+    pullSecrets: []
+
+  containerSecurityContext:
+      # -- Configure Container Security Context
+      # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+      # @section -- KotlinCompiler
+      enabled: true
+      # -- Run as non root
+      # @section -- KotlinCompiler
+      runAsNonRoot: true
+      # -- Run as user id
+      # @section -- KotlinCompiler
+      runAsUser: 99
+      # -- Run as Group id
+      # @section -- KotlinCompiler
+      runAsGroup: 99
+
+  podSecurityContext:
+      # -- Configure Pod Security Context
+      # @section -- KotlinCompiler
+      enabled: true
+      # -- fsGroup
+      # @section -- KotlinCompiler
+      fsGroup: 99
+      # -- sysctls
+      # @section -- KotlinCompiler
+      sysctls: []
+
+  # -- KotlinCompiler resource requests and limits
+  # ref: https://kubernetes.io/docs/user-guide/compute-resources/
+  # @section -- KotlinCompiler
+  resources: #resources limits and request
+    limits: {} # resources limits
+    requests: {}  # resources requests
+
+  # -- node selector
+  # @section -- KotlinCompiler
+  nodeSelector: {}
+
+  # -- tolerations
+  # @section -- KotlinCompiler
+  tolerations: []
+
+  # -- affinity
+  # @section -- KotlinCompiler
+  affinity: {}
+
+
+# ==============================================
+#  NlpApi Settings
+# ==============================================
+# @section -- nlpApi
+nlpApi:
+  environment:
+    # -- tock environment (prod, dev, integ)
+    # @section -- nlpApi
+    tock_env: prod
+    # -- cors handler
+    # @section -- nlpApi
+    tock_web_use_default_cors_handler: "true"
+    # -- cors handler URL
+    # @section -- nlpApi
+    tock_web_use_default_cors_handler_url: '*'
+    # -- cors handler with credentials
+    # @section -- nlpApi
+    tock_web_use_default_cors_handler_with_credentials: "false"
+    # -- cors handler allowed methods, could be "GET, POST, PUT, DELETE, OPTIONS, HEAD"
+    # @section -- nlpApi
+    tock_web_use_default_cors_handler_allowed_methods : ""
+    # -- tock environment (prod, dev, integ)
+    # @section -- nlpApi
+    tock_default_log_level: info 
+  # followin element are computed by the chart if not set  
+  # nlp_duckling_url: http://duckling:8080
+
+  # -- should be > 1 in production
+  # @section -- nlpApi
+  replicas: 1 # should be > 1 in production
+  image:
+    # -- Docker image registry
+    # @section -- nlpApi
+    registry: docker.io
+    # -- Docker image name
+    # @section -- nlpApi
+    repository: tock/nlp_api
+    # -- Docker image tag
+    # @section -- nlpApi
+    tag: 24.9.3
+    # -- Optionally specify an array of imagePullSecrets.
+    # Secrets must be manually created in the namespace.
+    # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    # e.g:
+    # pullSecrets:
+    #   - myRegistryKeySecretName
+    # @section -- nlpApi
+    pullSecrets: []
+
+  containerSecurityContext:
+      # -- Configure Container Security Context
+      # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+      # @section -- nlpApi
+      enabled: true
+      # -- Run as non root
+      # @section -- nlpApi
+      runAsNonRoot: true
+      # -- Run as user id
+      # @section -- nlpApi
+      runAsUser: 99
+      # -- Run as Group id
+      # @section -- nlpApi
+      runAsGroup: 99
+
+  podSecurityContext:
+      # -- Configure Pod Security Context
+      # @section -- nlpApi
+      enabled: true
+      # -- fsGroup
+      # @section -- nlpApi
+      fsGroup: 99
+      # -- sysctls
+      # @section -- nlpApi
+      sysctls: []
+
+  # -- nlpApi resource requests and limits
+  # ref: https://kubernetes.io/docs/user-guide/compute-resources/
+  # @section -- nlpApi
+  resources: #resources limits and request
+    limits: {} # resources limits
+    requests: {}  # resources requests
+
+  # -- node selector
+  # @section -- nlpApi
+  nodeSelector: {}
+
+  # -- tolerations
+  # @section -- nlpApi
+  tolerations: []
+
+  # -- affinity
+  # @section -- nlpApi
+  affinity: {}
+
+# ==============================================
+#  gen_ai_orchestrator-server
+# ==============================================
+genAiOrchestrator:
+  environment:
+    # -- gen-ai environment (prod, dev, integ)
+    # @section -- genAiOrchestrator
+    # -- DEV or PROD in uppercase only
+    # @section -- genAiOrchestrator
+    tock_gen_ai_orchestrator_application_environment: DEV # DEV or PROD in uppercase only
+       # -- llm embedding retries
+    # @section -- genAiOrchestrator
+    tock_gen_ai_orchestrator_em_provider_timeout: 120
+    # -- llm timeout
+    # @section -- genAiOrchestrator
+    tock_gen_ai_orchestrator_llm_provider_timeout: 120
+    # -- llm retries
+    # @section -- genAiOrchestrator
+    tock_gen_ai_orchestrator_llm_provider_max_retries: 0
+
+    # OPENAI_API_BASE: "http://host.docker.internal:8080/v1"
+
+    # -- Vector Store host, Cloud be OpenSearch or PGVector
+    # @section -- genAiOrchestrator
+    tock_gen_ai_orchestrator_vector_store_provider: OpenSearch
+
+    # @section -- genAiOrchestrator
+    tock_gen_ai_orchestrator_vector_store_host: opensearch-node1
+    # -- Vector Store port
+    # @section -- genAiOrchestrator
+    tock_gen_ai_orchestrator_vector_store_port: 9200
+    # -- Vector Store password
+    # @section -- genAiOrchestrator
+    tock_gen_ai_orchestrator_vector_store_pwd: admin
+    # -- Vector Store login
+    # @section -- genAiOrchestrator
+    tock_gen_ai_orchestrator_vector_store_user: admin
+    # -- Vector Store index
+    # @section -- genAiOrchestrator
+    tock_gen_ai_orchestrator_vector_store_database: 
+    # -- Vector Store timeout
+    # @section -- genAiOrchestrator
+    tock_gen_ai_orchestrator_vector_store_timeout: 5
+    # -- Vector K
+    # @section -- genAiOrchestrator
+    tock_gen_ai_orchestrator_vector_store_k: 4
+    # -- Vector Store test query
+    # @section -- genAiOrchestrator
+    tock_gen_ai_orchestrator_vector_store_test_query: "What knowledge do you have?"
+    # -- Vector Store secret manager provider. Values could be AWS_SECRETS_MANAGER or GCP_SECRET_MANAGER
+    # @section -- genAiOrchestrator
+    tock_gen_ai_orchestrator_vector_store_secret_manager_provider: "AWS_SECRETS_MANAGER"
+    # -- Vector Store secret manager secret name
+    # @section -- genAiOrchestrator
+    tock_gen_ai_orchestrator_vector_store_credentials_secret_name: ""
+
+  # -- should be > 1 in production
+  # @section -- genAiOrchestrator
+  replicas: 1
+  image:
+    # -- Docker image registry
+    # @section -- genAiOrchestrator
+    registry: docker.io
+    # -- Docker image name
+    # @section -- genAiOrchestrator
+    repository: tock/gen-ai-orchestrator-server
+    # -- Docker image tag
+    # @section -- genAiOrchestrator
+    tag: 24.9.3
+    # -- Optionally specify an array of imagePullSecrets.
+    # Secrets must be manually created in the namespace.
+    # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    # e.g:
+    # pullSecrets:
+    #   - myRegistryKeySecretName
+    # @section -- genAiOrchestrator
+    pullSecrets: []
+
+  containerSecurityContext:
+      # -- Configure Container Security Context
+      # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+      # @section -- genAiOrchestrator
+      enabled: true
+      # -- Run as non root
+      # @section -- genAiOrchestrator
+      runAsNonRoot: true
+      # -- Run as user id
+      # @section -- genAiOrchestrator
+      runAsUser: 99
+      # -- Run as Group id
+      # @section -- genAiOrchestrator
+      runAsGroup: 99
+
+  podSecurityContext:
+      # -- Configure Pod Security Context
+      # @section -- genAiOrchestrator
+      enabled: true
+      # -- fsGroup
+      # @section -- genAiOrchestrator
+      fsGroup: 99
+      # -- sysctls
+      # @section -- genAiOrchestrator
+      sysctls: []
+
+  # -- gen-ai-orchestrator-server resource requests and limits
+  # ref: https://kubernetes.io/docs/user-guide/compute-resources/
+  # @section -- genAiOrchestrator
+  resources: #resources limits and request
+    limits: {} # resources limits
+    requests: {}  # resources requests
+
+  # -- node selector
+  # @section -- genAiOrchestrator
+  nodeSelector: {}
+
+  # -- tolerations
+  # @section -- genAiOrchestrator
+  tolerations: []
+
+  # -- affinity
+  # @section -- genAiOrchestrator
+  affinity: {}
+
+
+# ==============================================
+# MongoDB Settings
+# Bitnami 13.6.8
+# ==============================================
+# -- MongoDB settings. See Bitnami MongoDB chart for more details
+# @section -- mongodb
+mongodb:
+  # -- MongoDB architecture
+  # @section -- mongodb
+  architecture: "replicaset"
+  # -- MongoDB replicaSet name
+  # @section -- mongodb
+  replicaSetName: "tock"
+  # -- MongoDB replicaSet configuration settings
+  # @section -- mongodb
+  replicaCount: 3
+  # -- MongoDB replicaSet configuration settings
+  # @section -- mongodb
+  replicaSetConfigurationSettings:
+    # -- MongoDB replicaSet configuration settings
+    # @section -- mongodb
+    enabled: true
+  # -- MongoDB extraFlags
+  # @section -- mongodb
+  extraFlags:
+    - "--bind_ip_all" 
+  arbiter:
+    # -- Enable MongoDB arbiter
+    # @section -- mongodb
+    enabled: false
+  auth:
+    # -- Enable MongoDB authentication
+    # @section -- mongodb
+    enabled: false
+  persistence:
+    # -- Enable MongoDB persistence using PVC
+    # @section -- mongodb
+    enabled: true
+    # -- MongoDB volume size
+    # @section -- mongodb
+    size: 1Gi
+#    storageClass: local-path
+#  image:
+#    repository: bitnami/mongodb
+#    tag: 6.0.4-debian-11-r10
+#  image:
+#    repository: library/mongo
+#    tag: 6.0.2
+
+## Image for OSX on ARM64 
+#  image:
+#    repository: zcube/bitnami-compat-mongodb
+#    tag: 6.0.5
+
+#  image:
+#    repository: arm64v8/mongo
+#    tag: 6.0.2
+
+
+
+# ==============================================
+# OpenSearch Settings
+# ==============================================
+opensearch:
+  # -- OpenSearch architectureCluster name
+  # @section -- openSearch
+  clusterName: "opensearch-cluster"
+  #nameOverride: "opensearch-rag"
+  # -- Deploy as single node
+  # @section -- openSearch
+  singleNode: false
+  # -- Cluster node number
+  # @section -- openSearch
+  replicas: 3
+  # -- OpenSearch java options
+  # @section -- openSearch
+  opensearchJavaOpts: "-Xms512m -Xmx512m"
+  extraEnvs:
+    - name: OPENSEARCH_INITIAL_ADMIN_PASSWORD
+      value: "DoThisOne12+"

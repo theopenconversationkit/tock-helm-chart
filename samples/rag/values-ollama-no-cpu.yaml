@@ -1,0 +1,18 @@
+ollama:
+  gpu:
+    # -- Enable GPU integration
+    enabled: false
+  models:
+    - nomic-embed-text
+    - tinyllama
+  
+ingress:
+  enabled: true
+  hosts:
+  - host: ollama.rancher.localhost
+    paths:
+      - path: /
+        pathType: Prefix
+
+persistentVolume:
+  enabled: true

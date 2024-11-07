@@ -1,0 +1,15 @@
+#
+# values.yaml
+#
+ingress:
+  enabled: true
+  hosts:
+    - host: pgadmin.rancher.localhost
+      paths: 
+        - path: "/"
+          pathType: ImplementationSpecific
+# Security
+## Admin user default are chart@domain.com/SuperSecret
+#existingSecret: mynewtock-postgresql
+#secretKeys:
+#  pgadminPasswordKey: postgres-password

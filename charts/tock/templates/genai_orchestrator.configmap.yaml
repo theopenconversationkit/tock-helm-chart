@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: '{{ .Release.Name }}-genai-orchestrator-cfg'
+  labels:
+    app.kubernetes.io/name: genai-orchestrator
+    app.kubernetes.io/component: genai-orchestrator
+    app.kubernetes.io/version: {{ .Chart.Version }}
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+    tock_gen_ai_orchestrator_application_environment: '{{ default "dev" .Values.genAiOrchestrator.environment.tock_gen_ai_orchestrator_application_environment . }}'
+    tock_gen_ai_orchestrator_em_provider_timeout: '{{ default "120" .Values.genAiOrchestrator.environment.tock_gen_ai_orchestrator_em_provider_timeout . }}'
+    tock_gen_ai_orchestrator_llm_provider_timeout: '{{ default "120" .Values.genAiOrchestrator.environment.tock_gen_ai_orchestrator_llm_provider_timeout . }}'
+    tock_gen_ai_orchestrator_llm_provider_max_retries: '{{ default "0" .Values.genAiOrchestrator.environment.tock_gen_ai_orchestrator_llm_provider_max_retries . }}'
+    tock_gen_ai_orchestrator_vector_store_provider: '{{ template "provider.vectorstore" . }}'
+    tock_gen_ai_orchestrator_vector_store_host: '{{ template "urls.vectorstore" . }}'
+    tock_gen_ai_orchestrator_vector_store_port: '{{ template "port.vectorstore" . }}'
+    tock_gen_ai_orchestrator_vector_store_user: '{{ template "user.vectorstore" . }}'
+    tock_gen_ai_orchestrator_vector_store_pwd: '{{ template "pwd.vectorstore" . }}'
+    tock_gen_ai_orchestrator_vector_store_database: '{{ default "" .Values.genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_database . }}'
+    tock_gen_ai_orchestrator_vector_store_timeout: '{{ default "5" .Values.genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_timeout . }}'
+    tock_gen_ai_orchestrator_vector_store_k: '{{ default "4" .Values.genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_k . }}'
+    tock_gen_ai_orchestrator_vector_store_test_query: '{{ default "virement bancaire" .Values.genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_test_query . }}'
+    tock_gen_ai_orchestrator_vector_store_secret_manager_provider: '{{ default "" .Values.genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_secret_manager_provider . }}'
+    tock_gen_ai_orchestrator_vector_store_credentials_secret_name: '{{ default "" .Values.genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_credentials_secret_name . }}'    
+    {{- if .Values.genAiOrchestrator.environment.OPENAI_API_BASE }}
+    OPENAI_API_BASE: '{{ default "https://api.openai.com/v1" .Values.genAiOrchestrator.environment.OPENAI_API_BASE . }}'
+    {{- end }}
