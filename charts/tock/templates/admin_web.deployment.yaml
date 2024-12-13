@@ -116,7 +116,7 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-admin-web-cfg
-           {{- if .Values.adminWeb.authCongifMap }} 
+           {{- if .Values.adminWeb.authConfigfMap }} 
             - configMapRef:
                 name: {{ .Values.adminWeb.authConfigfMap }}
            {{- end }}
