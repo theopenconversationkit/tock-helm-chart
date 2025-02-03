@@ -177,7 +177,7 @@ adminWeb:
     repository: tock/bot_admin 
     # -- Docker image tag
     # @section -- adminWeb
-    tag: 24.9.4
+    tag: 24.9.6
     # -- Optionally specify an array of imagePullSecrets.
     # Secrets must be manually created in the namespace.
     # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -320,10 +320,15 @@ botApi:
     tock_bot_api_actions_history_to_client_bus: "false"
   # Sould be tested
   # tock_web_enable_markdown_in_text_message: "true"
-  # Computer by the chart if not set
+  # Compute by the chart if not set
   #  tock_web_use_default_cors_handler_allowed_headers : "Content-Type, Authorization, Content-Length, X-Requested-With"
   #  tock_nlp_service_url: http://nlp-api:8080
-  
+    # -- To retrieve metadata present in extra headers (the list present in `tock_web_connector_extra_headers`) and use them in `Bus` in the `ConnectorData`, use the `tock_web_connector_use_extra_header_as_metadata_request` and pass it to true.
+    # @section -- botApi
+    tock_web_connector_use_extra_header_as_metadata_request: "false"
+    # -- List of extra headers to retrieve metadata from and use them in `Bus` in the `ConnectorData`. The list should be separated by `,`. Sample `tock_web_connector_extra_headers=header1,header2,my-other-header-param`.
+    # @section -- botApi
+    tock_web_connector_extra_headers: ""
   # -- should be > 1 in production
   # @section -- botApi
   replicas: 1 
@@ -336,7 +341,7 @@ botApi:
     repository: tock/bot_api # docker image name
     # -- Docker image tag
     # @section -- botApi
-    tag: 24.9.4
+    tag: 24.9.6
     # -- Optionally specify an array of imagePullSecrets.
     # Secrets must be manually created in the namespace.
     # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -449,7 +454,7 @@ buildWorker:
     repository: tock/build_worker
     # -- Docker image tag
     # @section -- buildWorker
-    tag: 24.9.4
+    tag: 24.9.6
     # -- Optionally specify an array of imagePullSecrets.
     # Secrets must be manually created in the namespace.
     # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -529,7 +534,7 @@ duckling:
     repository: tock/duckling
     # -- Docker image tag
     # @section -- Duckling
-    tag: 24.9.4
+    tag: 24.9.6
     # -- Optionally specify an array of imagePullSecrets.
     # Secrets must be manually created in the namespace.
     # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -609,7 +614,7 @@ kotlinCompiler:
     repository: tock/kotlin_compiler
     # -- Docker image tag
     # @section -- KotlinCompiler
-    tag: 24.9.4
+    tag: 24.9.6
     # -- Optionally specify an array of imagePullSecrets.
     # Secrets must be manually created in the namespace.
     # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -704,7 +709,7 @@ nlpApi:
     repository: tock/nlp_api
     # -- Docker image tag
     # @section -- nlpApi
-    tag: 24.9.4
+    tag: 24.9.6
     # -- Optionally specify an array of imagePullSecrets.
     # Secrets must be manually created in the namespace.
     # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -827,7 +832,7 @@ genAiOrchestrator:
     repository: tock/gen-ai-orchestrator-server
     # -- Docker image tag
     # @section -- genAiOrchestrator
-    tag: 24.9.4
+    tag: 24.9.6
     # -- Optionally specify an array of imagePullSecrets.
     # Secrets must be manually created in the namespace.
     # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
