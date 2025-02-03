@@ -21,9 +21,13 @@ data:
     tock_web_use_default_cors_handler_url: '{{ default "*" .Values.nlpApi.environment.tock_web_use_default_cors_handler_url }}'
     tock_web_use_default_cors_handler_with_credentials: '{{ default "false" .Values.nlpApi.environment.tock_web_use_default_cors_handler_with_credentials }}'
     tock_web_use_default_cors_handler_allowed_methods: '{{ default "GET, POST, PUT, DELETE, OPTIONS" .Values.nlpApi.environment.tock_web_use_default_cors_handler_allowed_methods }}'
-    tock_default_log_level: '{{ default "info" .Values.nlpApi.environment.tock_default_log_level }}'
-    tock_database_mongodb_secret_manager_provider: '{{ default "null" .Values.nlpApi.environment.tock_database_mongodb_secret_manager_provider }}'
-    tock_database_mongodb_credentials_secret_name: '{{ default "null" .Values.nlpApi.environment.tock_database_mongodb_credentials_secret_name }}'
+    tock_default_log_level: '{{ default "info" .Values.nlpApi.environment.tock_default_log_level }}'    
+ {{- if .Values.nlpApi.environment.tock_database_mongodb_secret_manager_provider }}
+    tock_database_mongodb_secret_manager_provider: '{{ .Values.nlpApi.environment.tock_database_mongodb_secret_manager_provider }}'
+{{- end }}
+{{- if .Values.nlpApi.environment.tock_database_mongodb_credentials_secret_name }}
+    tock_database_mongodb_credentials_secret_name: '{{ .Values.nlpApi.environment.tock_database_mongodb_credentials_secret_name }}'
+{{- end }}
 {{ if .Values.global.tockMongodbFront}}
     tock_front_mongo_db: '{{ tpl .Values.global.tockMongodbFront . }}'
 {{- end }}

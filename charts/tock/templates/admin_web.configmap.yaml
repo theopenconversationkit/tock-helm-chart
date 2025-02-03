@@ -57,9 +57,29 @@ data:
     tock_gen_ai_orchestrator_secret_storage_type: '{{ default "Raw" .Values.adminWeb.environment.tock_gen_ai_orchestrator_secret_storage_type }}'
     tock_gen_ai_orchestrator_technical_error: '{{ default "Technical error :( sorry!" .Values.adminWeb.environment.tock_gen_ai_orchestrator_technical_error }}'
     tock_gen_ai_orchestrator_vector_store_provider: '{{ default "OpenSearch" .Values.adminWeb.environment.tock_gen_ai_orchestrator_vector_store_provider }}'
-    tock_database_mongodb_secret_manager_provider: '{{ default "null" .Values.adminWeb.environment.tock_database_mongodb_secret_manager_provider }}'
-    tock_database_mongodb_credentials_secret_name: '{{ default "null" .Values.adminWeb.environment.tock_database_mongodb_credentials_secret_name }}'
-    tock_gen_ai_secret_manager_provider: '{{ default "null" .Values.adminWeb.environment.tock_gen_ai_secret_manager_provider }}'
+{{- if .Values.adminWeb.environment.tock_database_mongodb_secret_manager_provider }}
+    tock_database_mongodb_secret_manager_provider: '{{ .Values.adminWeb.environment.tock_database_mongodb_secret_manager_provider }}'
+{{- else }}
+    tock_database_mongodb_secret_manager_provider: null
+{{- end }}
+{{- if .Values.adminWeb.environment.tock_database_mongodb_credentials_secret_name }}
+    tock_database_mongodb_credentials_secret_name: '{{ .Values.adminWeb.environment.tock_database_mongodb_credentials_secret_name }}'
+{{- else }}
+    tock_database_mongodb_credentials_secret_name: null
+{{- end }}
+{{- if .Values.adminWeb.environment.tock_gen_ai_secret_manager_provider }}
+    tock_gen_ai_secret_manager_provider: '{{ .Values.adminWeb.environment.tock_gen_ai_secret_manager_provider }}'
+{{- else }}
+    tock_gen_ai_secret_manager_provider: null
+{{- end }}  
     tock_gen_ai_secret_prefix: '{{ default "LOCAL/TOCK" .Values.adminWeb.environment.tock_gen_ai_secret_prefix }}'
-    tock_gcp_project_id: '{{ default "null" .Values.adminWeb.environment.tock_gcp_project_id }}'
-    tock_gcp_region: '{{ default "null" .Values.adminWeb.environment.tock_gcp_region }}'
+{{- if  .Values.adminWeb.environment.tock_gcp_project_id }}
+    tock_gcp_project_id: '{{ .Values.adminWeb.environment.tock_gcp_project_id }}'
+{{- else }}
+    tock_gcp_project_id: null
+{{- end }}  
+{{- if  .Values.adminWeb.environment.tock_gcp_region }}
+    tock_gcp_region: '{{ .Values.adminWeb.environment.tock_gcp_region }}'
+{{- else }} 
+    tock_gcp_region: null
+{{- end }}

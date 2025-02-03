@@ -130,18 +130,18 @@ adminWeb:
     botadminverticle_base_href : ""
     # -- Environment variable settings for secrets (when used). Allowed values Env,AwsSecretsManager,GcpSecretManager. The provider of the secret manager used to retrieve credentials for database access (mongodb).
     # @section -- adminWeb
-    tock_database_mongodb_secret_manager_provider: "null"
+    tock_database_mongodb_secret_manager_provider: null
     # @section -- adminWeb
     # -- Environment variable settings for secrets (when used). The secret name storing database credentials (Only if credentials are not passed in the MongoBD connection string URI).
-    tock_database_mongodb_credentials_secret_name: "null"
+    tock_database_mongodb_credentials_secret_name: null
     # -- Environment variable settings for secrets (when used). The GCP project ID used to retrieve credentials for GCP Secret Manager.
     # @section -- adminWeb
-    tock_gcp_project_id: "null"
+    tock_gcp_project_id: null
     # -- Environment variable settings for secrets (when used).The GCP project Region where secrets are stored.
     # @section -- adminWeb
-    tock_gcp_region: "null"
+    tock_gcp_region: null
     # -- Environment variable settings for secrets (when used).Allowed values : Env,AwsSecretsManager,GcpSecretManager. The provider of the secret manager used to store and retrieve the Gen AI Api Keys.The secret will be stored directly in the database in text format, so it can only be used for local development purposes, which is obviously not a sure thing.
-    tock_gen_ai_secret_manager_provider: "null"
+    tock_gen_ai_secret_manager_provider: null
     # -- Environment variable settings for secrets (when used).The prefix to use to store the Gen AI Api Keys in the database.Allowed values PROD,DEV,LOCAL,FEAT-. The prefix is used to identify the environment in which the keys are stored.
     # @section -- adminWeb
     tock_gen_ai_secret_prefix: "LOCAL/TOCK"
@@ -348,19 +348,19 @@ botApi:
     tock_web_connector_extra_headers: ""
     # -- Environment variable settings for secrets (when used). Allowed values Env,AwsSecretsManager,GcpSecretManager. The provider of the secret manager used to retrieve credentials for database access (mongodb).
     # @section -- botApi
-    tock_database_mongodb_secret_manager_provider: "null"
+    tock_database_mongodb_secret_manager_provider: null
     # @section -- botApi
     # -- Environment variable settings for secrets (when used). The secret name storing database credentials (Only if credentials are not passed in the MongoBD connection string URI).
-    tock_database_mongodb_credentials_secret_name: "null"
+    tock_database_mongodb_credentials_secret_name: null
     # -- Environment variable settings for secrets (when used).(When using iAdvize Connector) The provider of the secret manager used to retrieve credentials for iAdvize (GraphQL) 
     # @section -- botApi
-    tock_iadvize_secret_manager_provider : "null"
+    tock_iadvize_secret_manager_provider : null
     # -- Environment variable settings for secrets (when used).(When using iAdvize Connector) The secret name storing iAdvize credentials.
     # @section -- botApi
-    tock_iadvize_credentials_secret_name: "null"
+    tock_iadvize_credentials_secret_name: null
     # -- Environment variable settings for secrets (when used). The GCP project ID used to retrieve credentials for GCP Secret Manager.
     # @section -- botApi
-    tock_gcp_project_id: "null"
+    tock_gcp_project_id: null
   # -- should be > 1 in production
   # @section -- botApi
   replicas: 1 
@@ -728,10 +728,10 @@ nlpApi:
     tock_default_log_level: info 
     # -- Environment variable settings for secrets (when used). Allowed values Env,AwsSecretsManager,GcpSecretManager. The provider of the secret manager used to retrieve credentials for database access (mongodb).
     # @section -- nlpApi
-    tock_database_mongodb_secret_manager_provider: "null"
-    # @section -- botnlpApiApi
+    tock_database_mongodb_secret_manager_provider: null
+    # @section -- nlpApi
     # -- Environment variable settings for secrets (when used). The secret name storing database credentials (Only if credentials are not passed in the MongoBD connection string URI).
-    tock_database_mongodb_credentials_secret_name: "null"
+    tock_database_mongodb_credentials_secret_name: null
   # followin element are computed by the chart if not set  
   # nlp_duckling_url: http://duckling:8080
 
@@ -853,13 +853,13 @@ genAiOrchestrator:
     tock_gen_ai_orchestrator_vector_store_test_query: "What knowledge do you have?"
     # -- Vector Store secret manager provider. Values could be AWS_SECRETS_MANAGER or GCP_SECRET_MANAGER
     # @section -- genAiOrchestrator
-    tock_gen_ai_orchestrator_vector_store_secret_manager_provider: "AWS_SECRETS_MANAGER"
+    tock_gen_ai_orchestrator_vector_store_secret_manager_provider: null
     # -- Vector Store secret manager secret name
     # @section -- genAiOrchestrator
-    tock_gen_ai_orchestrator_vector_store_credentials_secret_name: ""
-     # -- Environment variable settings for secrets (when used). The GCP project ID used to retrieve credentials for GCP Secret Manager.
+    tock_gen_ai_orchestrator_vector_store_credentials_secret_name: null
+    # -- Environment variable settings for secrets (when used). The GCP project ID used to retrieve credentials for GCP Secret Manager.
     # @section -- genAiOrchestrator
-    tock_gcp_project_id: "null"
+    tock_gcp_project_id: null
 
   # -- should be > 1 in production
   # @section -- genAiOrchestrator

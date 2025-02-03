@@ -38,12 +38,21 @@ data:
     tock_gen_ai_orchestrator_vector_store_provider: '{{ default "OpenSearch" .Values.botApi.environment.tock_gen_ai_orchestrator_vector_store_provider }}'
     tock_web_connector_use_extra_header_as_metadata_request: '{{ default "false" .Values.botApi.environment.tock_web_connector_use_extra_header_as_metadata_request }}'
     tock_web_connector_extra_headers: '{{ default "" .Values.botApi.environment.tock_web_connector_extra_headers }}'
-    tock_database_mongodb_secret_manager_provider: '{{ default "null" .Values.botApi.environment.tock_database_mongodb_secret_manager_provider }}'
-    tock_database_mongodb_credentials_secret_name: '{{ default "null" .Values.botApi.environment.tock_database_mongodb_credentials_secret_name }}'
-    tock_gcp_project_id: '{{ default "null" .Values.botApi.environment.tock_gcp_project_id }}'
-    tock_iadvize_secret_manager_provider: '{{ default "null" .Values.botApi.environment.tock_iadvize_secret_manager_provider }}'
-    tock_iadvize_credentials_secret_name: '{{ default "null" .Values.botApi.environment.tock_iadvize_credentials_secret_name }}'
-
+{{- if .Values.botApi.environment.tock_database_mongodb_secret_manager_provider }}
+    tock_database_mongodb_secret_manager_provider: '{{ .Values.botApi.environment.tock_database_mongodb_secret_manager_provider }}'
+{{- end }}    
+{{- if .Values.botApi.environment.tock_database_mongodb_credentials_secret_name }}    
+    tock_database_mongodb_credentials_secret_name: '{{ .Values.botApi.environment.tock_database_mongodb_credentials_secret_name }}'
+{{- end }}
+{{- if .Values.botApi.environment.tock_gcp_project_id }}
+    tock_gcp_project_id: '{{ .Values.botApi.environment.tock_gcp_project_id }}'
+{{- end }}
+{{- if .Values.botApi.environment.tock_iadvize_secret_manager_provider }}
+    tock_iadvize_secret_manager_provider: '{{ .Values.botApi.environment.tock_iadvize_secret_manager_provider }}'
+{{- end }}
+{{- if .Values.botApi.environment.tock_iadvize_credentials_secret_name }}
+    tock_iadvize_credentials_secret_name: '{{ .Values.botApi.environment.tock_iadvize_credentials_secret_name }}'
+{{- end }}
 {{ if .Values.global.tockMongodbFront}}
     tock_front_mongo_db: '{{ tpl .Values.global.tockMongodbFront . }}'
 {{- end }}
