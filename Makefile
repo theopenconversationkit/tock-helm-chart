@@ -17,6 +17,7 @@ version:
 
 build:
 	helm repo add bitnami https://charts.bitnami.com/bitnami
+	helm repo add opensearch https://opensearch-project.github.io/helm-charts/
 	helm dep update ${CHART}
 	helm lint ${CHART}
 	echo "Chart Name:Tock Application Version:${appversion}  Chart Version:${chartversion} "

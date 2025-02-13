@@ -23,8 +23,16 @@ data:
     tock_gen_ai_orchestrator_vector_store_timeout: '{{ default "5" .Values.genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_timeout . }}'
     tock_gen_ai_orchestrator_vector_store_k: '{{ default "4" .Values.genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_k . }}'
     tock_gen_ai_orchestrator_vector_store_test_query: '{{ default "virement bancaire" .Values.genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_test_query . }}'
-    tock_gen_ai_orchestrator_vector_store_secret_manager_provider: '{{ default "" .Values.genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_secret_manager_provider . }}'
-    tock_gen_ai_orchestrator_vector_store_credentials_secret_name: '{{ default "" .Values.genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_credentials_secret_name . }}'    
-    {{- if .Values.genAiOrchestrator.environment.OPENAI_API_BASE }}
+{{- if .Values.genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_secret_manager_provider }}  
+    tock_gen_ai_orchestrator_vector_store_secret_manager_provider: '{{ .Values.genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_secret_manager_provider . }}'
+{{- end }}
+{{- if .Values.genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_credentials_secret_name }}
+    tock_gen_ai_orchestrator_vector_store_credentials_secret_name: '{{ .Values.genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_credentials_secret_name . }}'    
+{{- end }}
+{{- if .Values.genAiOrchestrator.environment.tock_gcp_project_id }}
+    tock_gcp_project_id: '{{ .Values.genAiOrchestrator.environment.tock_gcp_project_id . }}'
+{{- end }}
+{{- if .Values.genAiOrchestrator.environment.OPENAI_API_BASE }}
     OPENAI_API_BASE: '{{ default "https://api.openai.com/v1" .Values.genAiOrchestrator.environment.OPENAI_API_BASE . }}'
-    {{- end }}
+{{- end }}
+  

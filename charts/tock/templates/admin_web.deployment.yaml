@@ -116,9 +116,9 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-admin-web-cfg
-           {{- if .Values.adminWeb.authCongifMap }} 
+           {{- if .Values.adminWeb.authConfigMap }} 
             - configMapRef:
-                name: {{ .Values.adminWeb.authConfigfMap }}
+                name: {{ .Values.adminWeb.authConfigMap }}
            {{- end }}
       {{- if .Values.adminWeb.resources }}
           resources: {{- toYaml .Values.adminWeb.resources | nindent 14 }}

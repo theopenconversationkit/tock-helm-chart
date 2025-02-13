@@ -89,7 +89,7 @@ Set Vector Store Provider , OpenSearch or PGVector
 {{- else if or .Values.global.deployPgVector.enabled .Values.global.deployPgVector.useExisting -}}
 {{- printf "PGVector" -}}
 {{- else -}}
-{{- printf "" -}}
+{{- printf "PGVector" -}}
 {{- end -}}
 {{- end -}}
 {{/*
