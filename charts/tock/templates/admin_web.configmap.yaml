@@ -59,13 +59,9 @@ data:
     tock_gen_ai_orchestrator_vector_store_provider: '{{ default "OpenSearch" .Values.adminWeb.environment.tock_gen_ai_orchestrator_vector_store_provider }}'
 {{- if .Values.adminWeb.environment.tock_database_mongodb_secret_manager_provider }}
     tock_database_mongodb_secret_manager_provider: '{{ .Values.adminWeb.environment.tock_database_mongodb_secret_manager_provider }}'
-{{- else }}
-    tock_database_mongodb_secret_manager_provider: null
 {{- end }}
 {{- if .Values.adminWeb.environment.tock_database_mongodb_credentials_secret_name }}
     tock_database_mongodb_credentials_secret_name: '{{ .Values.adminWeb.environment.tock_database_mongodb_credentials_secret_name }}'
-{{- else }}
-    tock_database_mongodb_credentials_secret_name: null
 {{- end }}
 {{- if .Values.adminWeb.environment.tock_gen_ai_secret_manager_provider }}
     tock_gen_ai_secret_manager_provider: '{{ .Values.adminWeb.environment.tock_gen_ai_secret_manager_provider }}'
