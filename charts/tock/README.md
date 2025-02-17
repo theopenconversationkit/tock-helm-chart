@@ -2,7 +2,7 @@
 
 A helm chart for Tock. Tock is an open conversational AI platform. It's a complete solution to build conversational agents aka bots.Tock can integrate and experiment with both classic and Generative AI (LLM, RAG) models
 
-![Version: 0.4.5](https://img.shields.io/badge/Version-0.4.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 24.9.6](https://img.shields.io/badge/AppVersion-24.9.6-informational?style=flat-square)
+![Version: 0.4.6](https://img.shields.io/badge/Version-0.4.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 24.9.6](https://img.shields.io/badge/AppVersion-24.9.6-informational?style=flat-square)
 
 ## DLDR
 
@@ -10,7 +10,7 @@ To install the chart with the release name `my-release`:
 
 ```console
 $ helm registry login -u myuser registry.hub.docker.com
-$ helm install my-release  oci://registry.hub.docker.com/onelans/tock --version 0.4.5
+$ helm install my-release  oci://registry.hub.docker.com/onelans/tock --version 0.4.6
 ```
 
 ## Introduction
