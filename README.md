@@ -15,7 +15,7 @@ $ helm install mytock ./charts/tock
 ## DLDR
 
 ```console
-$ helm install my-release oci://registry.hub.docker.com/onelans/tock --version 0.4.5
+$ helm install my-release oci://registry.hub.docker.com/onelans/tock --version 0.4.6
 ```
 
 You will find more information on chart parameters at the helm chart [README](charts/tock/README.md).
