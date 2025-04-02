@@ -112,7 +112,9 @@ spec:
             failureThreshold: 3 # Defaults to 3
           volumeMounts:
               - mountPath: /file-uploads
-                name: upload-volume  
+                name: upload-volume
+              - mountPath: /tmp
+                name: tmp-volume  
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-admin-web-cfg
@@ -127,6 +129,8 @@ spec:
         - name: upload-volume
           emptyDir:
             sizeLimit: 500Mi
+        - name: tmp-volume
+          emptyDir: {}
     {{- with .Values.adminWeb.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

@@ -63,12 +63,18 @@ spec:
             timeoutSeconds: 10 # Defaults to 1
             periodSeconds: 30 # Defaults to 10
             failureThreshold: 3 # Defaults to 3
+          volumeMounts:
+              - mountPath: /tmp
+                name: tmp-volume 
           envFrom:
             - configMapRef:
                 name: '{{ .Release.Name }}-build-worker-cfg'
       {{- if .Values.buildWorker.resources }}
           resources: {{- toYaml .Values.buildWorker.resources | nindent 14 }}
       {{- end }}
+      volumes:
+          - name: tmp-volume
+            emptyDir: {}
     {{- with .Values.buildWorker.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

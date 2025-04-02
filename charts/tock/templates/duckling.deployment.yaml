@@ -45,12 +45,18 @@ spec:
             timeoutSeconds: 5 # Defaults to 1
             periodSeconds: 20 # Defaults to 10
             failureThreshold: 3 # Defaults to 3
+          volumeMounts:
+              - mountPath: /tmp
+                name: tmp-volume 
           envFrom:
             - configMapRef:
                 name: '{{ .Release.Name }}-duckling-cfg'
       {{- if .Values.duckling.resources }}
           resources: {{- toYaml .Values.duckling.resources | nindent 14 }}
       {{- end }}
+      volumes:
+          - name: tmp-volume
+            emptyDir: {}
     {{- with .Values.duckling.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
