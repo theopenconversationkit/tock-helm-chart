@@ -338,6 +338,9 @@ botApi:
     # -- Set to true if you want to transfer action history in UserRequest context (payload is larger), default is false
     # @section -- botApi
     tock_bot_api_actions_history_to_client_bus: "false"
+    # -- Set to true if you want to be compatible with old webhook behaviour (< 23.9.7)
+    # @section -- botApi
+    tock_api_old_webhook_behaviour: "false"
   # Sould be tested
   # tock_web_enable_markdown_in_text_message: "true"
   # Compute by the chart if not set
