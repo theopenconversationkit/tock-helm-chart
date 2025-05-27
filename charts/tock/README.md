@@ -2,7 +2,7 @@
 
 A helm chart for Tock. Tock is an open conversational AI platform. It's a complete solution to build conversational agents aka bots.Tock can integrate and experiment with both classic and Generative AI (LLM, RAG) models
 
-![Version: 0.4.6](https://img.shields.io/badge/Version-0.4.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 24.9.6](https://img.shields.io/badge/AppVersion-24.9.6-informational?style=flat-square)
+![Version: 0.5.2](https://img.shields.io/badge/Version-0.5.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 25.3.4](https://img.shields.io/badge/AppVersion-25.3.4-informational?style=flat-square)
 
 ## DLDR
 
@@ -10,7 +10,7 @@ To install the chart with the release name `my-release`:
 
 ```console
 $ helm registry login -u myuser registry.hub.docker.com
-$ helm install my-release  oci://registry.hub.docker.com/onelans/tock --version 0.4.6
+$ helm install my-release  oci://registry.hub.docker.com/onelans/tock --version 0.5.2
 ```
 
 ## Introduction
@@ -54,7 +54,7 @@ This creates values, but sectioned into own section tables if a section comment 
 | adminWeb.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
 | adminWeb.image.registry | string | `"docker.io"` | Docker image registry |
 | adminWeb.image.repository | string | `"tock/bot_admin"` | Docker docker image name |
-| adminWeb.image.tag | string | `"24.9.6"` | Docker image tag |
+| adminWeb.image.tag | string | `"25.3.4"` | Docker image tag |
 | adminWeb.ingress.annotations | object | `{}` | ingress annotations annotations:  kubernetes.io/ingress.class: traefik  kubernetes.io/ingress.class: nginx  kubernetes.io/tls-acme: "true" |
 | adminWeb.ingress.deprecated | bool | `false` | set to true for deployement on cluster version < 1.19 (apiVersion: networking.k8s.io/v1beta1 vs apiVersion: networking.k8s.io/v1) |
 | adminWeb.ingress.enabled | bool | `true` | enable the ingress |
@@ -80,6 +80,7 @@ This creates values, but sectioned into own section tables if a section comment 
 | botApi.containerSecurityContext.runAsGroup | int | `99` | Run as Group id |
 | botApi.containerSecurityContext.runAsNonRoot | bool | `true` | Run as non root |
 | botApi.containerSecurityContext.runAsUser | int | `99` | Run as user id |
+| botApi.environment.tock_api_old_webhook_behaviour | string | `"false"` | Set to true if you want to be compatible with old webhook behaviour (< 23.9.7) |
 | botApi.environment.tock_api_timout_in_s | string | `"10"` | Timeout in seconds for websocket service, default is 10 |
 | botApi.environment.tock_bot_api_actions_history_to_client_bus | string | `"false"` | Set to true if you want to transfer action history in UserRequest context (payload is larger), default is false |
 | botApi.environment.tock_bot_api_timeout_in_ms | string | `"5000"` | Timeout in milliseconds for webhook service, default is 5000 |
@@ -101,7 +102,7 @@ This creates values, but sectioned into own section tables if a section comment 
 | botApi.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
 | botApi.image.registry | string | `"docker.io"` | Docker image registry |
 | botApi.image.repository | string | `"tock/bot_api"` | Docker image name |
-| botApi.image.tag | string | `"24.9.6"` | Docker image tag |
+| botApi.image.tag | string | `"25.3.4"` | Docker image tag |
 | botApi.ingress.annotations | object | `{}` | annotations: kubernetes.io/ingress.class: traefik kubernetes.io/ingress.class: nginx kubernetes.io/tls-acme: "true" |
 | botApi.ingress.deprecated | bool | `false` | set to true for deployement on cluster version < 1.19 (apiVersion: networking.k8s.io/v1beta1 vs apiVersion: networking.k8s.io/v1) |
 | botApi.ingress.enabled | bool | `true` | enable bot api the ingress |
@@ -132,7 +133,7 @@ This creates values, but sectioned into own section tables if a section comment 
 | buildWorker.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
 | buildWorker.image.registry | string | `"docker.io"` | Docker image registry |
 | buildWorker.image.repository | string | `"tock/build_worker"` | Docker image name |
-| buildWorker.image.tag | string | `"24.9.6"` | Docker image tag |
+| buildWorker.image.tag | string | `"25.3.4"` | Docker image tag |
 | buildWorker.nodeSelector | object | `{}` | node selector |
 | buildWorker.podSecurityContext.enabled | bool | `true` | Configure Pod Security Context |
 | buildWorker.podSecurityContext.fsGroup | int | `99` | fsGroup |
@@ -154,7 +155,7 @@ This creates values, but sectioned into own section tables if a section comment 
 | duckling.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
 | duckling.image.registry | string | `"docker.io"` | Docker image registry |
 | duckling.image.repository | string | `"tock/duckling"` | Docker image name |
-| duckling.image.tag | string | `"24.9.6"` | Docker image tag |
+| duckling.image.tag | string | `"25.3.4"` | Docker image tag |
 | duckling.nodeSelector | object | `{}` | node selector |
 | duckling.podSecurityContext.enabled | bool | `true` | Configure Pod Security Context |
 | duckling.podSecurityContext.fsGroup | int | `99` | fsGroup |
@@ -190,7 +191,7 @@ This creates values, but sectioned into own section tables if a section comment 
 | genAiOrchestrator.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
 | genAiOrchestrator.image.registry | string | `"docker.io"` | Docker image registry |
 | genAiOrchestrator.image.repository | string | `"tock/gen-ai-orchestrator-server"` | Docker image name |
-| genAiOrchestrator.image.tag | string | `"24.9.6"` | Docker image tag |
+| genAiOrchestrator.image.tag | string | `"25.3.4"` | Docker image tag |
 | genAiOrchestrator.nodeSelector | object | `{}` | node selector |
 | genAiOrchestrator.podSecurityContext.enabled | bool | `true` | Configure Pod Security Context |
 | genAiOrchestrator.podSecurityContext.fsGroup | int | `99` | fsGroup |
@@ -242,7 +243,7 @@ This creates values, but sectioned into own section tables if a section comment 
 | kotlinCompiler.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
 | kotlinCompiler.image.registry | string | `"docker.io"` | Docker image registry |
 | kotlinCompiler.image.repository | string | `"tock/kotlin_compiler"` | Docker image name |
-| kotlinCompiler.image.tag | string | `"24.9.6"` | Docker image tag |
+| kotlinCompiler.image.tag | string | `"25.3.4"` | Docker image tag |
 | kotlinCompiler.nodeSelector | object | `{}` | node selector |
 | kotlinCompiler.podSecurityContext.enabled | bool | `true` | Configure Pod Security Context |
 | kotlinCompiler.podSecurityContext.fsGroup | int | `99` | fsGroup |
@@ -285,7 +286,7 @@ This creates values, but sectioned into own section tables if a section comment 
 | nlpApi.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
 | nlpApi.image.registry | string | `"docker.io"` | Docker image registry |
 | nlpApi.image.repository | string | `"tock/nlp_api"` | Docker image name |
-| nlpApi.image.tag | string | `"24.9.6"` | Docker image tag |
+| nlpApi.image.tag | string | `"25.3.4"` | Docker image tag |
 | nlpApi.nodeSelector | object | `{}` | node selector |
 | nlpApi.podSecurityContext.enabled | bool | `true` | Configure Pod Security Context |
 | nlpApi.podSecurityContext.fsGroup | int | `99` | fsGroup |
@@ -307,6 +308,7 @@ This creates values, but sectioned into own section tables if a section comment 
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| adminWeb.containerSecurityContext.readOnlyRootFilesystem | bool | `true` |  |
 | adminWeb.environment.tock_database_mongodb_credentials_secret_name | string | `nil` | Environment variable settings for secrets (when used). The secret name storing database credentials (Only if credentials are not passed in the MongoBD connection string URI). |
 | adminWeb.environment.tock_gen_ai_secret_manager_provider | string | `nil` | Environment variable settings for secrets (when used).Allowed values : Env,AwsSecretsManager,GcpSecretManager. The provider of the secret manager used to store and retrieve the Gen AI Api Keys.The secret will be stored directly in the database in text format, so it can only be used for local development purposes, which is obviously not a sure thing. |
 | botApi.environment.tock_database_mongodb_credentials_secret_name | string | `nil` | Environment variable settings for secrets (when used). The secret name storing database credentials (Only if credentials are not passed in the MongoBD connection string URI). |

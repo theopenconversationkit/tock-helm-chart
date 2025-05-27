@@ -44,12 +44,18 @@ spec:
             timeoutSeconds: 5 # Defaults to 1
             periodSeconds: 20 # Defaults to 10
             failureThreshold: 3 # Defaults to 3
+          volumeMounts:
+              - mountPath: /tmp
+                name: tmp-volume 
           envFrom:
             - configMapRef:
                 name: '{{ .Release.Name }}-kotlin-compiler-cfg'
       {{- if .Values.kotlinCompiler.resources }}
           resources: {{- toYaml .Values.kotlinCompiler.resources | nindent 14 }}
-      {{- end }} 
+      {{- end }}
+      volumes:
+          - name: tmp-volume
+            emptyDir: {} 
     {{- with .Values.kotlinCompiler.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

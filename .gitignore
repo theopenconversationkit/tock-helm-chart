@@ -1,6 +1,6 @@
 charts/tock/README-Origin.md
 .DS_Store
-/tmp
+tmp/
 
 ### Helm ###
 # Chart dependencies
