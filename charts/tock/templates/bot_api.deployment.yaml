@@ -22,6 +22,9 @@ spec:
         app.kubernetes.io/component: bot-api
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/resource: deployment
+      annotations:
+      # restart the pod when the configmap changes
+      checksum/config: '{{ include (print .Template.BasePath "/bot_api.configmap.yaml") . | sha256sum }}'
     spec:
       {{- include "botApi.imagePullSecrets" . | nindent 6 }}
       {{- if .Values.botApi.podSecurityContext.enabled }}
@@ -68,6 +71,31 @@ spec:
       {{- if .Values.botApi.resources }}
           resources: {{- toYaml .Values.botApi.resources | nindent 12 }}
       {{- end }}
+      {{- if .Values.botApi.truststore.enabled }}
+        - name: truststore-generator
+          image: eclipse-temurin:17-jdk  # Image Java officielle pour keytool
+          {{- if .Values.global.initContainerImage.containerSecurityContext.enabled }}
+          securityContext: {{- omit .Values.global.initContainerImage.containerSecurityContext "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              keytool -importcert -noprompt \
+                -file /etc/ssl/certs/{{ .Values.botApi.truststore.certSecret }}.crt \
+                -alias corp-root \
+                -keystore /truststore/truststore.jks \
+                -storepass changeit;
+          volumeMounts:
+            - name: cert-volume
+              mountPath: /etc/ssl/certs/{{ .Values.botApi.truststore.certSecret }}.crt
+              subPath: {{ .Values.botApi.truststore.certSecret }}.crt
+              readOnly: true
+            - name: truststore-volume
+              mountPath: /truststore
+      {{- if .Values.botApi.resources }}
+          resources: {{- toYaml .Values.botApi.resources | nindent 12 }}
+      {{- end }}
+      {{- end }}
       containers:
         - name: bot-api
           image: {{ include "botApi.image" . }}
@@ -87,7 +115,11 @@ spec:
             failureThreshold: 3 # Defaults to 3
           volumeMounts:
               - mountPath: /tmp
-                name: tmp-volume 
+                name: tmp-volume
+          {{- if .Values.botApi.truststore.enabled }}
+              - mountPath: /truststore
+                name: truststore-volume
+          {{- end }}     
           envFrom:
             - configMapRef:
                 name: '{{ .Release.Name }}-bot-api-cfg'
@@ -97,6 +129,13 @@ spec:
       volumes:
         - name: tmp-volume
           emptyDir: {}
+       {{- if .Values.botApi.truststore.enabled }}
+        - name: cert-volume
+          secret:
+            secretName: {{ .Values.botApi.truststore.certSecret }}
+        - name: truststore-volume # To store temporary truststore genrated by init container
+          emptyDir: {}    
+       {{- end }}
     {{- with .Values.botApi.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

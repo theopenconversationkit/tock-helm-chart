@@ -2,7 +2,7 @@
 
 A helm chart for Tock. Tock is an open conversational AI platform. It's a complete solution to build conversational agents aka bots.Tock can integrate and experiment with both classic and Generative AI (LLM, RAG) models
 
-![Version: 0.5.2](https://img.shields.io/badge/Version-0.5.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 25.3.4](https://img.shields.io/badge/AppVersion-25.3.4-informational?style=flat-square)
+![Version: 0.5.3](https://img.shields.io/badge/Version-0.5.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 25.3.4](https://img.shields.io/badge/AppVersion-25.3.4-informational?style=flat-square)
 
 ## DLDR
 
@@ -10,7 +10,16 @@ To install the chart with the release name `my-release`:
 
 ```console
 $ helm registry login -u myuser registry.hub.docker.com
-$ helm install my-release  oci://registry.hub.docker.com/onelans/tock --version 0.5.2
+$ helm install my-release  oci://registry.hub.docker.com/onelans/tock --version 0.5.3
+```
+
+or
+
+```console
+helm repo add tock https://theopenconversationkit.github.io/tock-helm-chart/
+helm repo update
+helm search repo tock
+helm install tock tock/tock --version 0.5.3
 ```
 
 ## Introduction
@@ -117,6 +126,7 @@ This creates values, but sectioned into own section tables if a section comment 
 | botApi.service.port | int | `8080` | kubernetes service port |
 | botApi.service.type | string | `"ClusterIP"` | kubernetes service type |
 | botApi.tolerations | list | `[]` | tolerations |
+| botApi.truststore.enabled | bool | `false` | Enable truststore for entreprise certificates |
 
 ### buildWorker
 
@@ -312,6 +322,7 @@ This creates values, but sectioned into own section tables if a section comment 
 | adminWeb.environment.tock_database_mongodb_credentials_secret_name | string | `nil` | Environment variable settings for secrets (when used). The secret name storing database credentials (Only if credentials are not passed in the MongoBD connection string URI). |
 | adminWeb.environment.tock_gen_ai_secret_manager_provider | string | `nil` | Environment variable settings for secrets (when used).Allowed values : Env,AwsSecretsManager,GcpSecretManager. The provider of the secret manager used to store and retrieve the Gen AI Api Keys.The secret will be stored directly in the database in text format, so it can only be used for local development purposes, which is obviously not a sure thing. |
 | botApi.environment.tock_database_mongodb_credentials_secret_name | string | `nil` | Environment variable settings for secrets (when used). The secret name storing database credentials (Only if credentials are not passed in the MongoBD connection string URI). |
+| botApi.truststore.certConfigmap | string | `"corp-root-cert"` |  |
 | genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_host | string | `"opensearch-node1"` |  |
 | global.deployOpenSearch.useExisting | bool | `false` | If true use an existing OpenSearch cluster |
 | nlpApi.environment.tock_database_mongodb_credentials_secret_name | string | `nil` | Environment variable settings for secrets (when used). The secret name storing database credentials (Only if credentials are not passed in the MongoBD connection string URI). |
@@ -444,4 +455,25 @@ adminWeb:
 > The values file defines the use of the GCE ingress controller
 > You can get the external IP of the ingress controller with the following command
 > `kubectl get ingress mytock-admin-web  --output yaml`
+
+## Add entreprise certificates
+
+If you have to intégrate coded stories that require entreprise certificates, you can use the truststore feature.
+
+To enable it, set the following values in your `values.yaml` file:
+
+```yaml
+botApi:
+  truststore:
+    enabled: true
+    certSecret: "corp-root-cert"
+```
+This will enable the truststore and use the certificates from the specified Secret.
+You can create the Secret with the following command:
+
+```console
+kubectl create secret generic corp-root-cert --from-file=corp-root-ca.crt
+```
+
+This will create a Secret named `corp-root-cert` with the certificate file `corp-root-ca.crt`.
 

@@ -369,7 +369,16 @@ botApi:
     tock_gcp_project_id: null
   # -- should be > 1 in production
   # @section -- botApi
-  replicas: 1 
+  replicas: 1
+  truststore:
+    # -- Enable truststore for entreprise certificates
+    # @section -- botApi
+    enabled: false
+    # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert --from-file=corp-root-ca.crt``
+    # @section -- botApi
+    certSecret: "corp-root-cert"
+    # -- Truststore path
+    # @section -- botApi
   image:
     # -- Docker image registry
     # @section -- botApi
@@ -414,6 +423,7 @@ botApi:
     # -- sysctls
     # @section -- botApi
     sysctls: []
+
 
   service:
     # -- kubernetes service type
