@@ -6,3 +6,4 @@ tmp/
 # Chart dependencies
 **/charts/*.tgz
 packages/
+.vscode/settings.json

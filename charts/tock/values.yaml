@@ -38,6 +38,9 @@ global:
     # -- for an existing opensearch cluster
     # @section -- Global
     openSearchPwd : admin
+    # -- ingressClass
+    # @section -- Global
+    # ingressClassName: ""
   deployPgVector:
     # -- If true Deploy PgVector and Postgresql subchart
     # @section -- Global
@@ -245,7 +248,11 @@ adminWeb:
     # -- enable the ingress
     # @section -- adminWeb
     enabled: true
-    
+
+    # -- define ingressClassName
+    # @section -- adminWeb
+    # ingressClassName: ""
+
     # -- set to true for deployement on cluster version < 1.19 (apiVersion: networking.k8s.io/v1beta1 vs apiVersion: networking.k8s.io/v1)
     # @section -- adminWeb
     deprecated: false
@@ -437,6 +444,11 @@ botApi:
     # --  enable bot api the ingress
     # @section -- botApi
     enabled: true
+    
+    # -- define ingressClassName
+    # @section -- botApi
+    # ingressClassName: ""
+
     # -- set to true for deployement on cluster version < 1.19 (apiVersion: networking.k8s.io/v1beta1 vs apiVersion: networking.k8s.io/v1)
     # @section -- botApi
     deprecated: false  # set to true for deployement on cluster version < 1.19 (apiVersion: networking.k8s.io/v1beta1 vs apiVersion: networking.k8s.io/v1)

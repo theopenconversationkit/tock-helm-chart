@@ -17,6 +17,9 @@ metadata:
 {{ toYaml . | indent 4 }}
 {{- end }}
 spec:
+{{- with (.Values.botApi.ingress.ingressClassName | default .Values.global.ingressClassName) }}
+  ingressClassName: {{ . }}
+{{- end }}
 {{- with .Values.botApi.ingress.tls }}
   tls:
 {{ toYaml . | indent 4 }}
