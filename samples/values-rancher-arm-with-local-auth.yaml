@@ -7,6 +7,7 @@ global:
 botApi:
   ingress:
     enabled: true
+    ingressClassName: traefik
 
 adminWeb:
   ingress:

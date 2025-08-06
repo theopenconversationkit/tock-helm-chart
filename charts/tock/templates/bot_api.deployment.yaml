@@ -24,7 +24,7 @@ spec:
         app.kubernetes.io/resource: deployment
       annotations:
       # restart the pod when the configmap changes
-      checksum/config: '{{ include (print .Template.BasePath "/bot_api.configmap.yaml") . | sha256sum }}'
+        checksum/config: '{{ include (print .Template.BasePath "/bot_api.configmap.yaml") . | sha256sum }}'
     spec:
       {{- include "botApi.imagePullSecrets" . | nindent 6 }}
       {{- if .Values.botApi.podSecurityContext.enabled }}

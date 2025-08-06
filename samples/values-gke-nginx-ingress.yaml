@@ -6,6 +6,7 @@ global:
 botApi:
   ingress:
     enabled: true
+    ingressClassName: nginx
     annotations:
       kubernetes.io/ingress.class: "nginx"
       nginx.ingress.kubernetes.io/ssl-redirect: "false"
@@ -15,6 +16,7 @@ botApi:
 adminWeb:
   ingress:
     enabled: true
+    ingressClassName: nginx
     annotations:
       kubernetes.io/ingress.class: "nginx"
       nginx.ingress.kubernetes.io/ssl-redirect: "false"
