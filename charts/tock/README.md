@@ -265,7 +265,7 @@ This creates values, but sectioned into own section tables if a section comment 
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| mongodb | object | `{"arbiter":{"enabled":false},"architecture":"replicaset","auth":{"enabled":false},"extraFlags":["--bind_ip_all"],"persistence":{"enabled":true,"size":"1Gi"},"replicaCount":3,"replicaSetConfigurationSettings":{"enabled":true},"replicaSetName":"tock"}` | MongoDB settings. See Bitnami MongoDB chart for more details |
+| mongodb | object | `{"arbiter":{"enabled":false},"architecture":"replicaset","auth":{"enabled":false},"extraFlags":["--bind_ip_all"],"image":{"repository":"bitnamilegacy/mongodb"},"persistence":{"enabled":true,"size":"1Gi"},"replicaCount":3,"replicaSetConfigurationSettings":{"enabled":true},"replicaSetName":"tock"}` | MongoDB settings. See Bitnami MongoDB chart for more details |
 | mongodb.arbiter.enabled | bool | `false` | Enable MongoDB arbiter |
 | mongodb.architecture | string | `"replicaset"` | MongoDB architecture |
 | mongodb.auth.enabled | bool | `false` | Enable MongoDB authentication |
@@ -328,6 +328,11 @@ This creates values, but sectioned into own section tables if a section comment 
 | nlpApi.environment.tock_database_mongodb_credentials_secret_name | string | `nil` | Environment variable settings for secrets (when used). The secret name storing database credentials (Only if credentials are not passed in the MongoBD connection string URI). |
 | opensearch.extraEnvs[0].name | string | `"OPENSEARCH_INITIAL_ADMIN_PASSWORD"` |  |
 | opensearch.extraEnvs[0].value | string | `"DoThisOne12+"` |  |
+| postgresql.architecture | string | `"standalone"` |  |
+| postgresql.auth.database | string | `"postgres"` |  |
+| postgresql.auth.postgresPassword | string | `"secretpassword"` |  |
+| postgresql.image.repository | string | `"onelans/pgvector"` |  |
+| postgresql.image.tag | string | `"pg16"` |  |
 
 ## Authentification configurations
 

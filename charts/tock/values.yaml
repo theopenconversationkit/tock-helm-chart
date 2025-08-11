@@ -999,6 +999,10 @@ mongodb:
     # @section -- mongodb
     size: 1Gi
 #    storageClass: local-path
+    # -- Use Legacy repository for Bitnami image. See https://github.com/bitnami/containers/issues/83267
+    # @section -- mongodb
+  image:
+     repository: bitnamilegacy/mongodb
 #  image:
 #    repository: bitnami/mongodb
 #    tag: 6.0.4-debian-11-r10
@@ -1037,3 +1041,16 @@ opensearch:
   extraEnvs:
     - name: OPENSEARCH_INITIAL_ADMIN_PASSWORD
       value: "DoThisOne12+"
+
+
+# ==============================================
+# PostgreSQL Settings
+# ==============================================
+postgresql:
+  architecture: standalone
+  auth:
+    postgresPassword: secretpassword
+    database: postgres
+  image:
+    repository: onelans/pgvector
+    tag: pg16
