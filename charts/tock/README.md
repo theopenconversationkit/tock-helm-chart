@@ -48,16 +48,19 @@ This creates values, but sectioned into own section tables if a section comment 
 | adminWeb.affinity | object | `{}` | affinity |
 | adminWeb.authConfigfMap | string | `""` | Authentification configurations, set confimap name. cf README to have a sample. |
 | adminWeb.containerSecurityContext.enabled | bool | `true` | Configure containers' Security Context ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod |
+| adminWeb.containerSecurityContext.readOnlyRootFilesystem | bool | `true` | Set container's Security Context readOnlyRootFilesystem |
 | adminWeb.containerSecurityContext.runAsGroup | int | `99` | Run as group id |
 | adminWeb.containerSecurityContext.runAsNonRoot | bool | `true` | Run as non root |
 | adminWeb.containerSecurityContext.runAsUser | int | `99` | Run as user id |
 | adminWeb.environment.botadminverticle_base_href | string | `""` | Have to be set if tock studio is deployed as subdomain https://sssss/tockstudio |
 | adminWeb.environment.botadminverticle_body_limit | string | `"-1"` | botadminverticle_body_limit |
+| adminWeb.environment.tock_database_mongodb_credentials_secret_name | string | `nil` | Environment variable settings for secrets (when used). The secret name storing database credentials (Only if credentials are not passed in the MongoBD connection string URI). |
 | adminWeb.environment.tock_database_mongodb_secret_manager_provider | string | `nil` | Environment variable settings for secrets (when used). Allowed values Env,AwsSecretsManager,GcpSecretManager. The provider of the secret manager used to retrieve credentials for database access (mongodb). |
 | adminWeb.environment.tock_default_log_level | string | `"info"` | log level |
 | adminWeb.environment.tock_env | string | `"false"` | tock_env |
 | adminWeb.environment.tock_gcp_project_id | string | `nil` | Environment variable settings for secrets (when used). The GCP project ID used to retrieve credentials for GCP Secret Manager. |
 | adminWeb.environment.tock_gcp_region | string | `nil` | Environment variable settings for secrets (when used).The GCP project Region where secrets are stored. |
+| adminWeb.environment.tock_gen_ai_secret_manager_provider | string | `nil` | Environment variable settings for secrets (when used).Allowed values : Env,AwsSecretsManager,GcpSecretManager. The provider of the secret manager used to store and retrieve the Gen AI Api Keys.The secret will be stored directly in the database in text format, so it can only be used for local development purposes, which is obviously not a sure thing. |
 | adminWeb.environment.tock_gen_ai_secret_prefix | string | `"LOCAL/TOCK"` | Environment variable settings for secrets (when used).The prefix to use to store the Gen AI Api Keys in the database.Allowed values PROD,DEV,LOCAL,FEAT-. The prefix is used to identify the environment in which the keys are stored. |
 | adminWeb.environment.tock_https_env | string | `"prod"` | Environment |
 | adminWeb.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
@@ -223,6 +226,7 @@ This creates values, but sectioned into own section tables if a section comment 
 | global.deployOpenSearch.openSearchPort | string | `"9200"` | for an existing opensearch cluster |
 | global.deployOpenSearch.openSearchPwd | string | `"admin"` | for an existing opensearch cluster |
 | global.deployOpenSearch.openSearchUser | string | `"admin"` | for an existing opensearch cluster |
+| global.deployOpenSearch.useExisting | bool | `false` | If true use an existing OpenSearch cluster |
 | global.deployPgVector.enabled | bool | `false` | If true Deploy PgVector and Postgresql subchart |
 | global.deployPgVector.pgVectorHost | string | `"pgvector-node1"` | for an existing pgVector cluster |
 | global.deployPgVector.pgVectorPort | string | `"5432"` | for an existing pgVector cluster |
@@ -286,6 +290,7 @@ This creates values, but sectioned into own section tables if a section comment 
 | nlpApi.containerSecurityContext.runAsGroup | int | `99` | Run as Group id |
 | nlpApi.containerSecurityContext.runAsNonRoot | bool | `true` | Run as non root |
 | nlpApi.containerSecurityContext.runAsUser | int | `99` | Run as user id |
+| nlpApi.environment.tock_database_mongodb_credentials_secret_name | string | `nil` | Environment variable settings for secrets (when used). The secret name storing database credentials (Only if credentials are not passed in the MongoBD connection string URI). |
 | nlpApi.environment.tock_database_mongodb_secret_manager_provider | string | `nil` | Environment variable settings for secrets (when used). Allowed values Env,AwsSecretsManager,GcpSecretManager. The provider of the secret manager used to retrieve credentials for database access (mongodb). |
 | nlpApi.environment.tock_default_log_level | string | `"info"` | tock environment (prod, dev, integ) |
 | nlpApi.environment.tock_env | string | `"prod"` | tock environment (prod, dev, integ) |
@@ -318,14 +323,9 @@ This creates values, but sectioned into own section tables if a section comment 
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| adminWeb.containerSecurityContext.readOnlyRootFilesystem | bool | `true` |  |
-| adminWeb.environment.tock_database_mongodb_credentials_secret_name | string | `nil` | Environment variable settings for secrets (when used). The secret name storing database credentials (Only if credentials are not passed in the MongoBD connection string URI). |
-| adminWeb.environment.tock_gen_ai_secret_manager_provider | string | `nil` | Environment variable settings for secrets (when used).Allowed values : Env,AwsSecretsManager,GcpSecretManager. The provider of the secret manager used to store and retrieve the Gen AI Api Keys.The secret will be stored directly in the database in text format, so it can only be used for local development purposes, which is obviously not a sure thing. |
 | botApi.environment.tock_database_mongodb_credentials_secret_name | string | `nil` | Environment variable settings for secrets (when used). The secret name storing database credentials (Only if credentials are not passed in the MongoBD connection string URI). |
 | botApi.truststore.certSecret | string | `"corp-root-cert"` |  |
 | genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_host | string | `"opensearch-node1"` |  |
-| global.deployOpenSearch.useExisting | bool | `false` | If true use an existing OpenSearch cluster |
-| nlpApi.environment.tock_database_mongodb_credentials_secret_name | string | `nil` | Environment variable settings for secrets (when used). The secret name storing database credentials (Only if credentials are not passed in the MongoBD connection string URI). |
 | opensearch.extraEnvs[0].name | string | `"OPENSEARCH_INITIAL_ADMIN_PASSWORD"` |  |
 | opensearch.extraEnvs[0].value | string | `"DoThisOne12+"` |  |
 | postgresql.architecture | string | `"standalone"` |  |

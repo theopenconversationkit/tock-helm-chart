@@ -22,6 +22,7 @@ global:
     # @section -- Global
     enabled: false
     # -- If true use an existing OpenSearch cluster
+    # @section -- Global
     useExisting: false
     # -- If true Deploy OpenSearch Dashboard as subchart
     # @section -- Global
@@ -134,8 +135,8 @@ adminWeb:
     # -- Environment variable settings for secrets (when used). Allowed values Env,AwsSecretsManager,GcpSecretManager. The provider of the secret manager used to retrieve credentials for database access (mongodb).
     # @section -- adminWeb
     tock_database_mongodb_secret_manager_provider: null
-    # @section -- adminWeb
     # -- Environment variable settings for secrets (when used). The secret name storing database credentials (Only if credentials are not passed in the MongoBD connection string URI).
+    # @section -- adminWeb
     tock_database_mongodb_credentials_secret_name: null
     # -- Environment variable settings for secrets (when used). The GCP project ID used to retrieve credentials for GCP Secret Manager.
     # @section -- adminWeb
@@ -144,6 +145,7 @@ adminWeb:
     # @section -- adminWeb
     tock_gcp_region: null
     # -- Environment variable settings for secrets (when used).Allowed values : Env,AwsSecretsManager,GcpSecretManager. The provider of the secret manager used to store and retrieve the Gen AI Api Keys.The secret will be stored directly in the database in text format, so it can only be used for local development purposes, which is obviously not a sure thing.
+    # @section -- adminWeb
     tock_gen_ai_secret_manager_provider: null
     # -- Environment variable settings for secrets (when used).The prefix to use to store the Gen AI Api Keys in the database.Allowed values PROD,DEV,LOCAL,FEAT-. The prefix is used to identify the environment in which the keys are stored.
     # @section -- adminWeb
@@ -221,7 +223,7 @@ adminWeb:
       # -- Run as group id
       # @section -- adminWeb
       runAsGroup: 99
-      # Set container's Security Context readOnlyRootFilesystem
+      # -- Set container's Security Context readOnlyRootFilesystem
       # @section -- adminWeb
       readOnlyRootFilesystem: true
 
@@ -384,8 +386,6 @@ botApi:
     # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert --from-file=corp-root-ca.crt``
     # @section -- botApi
     certSecret: "corp-root-cert"
-    # -- Truststore path
-    # @section -- botApi
   image:
     # -- Docker image registry
     # @section -- botApi
@@ -757,10 +757,10 @@ nlpApi:
     # -- Environment variable settings for secrets (when used). Allowed values Env,AwsSecretsManager,GcpSecretManager. The provider of the secret manager used to retrieve credentials for database access (mongodb).
     # @section -- nlpApi
     tock_database_mongodb_secret_manager_provider: null
-    # @section -- nlpApi
     # -- Environment variable settings for secrets (when used). The secret name storing database credentials (Only if credentials are not passed in the MongoBD connection string URI).
+    # @section -- nlpApi
     tock_database_mongodb_credentials_secret_name: null
-  # followin element are computed by the chart if not set  
+  # following element are computed by the chart if not set
   # nlp_duckling_url: http://duckling:8080
 
   # -- should be > 1 in production
@@ -856,6 +856,7 @@ genAiOrchestrator:
     # @section -- genAiOrchestrator
     tock_gen_ai_orchestrator_vector_store_provider: OpenSearch
 
+    # @section -- genAiOrchestrator
     # @section -- genAiOrchestrator
     tock_gen_ai_orchestrator_vector_store_host: opensearch-node1
     # -- Vector Store port
