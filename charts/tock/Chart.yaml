@@ -13,9 +13,19 @@ sources:
 maintainers:
   - name: stephanacquatella
 
+annotations:
+  artifacthub.io/category: ai-machine-learning
+  artifacthub.io/license: Apache-2.0
+  artifacthub.io/links: |
+    - name: Theopenconversationkit Home
+      url: https://doc.tock.ai/
+    - name: Github
+      url: https://github.com/theopenconversationkit/tock
+    - name: Documentation
+      url: https://doc.tock.ai/tock/master/
+
 dependencies:
 - name: mongodb
-  #version: 13.6.8
   version: 14.8.3
   repository : https://charts.bitnami.com/bitnami
   condition: global.deployMongoDb.enabled
