@@ -199,7 +199,7 @@ adminWeb:
     repository: tock/bot_admin 
     # -- Docker image tag
     # @section -- adminWeb
-    tag: 25.3.9
+    tag: 25.3.10
     # -- Optionally specify an array of imagePullSecrets.
     # Secrets must be manually created in the namespace.
     # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -395,7 +395,7 @@ botApi:
     repository: tock/bot_api # docker image name
     # -- Docker image tag
     # @section -- botApi
-    tag: 25.3.9
+    tag: 25.3.10
     # -- Optionally specify an array of imagePullSecrets.
     # Secrets must be manually created in the namespace.
     # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -514,7 +514,7 @@ buildWorker:
     repository: tock/build_worker
     # -- Docker image tag
     # @section -- buildWorker
-    tag: 25.3.9
+    tag: 25.3.10
     # -- Optionally specify an array of imagePullSecrets.
     # Secrets must be manually created in the namespace.
     # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -594,7 +594,7 @@ duckling:
     repository: tock/duckling
     # -- Docker image tag
     # @section -- Duckling
-    tag: 25.3.9
+    tag: 25.3.10
     # -- Optionally specify an array of imagePullSecrets.
     # Secrets must be manually created in the namespace.
     # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -674,7 +674,7 @@ kotlinCompiler:
     repository: tock/kotlin_compiler
     # -- Docker image tag
     # @section -- KotlinCompiler
-    tag: 25.3.9
+    tag: 25.3.10
     # -- Optionally specify an array of imagePullSecrets.
     # Secrets must be manually created in the namespace.
     # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -775,7 +775,7 @@ nlpApi:
     repository: tock/nlp_api
     # -- Docker image tag
     # @section -- nlpApi
-    tag: 25.3.9
+    tag: 25.3.10
     # -- Optionally specify an array of imagePullSecrets.
     # Secrets must be manually created in the namespace.
     # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -902,7 +902,7 @@ genAiOrchestrator:
     repository: tock/gen-ai-orchestrator-server
     # -- Docker image tag
     # @section -- genAiOrchestrator
-    tag: 25.3.9
+    tag: 25.3.10
     # -- Optionally specify an array of imagePullSecrets.
     # Secrets must be manually created in the namespace.
     # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
