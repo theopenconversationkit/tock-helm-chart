@@ -354,6 +354,14 @@ Return the proper genAiOrchestrator image name
 
 
 {{/*
+Return the proper genAiOrchestrator tiktokencache image name
+*/}}
+{{- define "genAiOrchestrator.langchain.tiktokencache.image" -}}
+{{- include "common.images.image" (dict "imageRoot" .Values.genAiOrchestrator.langchain.tiktokencache "global" .Values.global) -}}
+{{- end -}}
+
+
+{{/*
 Return the proper busybox image name for init containers
 */}}
 {{- define "initContainer.image" -}}
@@ -407,4 +415,11 @@ Return the proper genAiOrchestrator Docker Image Registry Secret Names
 */}}
 {{- define "genAiOrchestrator.imagePullSecrets" -}}
 {{- include "common.images.pullSecrets" (dict "images" (list .Values.genAiOrchestrator.image) "global" .Values.global) -}}
+{{- end -}}
+
+{{/*
+Return the proper genAiOrchestrator tiktokencache Docker Image Registry Secret Names
+*/}}
+{{- define "genAiOrchestrator.langchain.tiktokencache.imagePullSecrets" -}}
+{{- include "common.images.pullSecrets" (dict "images" (list .Values.genAiOrchestrator.langchain.tiktokencache) "global" .Values.global) -}}
 {{- end -}}

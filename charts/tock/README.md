@@ -2,7 +2,7 @@
 
 A helm chart for Tock. Tock is an open conversational AI platform. It's a complete solution to build conversational agents aka bots.Tock can integrate and experiment with both classic and Generative AI (LLM, RAG) models
 
-![Version: 0.5.4](https://img.shields.io/badge/Version-0.5.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 25.3.10](https://img.shields.io/badge/AppVersion-25.3.10-informational?style=flat-square)
+![Version: 0.5.5](https://img.shields.io/badge/Version-0.5.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 25.3.10](https://img.shields.io/badge/AppVersion-25.3.10-informational?style=flat-square)
 
 ## DLDR
 
@@ -10,7 +10,7 @@ To install the chart with the release name `my-release`:
 
 ```console
 $ helm registry login -u myuser registry.hub.docker.com
-$ helm install my-release  oci://registry.hub.docker.com/onelans/tock --version 0.5.4
+$ helm install my-release  oci://registry.hub.docker.com/onelans/tock --version 0.5.5
 ```
 
 or
@@ -19,7 +19,7 @@ or
 helm repo add tock https://theopenconversationkit.github.io/tock-helm-chart/
 helm repo update
 helm search repo tock
-helm install tock tock/tock --version 0.5.4
+helm install tock tock/tock --version 0.5.5
 ```
 
 ## Introduction
@@ -205,6 +205,10 @@ This creates values, but sectioned into own section tables if a section comment 
 | genAiOrchestrator.image.registry | string | `"docker.io"` | Docker image registry |
 | genAiOrchestrator.image.repository | string | `"tock/gen-ai-orchestrator-server"` | Docker image name |
 | genAiOrchestrator.image.tag | string | `"25.3.10"` | Docker image tag |
+| genAiOrchestrator.langchain.tiktokencache.enabled | bool | `false` | Tiktoken cache image for Langchain. On omprem plateform tiktoken data's can't be automatically load by langchain. You can provide it as a an init container . Data will be copied from the init container to an emptyDir volume. |
+| genAiOrchestrator.langchain.tiktokencache.registry | string | `"your-data-container-registry"` | Your data image  docker image registry |
+| genAiOrchestrator.langchain.tiktokencache.repository | string | `"tiktoken-data"` | Your data image docker image name |
+| genAiOrchestrator.langchain.tiktokencache.tag | string | `"latest"` | Your data image  docker image tag |
 | genAiOrchestrator.nodeSelector | object | `{}` | node selector |
 | genAiOrchestrator.podSecurityContext.enabled | bool | `true` | Configure Pod Security Context |
 | genAiOrchestrator.podSecurityContext.fsGroup | int | `99` | fsGroup |
@@ -326,6 +330,7 @@ This creates values, but sectioned into own section tables if a section comment 
 | botApi.environment.tock_database_mongodb_credentials_secret_name | string | `nil` | Environment variable settings for secrets (when used). The secret name storing database credentials (Only if credentials are not passed in the MongoBD connection string URI). |
 | botApi.truststore.certSecret | string | `"corp-root-cert"` |  |
 | genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_host | string | `"opensearch-node1"` |  |
+| genAiOrchestrator.langchain.tiktokencache.pullSecrets | list | `[]` |  |
 | opensearch.extraEnvs[0].name | string | `"OPENSEARCH_INITIAL_ADMIN_PASSWORD"` |  |
 | opensearch.extraEnvs[0].value | string | `"DoThisOne12+"` |  |
 | postgresql.architecture | string | `"standalone"` |  |
