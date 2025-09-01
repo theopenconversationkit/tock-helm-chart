@@ -22,6 +22,9 @@ spec:
         app.kubernetes.io/component: admin-web
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/resource: deployment
+      annotations:
+      # restart the pod when the configmap changes
+        checksum/config: '{{ include (print .Template.BasePath "/admin_web.configmap.yaml") . | sha256sum }}'
     spec:
       {{- include "adminWeb.imagePullSecrets" . | nindent 6 }}
       {{- if .Values.adminWeb.podSecurityContext.enabled }}

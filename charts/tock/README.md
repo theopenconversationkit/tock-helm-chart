@@ -2,7 +2,7 @@
 
 A helm chart for Tock. Tock is an open conversational AI platform. It's a complete solution to build conversational agents aka bots.Tock can integrate and experiment with both classic and Generative AI (LLM, RAG) models
 
-![Version: 0.5.2](https://img.shields.io/badge/Version-0.5.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 25.3.4](https://img.shields.io/badge/AppVersion-25.3.4-informational?style=flat-square)
+![Version: 0.5.4](https://img.shields.io/badge/Version-0.5.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 25.3.10](https://img.shields.io/badge/AppVersion-25.3.10-informational?style=flat-square)
 
 ## DLDR
 
@@ -10,7 +10,16 @@ To install the chart with the release name `my-release`:
 
 ```console
 $ helm registry login -u myuser registry.hub.docker.com
-$ helm install my-release  oci://registry.hub.docker.com/onelans/tock --version 0.5.2
+$ helm install my-release  oci://registry.hub.docker.com/onelans/tock --version 0.5.4
+```
+
+or
+
+```console
+helm repo add tock https://theopenconversationkit.github.io/tock-helm-chart/
+helm repo update
+helm search repo tock
+helm install tock tock/tock --version 0.5.4
 ```
 
 ## Introduction
@@ -39,22 +48,25 @@ This creates values, but sectioned into own section tables if a section comment 
 | adminWeb.affinity | object | `{}` | affinity |
 | adminWeb.authConfigfMap | string | `""` | Authentification configurations, set confimap name. cf README to have a sample. |
 | adminWeb.containerSecurityContext.enabled | bool | `true` | Configure containers' Security Context ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod |
+| adminWeb.containerSecurityContext.readOnlyRootFilesystem | bool | `true` | Set container's Security Context readOnlyRootFilesystem |
 | adminWeb.containerSecurityContext.runAsGroup | int | `99` | Run as group id |
 | adminWeb.containerSecurityContext.runAsNonRoot | bool | `true` | Run as non root |
 | adminWeb.containerSecurityContext.runAsUser | int | `99` | Run as user id |
 | adminWeb.environment.botadminverticle_base_href | string | `""` | Have to be set if tock studio is deployed as subdomain https://sssss/tockstudio |
 | adminWeb.environment.botadminverticle_body_limit | string | `"-1"` | botadminverticle_body_limit |
+| adminWeb.environment.tock_database_mongodb_credentials_secret_name | string | `nil` | Environment variable settings for secrets (when used). The secret name storing database credentials (Only if credentials are not passed in the MongoBD connection string URI). |
 | adminWeb.environment.tock_database_mongodb_secret_manager_provider | string | `nil` | Environment variable settings for secrets (when used). Allowed values Env,AwsSecretsManager,GcpSecretManager. The provider of the secret manager used to retrieve credentials for database access (mongodb). |
 | adminWeb.environment.tock_default_log_level | string | `"info"` | log level |
 | adminWeb.environment.tock_env | string | `"false"` | tock_env |
 | adminWeb.environment.tock_gcp_project_id | string | `nil` | Environment variable settings for secrets (when used). The GCP project ID used to retrieve credentials for GCP Secret Manager. |
 | adminWeb.environment.tock_gcp_region | string | `nil` | Environment variable settings for secrets (when used).The GCP project Region where secrets are stored. |
+| adminWeb.environment.tock_gen_ai_secret_manager_provider | string | `nil` | Environment variable settings for secrets (when used).Allowed values : Env,AwsSecretsManager,GcpSecretManager. The provider of the secret manager used to store and retrieve the Gen AI Api Keys.The secret will be stored directly in the database in text format, so it can only be used for local development purposes, which is obviously not a sure thing. |
 | adminWeb.environment.tock_gen_ai_secret_prefix | string | `"LOCAL/TOCK"` | Environment variable settings for secrets (when used).The prefix to use to store the Gen AI Api Keys in the database.Allowed values PROD,DEV,LOCAL,FEAT-. The prefix is used to identify the environment in which the keys are stored. |
 | adminWeb.environment.tock_https_env | string | `"prod"` | Environment |
 | adminWeb.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
 | adminWeb.image.registry | string | `"docker.io"` | Docker image registry |
 | adminWeb.image.repository | string | `"tock/bot_admin"` | Docker docker image name |
-| adminWeb.image.tag | string | `"25.3.4"` | Docker image tag |
+| adminWeb.image.tag | string | `"25.3.10"` | Docker image tag |
 | adminWeb.ingress.annotations | object | `{}` | ingress annotations annotations:  kubernetes.io/ingress.class: traefik  kubernetes.io/ingress.class: nginx  kubernetes.io/tls-acme: "true" |
 | adminWeb.ingress.deprecated | bool | `false` | set to true for deployement on cluster version < 1.19 (apiVersion: networking.k8s.io/v1beta1 vs apiVersion: networking.k8s.io/v1) |
 | adminWeb.ingress.enabled | bool | `true` | enable the ingress |
@@ -102,7 +114,7 @@ This creates values, but sectioned into own section tables if a section comment 
 | botApi.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
 | botApi.image.registry | string | `"docker.io"` | Docker image registry |
 | botApi.image.repository | string | `"tock/bot_api"` | Docker image name |
-| botApi.image.tag | string | `"25.3.4"` | Docker image tag |
+| botApi.image.tag | string | `"25.3.10"` | Docker image tag |
 | botApi.ingress.annotations | object | `{}` | annotations: kubernetes.io/ingress.class: traefik kubernetes.io/ingress.class: nginx kubernetes.io/tls-acme: "true" |
 | botApi.ingress.deprecated | bool | `false` | set to true for deployement on cluster version < 1.19 (apiVersion: networking.k8s.io/v1beta1 vs apiVersion: networking.k8s.io/v1) |
 | botApi.ingress.enabled | bool | `true` | enable bot api the ingress |
@@ -117,6 +129,7 @@ This creates values, but sectioned into own section tables if a section comment 
 | botApi.service.port | int | `8080` | kubernetes service port |
 | botApi.service.type | string | `"ClusterIP"` | kubernetes service type |
 | botApi.tolerations | list | `[]` | tolerations |
+| botApi.truststore.enabled | bool | `false` | Enable truststore for entreprise certificates |
 
 ### buildWorker
 
@@ -133,7 +146,7 @@ This creates values, but sectioned into own section tables if a section comment 
 | buildWorker.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
 | buildWorker.image.registry | string | `"docker.io"` | Docker image registry |
 | buildWorker.image.repository | string | `"tock/build_worker"` | Docker image name |
-| buildWorker.image.tag | string | `"25.3.4"` | Docker image tag |
+| buildWorker.image.tag | string | `"25.3.10"` | Docker image tag |
 | buildWorker.nodeSelector | object | `{}` | node selector |
 | buildWorker.podSecurityContext.enabled | bool | `true` | Configure Pod Security Context |
 | buildWorker.podSecurityContext.fsGroup | int | `99` | fsGroup |
@@ -155,7 +168,7 @@ This creates values, but sectioned into own section tables if a section comment 
 | duckling.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
 | duckling.image.registry | string | `"docker.io"` | Docker image registry |
 | duckling.image.repository | string | `"tock/duckling"` | Docker image name |
-| duckling.image.tag | string | `"25.3.4"` | Docker image tag |
+| duckling.image.tag | string | `"25.3.10"` | Docker image tag |
 | duckling.nodeSelector | object | `{}` | node selector |
 | duckling.podSecurityContext.enabled | bool | `true` | Configure Pod Security Context |
 | duckling.podSecurityContext.fsGroup | int | `99` | fsGroup |
@@ -191,7 +204,7 @@ This creates values, but sectioned into own section tables if a section comment 
 | genAiOrchestrator.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
 | genAiOrchestrator.image.registry | string | `"docker.io"` | Docker image registry |
 | genAiOrchestrator.image.repository | string | `"tock/gen-ai-orchestrator-server"` | Docker image name |
-| genAiOrchestrator.image.tag | string | `"25.3.4"` | Docker image tag |
+| genAiOrchestrator.image.tag | string | `"25.3.10"` | Docker image tag |
 | genAiOrchestrator.nodeSelector | object | `{}` | node selector |
 | genAiOrchestrator.podSecurityContext.enabled | bool | `true` | Configure Pod Security Context |
 | genAiOrchestrator.podSecurityContext.fsGroup | int | `99` | fsGroup |
@@ -213,6 +226,7 @@ This creates values, but sectioned into own section tables if a section comment 
 | global.deployOpenSearch.openSearchPort | string | `"9200"` | for an existing opensearch cluster |
 | global.deployOpenSearch.openSearchPwd | string | `"admin"` | for an existing opensearch cluster |
 | global.deployOpenSearch.openSearchUser | string | `"admin"` | for an existing opensearch cluster |
+| global.deployOpenSearch.useExisting | bool | `false` | If true use an existing OpenSearch cluster |
 | global.deployPgVector.enabled | bool | `false` | If true Deploy PgVector and Postgresql subchart |
 | global.deployPgVector.pgVectorHost | string | `"pgvector-node1"` | for an existing pgVector cluster |
 | global.deployPgVector.pgVectorPort | string | `"5432"` | for an existing pgVector cluster |
@@ -243,7 +257,7 @@ This creates values, but sectioned into own section tables if a section comment 
 | kotlinCompiler.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
 | kotlinCompiler.image.registry | string | `"docker.io"` | Docker image registry |
 | kotlinCompiler.image.repository | string | `"tock/kotlin_compiler"` | Docker image name |
-| kotlinCompiler.image.tag | string | `"25.3.4"` | Docker image tag |
+| kotlinCompiler.image.tag | string | `"25.3.10"` | Docker image tag |
 | kotlinCompiler.nodeSelector | object | `{}` | node selector |
 | kotlinCompiler.podSecurityContext.enabled | bool | `true` | Configure Pod Security Context |
 | kotlinCompiler.podSecurityContext.fsGroup | int | `99` | fsGroup |
@@ -255,7 +269,7 @@ This creates values, but sectioned into own section tables if a section comment 
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| mongodb | object | `{"arbiter":{"enabled":false},"architecture":"replicaset","auth":{"enabled":false},"extraFlags":["--bind_ip_all"],"persistence":{"enabled":true,"size":"1Gi"},"replicaCount":3,"replicaSetConfigurationSettings":{"enabled":true},"replicaSetName":"tock"}` | MongoDB settings. See Bitnami MongoDB chart for more details |
+| mongodb | object | `{"arbiter":{"enabled":false},"architecture":"replicaset","auth":{"enabled":false},"extraFlags":["--bind_ip_all"],"image":{"repository":"bitnamilegacy/mongodb"},"persistence":{"enabled":true,"size":"1Gi"},"replicaCount":3,"replicaSetConfigurationSettings":{"enabled":true},"replicaSetName":"tock"}` | MongoDB settings. See Bitnami MongoDB chart for more details |
 | mongodb.arbiter.enabled | bool | `false` | Enable MongoDB arbiter |
 | mongodb.architecture | string | `"replicaset"` | MongoDB architecture |
 | mongodb.auth.enabled | bool | `false` | Enable MongoDB authentication |
@@ -276,6 +290,7 @@ This creates values, but sectioned into own section tables if a section comment 
 | nlpApi.containerSecurityContext.runAsGroup | int | `99` | Run as Group id |
 | nlpApi.containerSecurityContext.runAsNonRoot | bool | `true` | Run as non root |
 | nlpApi.containerSecurityContext.runAsUser | int | `99` | Run as user id |
+| nlpApi.environment.tock_database_mongodb_credentials_secret_name | string | `nil` | Environment variable settings for secrets (when used). The secret name storing database credentials (Only if credentials are not passed in the MongoBD connection string URI). |
 | nlpApi.environment.tock_database_mongodb_secret_manager_provider | string | `nil` | Environment variable settings for secrets (when used). Allowed values Env,AwsSecretsManager,GcpSecretManager. The provider of the secret manager used to retrieve credentials for database access (mongodb). |
 | nlpApi.environment.tock_default_log_level | string | `"info"` | tock environment (prod, dev, integ) |
 | nlpApi.environment.tock_env | string | `"prod"` | tock environment (prod, dev, integ) |
@@ -286,7 +301,7 @@ This creates values, but sectioned into own section tables if a section comment 
 | nlpApi.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
 | nlpApi.image.registry | string | `"docker.io"` | Docker image registry |
 | nlpApi.image.repository | string | `"tock/nlp_api"` | Docker image name |
-| nlpApi.image.tag | string | `"25.3.4"` | Docker image tag |
+| nlpApi.image.tag | string | `"25.3.10"` | Docker image tag |
 | nlpApi.nodeSelector | object | `{}` | node selector |
 | nlpApi.podSecurityContext.enabled | bool | `true` | Configure Pod Security Context |
 | nlpApi.podSecurityContext.fsGroup | int | `99` | fsGroup |
@@ -308,15 +323,16 @@ This creates values, but sectioned into own section tables if a section comment 
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| adminWeb.containerSecurityContext.readOnlyRootFilesystem | bool | `true` |  |
-| adminWeb.environment.tock_database_mongodb_credentials_secret_name | string | `nil` | Environment variable settings for secrets (when used). The secret name storing database credentials (Only if credentials are not passed in the MongoBD connection string URI). |
-| adminWeb.environment.tock_gen_ai_secret_manager_provider | string | `nil` | Environment variable settings for secrets (when used).Allowed values : Env,AwsSecretsManager,GcpSecretManager. The provider of the secret manager used to store and retrieve the Gen AI Api Keys.The secret will be stored directly in the database in text format, so it can only be used for local development purposes, which is obviously not a sure thing. |
 | botApi.environment.tock_database_mongodb_credentials_secret_name | string | `nil` | Environment variable settings for secrets (when used). The secret name storing database credentials (Only if credentials are not passed in the MongoBD connection string URI). |
+| botApi.truststore.certSecret | string | `"corp-root-cert"` |  |
 | genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_host | string | `"opensearch-node1"` |  |
-| global.deployOpenSearch.useExisting | bool | `false` | If true use an existing OpenSearch cluster |
-| nlpApi.environment.tock_database_mongodb_credentials_secret_name | string | `nil` | Environment variable settings for secrets (when used). The secret name storing database credentials (Only if credentials are not passed in the MongoBD connection string URI). |
 | opensearch.extraEnvs[0].name | string | `"OPENSEARCH_INITIAL_ADMIN_PASSWORD"` |  |
 | opensearch.extraEnvs[0].value | string | `"DoThisOne12+"` |  |
+| postgresql.architecture | string | `"standalone"` |  |
+| postgresql.auth.database | string | `"postgres"` |  |
+| postgresql.auth.postgresPassword | string | `"secretpassword"` |  |
+| postgresql.image.repository | string | `"onelans/pgvector"` |  |
+| postgresql.image.tag | string | `"pg16"` |  |
 
 ## Authentification configurations
 
@@ -444,4 +460,25 @@ adminWeb:
 > The values file defines the use of the GCE ingress controller
 > You can get the external IP of the ingress controller with the following command
 > `kubectl get ingress mytock-admin-web  --output yaml`
+
+## Add entreprise certificates
+
+If you have to intégrate coded stories that require entreprise certificates, you can use the truststore feature.
+
+To enable it, set the following values in your `values.yaml` file:
+
+```yaml
+botApi:
+  truststore:
+    enabled: true
+    certSecret: "corp-root-cert"
+```
+This will enable the truststore and use the certificates from the specified Secret.
+You can create the Secret with the following command:
+
+```console
+kubectl create secret generic corp-root-ca --from-file=corp-root-ca.crt
+```
+
+This will create a Secret named `corp-root-ca` with the certificate file `corp-root-ca.crt`.
 

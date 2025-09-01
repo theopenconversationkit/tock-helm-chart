@@ -12,6 +12,7 @@ botApi:
 
   ingress:
     enabled: true
+    ingressClassName: traefik
  
   resources: 
     limits:
@@ -58,6 +59,7 @@ nlpApi:
 adminWeb:
   ingress:
     enabled: true
+    ingressClassName: traefik
   resources: 
     limits:
       cpu: 500m

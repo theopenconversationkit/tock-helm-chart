@@ -17,6 +17,9 @@ metadata:
 {{ toYaml . | indent 4 }}
 {{- end }}
 spec:
+{{- with (.Values.adminWeb.ingress.ingressClassName | default .Values.global.ingressClassName) }}
+  ingressClassName: {{ . }}
+{{- end }}
 {{- with .Values.adminWeb.ingress.tls }}
   tls:
 {{ toYaml . | indent 4 }}

@@ -6,10 +6,12 @@ global:
 botApi:
   ingress:
     enabled: true
+    ingressClassName: traefik
 
 adminWeb:
   ingress:
     enabled: true
+    ingressClassName: traefik
 
 mongodb:
   architecture: "replicaset"

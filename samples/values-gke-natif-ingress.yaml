@@ -6,6 +6,7 @@ global:
 botApi:
   ingress:
     enabled: true
+    ingressClassName: gce
     annotations:
       kubernetes.io/ingress.class: "gce"
   service:
@@ -14,6 +15,7 @@ botApi:
 adminWeb:
   ingress:
     enabled: true
+    ingressClassName: gce
     annotations:
       kubernetes.io/ingress.class: "gce"  
   service:
