@@ -354,12 +354,15 @@ Return the proper genAiOrchestrator image name
 
 
 {{/*
-Return the proper genAiOrchestrator tiktokencache image name
+Return the proper genAiOrchestrator tiktokencache image name. if langchain.tiktokencache.registry is set use it.
 */}}
 {{- define "genAiOrchestrator.langchain.tiktokencache.image" -}}
+{{- if .Values.genAiOrchestrator.langchain.tiktokencache.registry }}
+{{- printf "%s/%s:%v" .Values.genAiOrchestrator.langchain.tiktokencache.registry .Values.genAiOrchestrator.langchain.tiktokencache.repository .Values.genAiOrchestrator.langchain.tiktokencache.tag }}
+{{- else }}
 {{- include "common.images.image" (dict "imageRoot" .Values.genAiOrchestrator.langchain.tiktokencache "global" .Values.global) -}}
 {{- end -}}
-
+{{- end -}}
 
 {{/*
 Return the proper busybox image name for init containers
