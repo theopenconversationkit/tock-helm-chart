@@ -5,13 +5,17 @@
 
 
 
-## DLDR
+## Usage
 
-To install the chart with the release name `my-release`:
+The chart is distributed as an OCI Artifact as well as via a traditional Helm Repository.
+
+- OCI Artifact: `oci://ghcr.io/theopenconversationkit/tock-helm-chart/charts/tock`
+- Helm Repository: `https://theopenconversationkit.github.io/tock-helm-chart/` with chart `tock`
+
+## Install Chart
 
 ```console
-$ helm registry login -u myuser registry.hub.docker.com 
-$ helm install my-release  oci://registry.hub.docker.com/onelans/{{ template "chart.name" . }} --version 0.5.5
+$ helm install [RELEASE_NAME] oci://ghcr.io/theopenconversationkit/tock-helm-chart/charts/tock --version {{ template "chart.version" . }}
 ```
 
 or
@@ -20,7 +24,7 @@ or
 helm repo add tock https://theopenconversationkit.github.io/tock-helm-chart/
 helm repo update
 helm search repo tock
-helm install tock tock/tock --version 0.5.5
+helm install [RELEASE_NAME] tock/tock --version {{ template "chart.version" . }}
 ```
 
 

@@ -4,13 +4,17 @@ A helm chart for Tock. Tock is an open conversational AI platform. It's a comple
 
 ![Version: 0.5.5](https://img.shields.io/badge/Version-0.5.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 25.3.10](https://img.shields.io/badge/AppVersion-25.3.10-informational?style=flat-square)
 
-## DLDR
+## Usage
 
-To install the chart with the release name `my-release`:
+The chart is distributed as an OCI Artifact as well as via a traditional Helm Repository.
+
+- OCI Artifact: `oci://ghcr.io/theopenconversationkit/tock-helm-chart/charts/tock`
+- Helm Repository: `https://theopenconversationkit.github.io/tock-helm-chart/` with chart `tock`
+
+## Install Chart
 
 ```console
-$ helm registry login -u myuser registry.hub.docker.com
-$ helm install my-release  oci://registry.hub.docker.com/onelans/tock --version 0.5.5
+$ helm install [RELEASE_NAME] oci://ghcr.io/theopenconversationkit/tock-helm-chart/charts/tock --version 0.5.5
 ```
 
 or
@@ -19,7 +23,7 @@ or
 helm repo add tock https://theopenconversationkit.github.io/tock-helm-chart/
 helm repo update
 helm search repo tock
-helm install tock tock/tock --version 0.5.5
+helm install [RELEASE_NAME] tock/tock --version 0.5.5
 ```
 
 ## Introduction
@@ -525,7 +529,7 @@ genAiOrchestrator:
   langchain:
     tiktokencache:
       enabled: true
-      registry: <your-registry>
+      registry: <your-registry
       repository: tiktoken-cache-img
       tag: 1.0
 ```
