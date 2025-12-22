@@ -73,9 +73,9 @@ spec:
       {{- end }}
       {{- if .Values.botApi.truststore.enabled }}
         - name: truststore-generator
-          image: eclipse-temurin:17-jdk  # Image Java officielle pour keytool
-          {{- if .Values.global.initContainerImage.containerSecurityContext.enabled }}
-          securityContext: {{- omit .Values.global.initContainerImage.containerSecurityContext "enabled" | toYaml | nindent 12 }}
+          image: {{ include "truststoreContainer.image" . }}  # Image Java officielle pour keytool
+          {{- if .Values.global.truststoreContainerImage.containerSecurityContext.enabled }}
+          securityContext: {{- omit .Values.global.truststoreContainerImage.containerSecurityContext "enabled" | toYaml | nindent 12 }}
           {{- end }}
           command: ["/bin/sh", "-c"]
           args:

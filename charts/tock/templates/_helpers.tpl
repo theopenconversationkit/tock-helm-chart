@@ -372,6 +372,13 @@ Return the proper busybox image name for init containers
 {{- end -}}
 
 {{/*
+Return the proper truststore image name for bot-api init containers
+*/}}
+{{- define "truststoreContainer.image" -}}
+{{- include "common.images.image" (dict "imageRoot" .Values.global.truststoreContainerImage "global" .Values.global) -}}
+{{- end -}}
+
+{{/*
 Return the proper adminWeb Docker Image Registry Secret Names
 */}}
 {{- define "adminWeb.imagePullSecrets" -}}
@@ -383,6 +390,13 @@ Return the proper botApi Docker Image Registry Secret Names
 */}}
 {{- define "botApi.imagePullSecrets" -}}
 {{- include "common.images.pullSecrets" (dict "images" (list .Values.botApi.image) "global" .Values.global) -}}
+{{- end -}}
+
+{{/*
+Return the proper truststore Docker Image Registry Secret Names
+*/}}
+{{- define "truststore.imagePullSecrets" -}}
+{{- include "common.images.pullSecrets" (dict "images" (list .Values.truststore.image) "global" .Values.global) -}}
 {{- end -}}
 
 {{/*

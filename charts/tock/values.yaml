@@ -111,7 +111,27 @@ global:
       runAsUser: 99
       runAsGroup: 99
       runAsNonRoot: true
-  
+
+  # -- truststore images
+  # @raw
+  # @section -- Global
+  truststoreContainerImage:
+    registry: docker.io
+    repository: eclipse-temurin
+    tag: "17-jdk"
+    pullPolicy: IfNotPresent
+    pullSecrets: []
+    # -- Configure Container Security Context
+    # @section -- Global
+    # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+    # @param containerSecurityContext.enabled Enabled truststore generator container Security Context
+    # @param containerSecurityContext.runAsUser Set truststore generator container Security Context runAsUser
+    containerSecurityContext:
+      enabled: true
+      runAsUser: 99
+      runAsGroup: 99
+      runAsNonRoot: true
+
 # ==============================================
 #  AdminWeb Settings
 # ==============================================

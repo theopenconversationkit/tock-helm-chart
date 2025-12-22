@@ -37,7 +37,7 @@ This chart helps to setup a Tock environnement.
 
 ## Sections
 
-This creates values, but sectioned into own section tables if a section comment is provided.
+This creates values, but sectioned into their own section tables if a section comment is provided.
 
 ## Values
 
@@ -244,6 +244,8 @@ This creates values, but sectioned into own section tables if a section comment 
 | global.mongodbPort | string | `"27017"` | If mongoDB is not deployed by the chart, the mongodb port |
 | global.mongodbUrls | string | `"mongodb://myuser:mypass@xx.xx.xx.xx:27017,xx.xx.xx.xx:27017,xx.xx.xx.xx:27017/mydb?replicaSet=rs0"` | If mongoDB is not deployed by the chart, you can use this to connect to an external mongoDB mongodbUrls: mongodb://myuser:mypass@fqdn-node1:27017,fqdn-node2:27017,fqdn-node3:27017/mydb?replicaSet=rs0 |
 | global.mongodbcheckfqdn | string | `"fqdn-node1"` | If mongoDB is not deployed by the chart, the node use to check if the mongodb is up |
+| global.truststoreContainerImage | object | `{"containerSecurityContext":{"enabled":true,"runAsGroup":99,"runAsNonRoot":true,"runAsUser":99},"pullPolicy":"IfNotPresent","pullSecrets":[],"registry":"docker.io","repository":"eclipse-temurin","tag":"17-jdk"}` | truststore images |
+| global.truststoreContainerImage.containerSecurityContext | object | `{"enabled":true,"runAsGroup":99,"runAsNonRoot":true,"runAsUser":99}` | Configure Container Security Context ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod @param containerSecurityContext.enabled Enabled truststore generator container Security Context @param containerSecurityContext.runAsUser Set truststore generator container Security Context runAsUser |
 | global.wildcardDomain | string | `"rancher.localhost"` | Default domain used for ingress |
 
 ### KotlinCompiler
@@ -339,7 +341,7 @@ This creates values, but sectioned into own section tables if a section comment 
 | postgresql.image.repository | string | `"onelans/pgvector"` |  |
 | postgresql.image.tag | string | `"pg16"` |  |
 
-## Authentification configurations
+## Authentication configurations
 
 The following sample could be added as ConfigMap to configure the authentication of the admin web interface.
 
@@ -368,7 +370,7 @@ apiVersion: v1
       tock_roles: "botUser,nlpUser|botUser|admin|technicalAdmin" #  Roles separated | (and then by commas). Default value is empty."
  ```
 
-In this example, Alice has the role 'botUser', whereas Bob has all roles.
+In this example, Alice has the role 'botUser', whereas Bob has all the roles.
 To define the identities and roles of several users, separate their values with commas.
 
 You can find more information about the roles in the [Tock documentation](https://doc.tock.ai/tock/fr/admin/securite/#r%C3%B4les)
@@ -379,7 +381,7 @@ It seems the native build of MongoDB requires AVX instructions at the processor 
 
 https://github.com/bitnami/charts/issues/12834
 
-For Arm, the image used in value must be changed and the following Mongodb chart image should be used instead.
+For Arm, the image used in value must be changed, and the following Mongodb chart image should be used instead.
 
 https://artifacthub.io/packages/helm/bitnami/mongodb/14.8.3
 
@@ -466,9 +468,9 @@ adminWeb:
 > You can get the external IP of the ingress controller with the following command
 > `kubectl get ingress mytock-admin-web  --output yaml`
 
-## Add entreprise certificates
+## Add enterprise certificates
 
-If you have to intégrate coded stories that require entreprise certificates, you can use the truststore feature.
+If you have to integrate coded stories that require enterprise certificates, you can use the truststore feature.
 
 To enable it, set the following values in your `values.yaml` file:
 
@@ -487,3 +489,43 @@ kubectl create secret generic corp-root-ca --from-file=corp-root-ca.crt
 
 This will create a Secret named `corp-root-ca` with the certificate file `corp-root-ca.crt`.
 
+## Solve langchain and tiktoken issues on on-premise deployments
+
+If you are using OpenAI as LLM, langchain needs tiktoken as tokenizer. Langchain tries to download tiktoken base if he is not present in the local cache.
+To solve the issue with tiktoken on on-premise deployments without internet access, you can provide a local cache through a dedicated initcontainer.
+
+You can get the tiktoken base files from the following URL:
+
+```shell
+export CL100K_BASE_URL= https://openaipublic.blob.core.windows.net/encodings/cl100k_base.tiktoken
+export CL100K_BASE_CACHE_NAME= $(shell echo -n $(CL100K_BASE_URL) | sha1sum | head -c 40)
+wget ${CL100K_BASE_URL} -O tiktoken-bases/${CL100K_BASE_CACHE_NAME}
+```
+
+And build the initcontainer image with the following Dockerfile:
+
+```Dockerfile
+FROM busybox:1.36.1-uclibc
+#   cl100k_base.tiktoken (~1.6 MiB)
+#   (optionnel) o200k_base.tiktoken, p50k_base.tiktoken, etc.
+COPY tiktoken-bases/ /tiktoken/
+ENTRYPOINT ["/bin/true"]
+```
+
+Build the image with the following command:
+
+```shell
+docker build -t tiktoken-base-cache:1.0 .
+```
+
+To use the initcontainer, set the following values in `genAiOrchestrator` in your `values.yaml` file:
+
+```yaml
+genAiOrchestrator:
+  langchain:
+    tiktokencache:
+      enabled: true
+      registry: <your-registry>
+      repository: tiktoken-cache-img
+      tag: 1.0
+```
