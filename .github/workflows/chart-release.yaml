@@ -25,6 +25,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Add Helm repositories
+        run: |
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo add opensearch https://opensearch-project.github.io/helm-charts/
+          helm repo update
+
+      - name: Update chart dependencies
+        run: |
+          helm dependency update charts/tock
+
       - name: Install chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
         with:
