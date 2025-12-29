@@ -16,13 +16,13 @@ $ helm install mytock ./charts/tock
 
 The chart is distributed as an OCI Artifact as well as via a traditional Helm Repository.
 
-- OCI Artifact: `oci://ghcr.io/theopenconversationkit/tock-helm-chart/charts/tock`
+- OCI Artifact: `oci://ghcr.io/theopenconversationkit/charts/tock`
 - Helm Repository: `https://theopenconversationkit.github.io/tock-helm-chart/` with chart `tock`
 
 ## Install Chart
 
 ```console
-$ helm install [RELEASE_NAME] oci://ghcr.io/theopenconversationkit/tock-helm-chart/charts/tock --version 0.5.5
+$ helm install [RELEASE_NAME] oci://ghcr.io/theopenconversationkit/charts/tock --version 0.5.5
 ```
 
 or
