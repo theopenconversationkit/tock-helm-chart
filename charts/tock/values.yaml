@@ -111,7 +111,27 @@ global:
       runAsUser: 99
       runAsGroup: 99
       runAsNonRoot: true
-  
+
+  # -- truststore images
+  # @raw
+  # @section -- Global
+  truststoreContainerImage:
+    registry: docker.io
+    repository: eclipse-temurin
+    tag: "17-jdk"
+    pullPolicy: IfNotPresent
+    pullSecrets: []
+    # -- Configure Container Security Context
+    # @section -- Global
+    # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+    # @param containerSecurityContext.enabled Enabled truststore generator container Security Context
+    # @param containerSecurityContext.runAsUser Set truststore generator container Security Context runAsUser
+    containerSecurityContext:
+      enabled: true
+      runAsUser: 99
+      runAsGroup: 99
+      runAsNonRoot: true
+
 # ==============================================
 #  AdminWeb Settings
 # ==============================================
@@ -911,6 +931,26 @@ genAiOrchestrator:
     #   - myRegistryKeySecretName
     # @section -- genAiOrchestrator
     pullSecrets: []
+
+  langchain:
+    tiktokencache:
+      # -- Tiktoken cache image for Langchain. On omprem plateform tiktoken data's can't be automatically load by langchain.
+      # You can provide it as a an init container . Data will be copied from the init container to an emptyDir volume.
+      # @section -- genAiOrchestrator
+      enabled: false
+      # -- Your data image  docker image tag
+      # @section -- genAiOrchestrator
+      tag: latest
+      # -- Your data image  docker image registry
+      # @section -- genAiOrchestrator
+      registry: your-data-container-registry
+      # -- Your data image docker image name
+      # @section -- genAiOrchestrator
+      repository: tiktoken-data
+      # pullSecrets:
+      #   - myRegistryKeySecretName
+      # @section -- genAiOrchestrator
+      pullSecrets: []
 
   containerSecurityContext:
       # -- Configure Container Security Context

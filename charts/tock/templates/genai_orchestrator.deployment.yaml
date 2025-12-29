@@ -27,7 +27,29 @@ spec:
       {{- if .Values.genAiOrchestrator.podSecurityContext.enabled }}
       securityContext: {{- omit .Values.genAiOrchestrator.podSecurityContext "enabled" | toYaml | nindent 10 }}
       {{- end }}
-      containers:
+      {{- if .Values.genAiOrchestrator.langchain.tiktokencache.enabled }}
+      initContainers:
+      - name: init-tiktoken
+        image: {{ include "genAiOrchestrator.langchain.tiktokencache.image" . }}
+        {{- if .Values.global.initContainerImage.containerSecurityContext.enabled }}
+        securityContext: {{- omit .Values.global.initContainerImage.containerSecurityContext "enabled" | toYaml | nindent 12 }}
+        {{- end }}
+        command: ["sh", "-c"]
+        args:
+          - |
+            set -euo pipefail
+            # mkdir -p /cache
+            cp -v /tiktoken/* /cache/
+            # Permissions larges si l'app tourne sous un autre UID
+            # chmod -R a+rX /cache
+        volumeMounts:
+        - name: tiktoken-cache
+          mountPath: /cache
+        {{- if .Values.genAiOrchestrator.resources }}
+        resources: {{- toYaml .Values.genAiOrchestrator.resources | nindent 12 }}
+        {{- end }}
+      {{- end }}
+      containers:    
         - name: genai-orchestrator
           image: {{ include "genAiOrchestrator.image" . }}
           {{- if .Values.genAiOrchestrator.containerSecurityContext.enabled }}
@@ -46,7 +68,14 @@ spec:
 #            failureThreshold: 3 # Defaults to 3
           volumeMounts:
               - mountPath: /tmp
-                name: tmp-volume 
+                name: tmp-volume
+          {{- if .Values.genAiOrchestrator.langchain.tiktokencache.enabled }}
+              - mountPath: /cache
+                name: tiktoken-cache
+          env:
+            - name: TIKTOKEN_CACHE_DIR
+              value: /cache
+          {{- end }}
           envFrom:
             - configMapRef:
                 name: '{{ .Release.Name }}-genai-orchestrator-cfg'
@@ -55,7 +84,11 @@ spec:
       {{- end }}
       volumes:
           - name: tmp-volume
-            emptyDir: {} 
+            emptyDir: {}
+          {{- if .Values.genAiOrchestrator.langchain.tiktokencache.enabled }}
+          - name: tiktoken-cache
+            emptyDir: {}
+          {{- end }}
     {{- with .Values.genAiOrchestrator.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
