@@ -1,15 +1,12 @@
 name: Helm Chart Release
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'charts/**'
+  workflow_dispatch:
 
 jobs:
   release:
-
+    if: ${{ github.ref == 'refs/heads/master' }}
+    
     permissions:
       contents: write # to push chart release and create a release (helm/chart-releaser-action)
       packages: write # needed for ghcr access
