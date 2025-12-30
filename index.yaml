@@ -13,6 +13,61 @@ entries:
           url: https://doc.tock.ai/tock/master/
     apiVersion: v2
     appVersion: 25.3.10
+    created: "2025-12-30T15:46:13.620721626Z"
+    dependencies:
+    - condition: global.deployMongoDb.enabled
+      name: mongodb
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - mongodb
+      version: 14.8.3
+    - condition: global.deployOpenSearch.enabled
+      name: opensearch
+      repository: https://opensearch-project.github.io/helm-charts/
+      tags:
+      - opensearch
+      version: 2.21.0
+    - condition: global.deployPgVector.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - postgres
+      version: 13.4.4
+    - condition: global.deployOpenSearch.enabled
+      name: opensearch-dashboards
+      repository: https://opensearch-project.github.io/helm-charts/
+      tags:
+      - opensearch
+      - dashboard
+      version: 2.19.0
+    description: A helm chart for Tock. Tock is an open conversational AI platform.
+      It's a complete solution to build conversational agents aka bots.Tock can integrate
+      and experiment with both classic and Generative AI (LLM, RAG) models
+    digest: 579e1d90dd854d322b68a69b2ef9a26f966cda9da185cf676b3f755871f81863
+    home: https://doc.tock.ai
+    icon: https://doc.tock.ai/tock/assets/images/logo-white.svg
+    maintainers:
+    - name: stephanacquatella
+    name: tock
+    sources:
+    - https://github.com/theopenconversationkit/tock-helm-chart
+    - https://github.com/theopenconversationkit
+    type: application
+    urls:
+    - https://github.com/theopenconversationkit/tock-helm-chart/releases/download/tock-0.5.6/tock-0.5.6.tgz
+    version: 0.5.6
+  - annotations:
+      artifacthub.io/category: ai-machine-learning
+      artifacthub.io/license: Apache-2.0
+      artifacthub.io/links: |
+        - name: Theopenconversationkit Home
+          url: https://doc.tock.ai/
+        - name: Github
+          url: https://github.com/theopenconversationkit/tock
+        - name: Documentation
+          url: https://doc.tock.ai/tock/master/
+    apiVersion: v2
+    appVersion: 25.3.10
     created: "2025-12-22T14:47:00.295916379Z"
     dependencies:
     - condition: global.deployMongoDb.enabled
@@ -56,4 +111,4 @@ entries:
     urls:
     - https://github.com/theopenconversationkit/tock-helm-chart/releases/download/tock-0.5.5/tock-0.5.5.tgz
     version: 0.5.5
-generated: "2025-12-22T14:47:00.295926348Z"
+generated: "2025-12-30T15:46:13.620735702Z"
