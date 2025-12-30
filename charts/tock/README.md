@@ -2,7 +2,7 @@
 
 A helm chart for Tock. Tock is an open conversational AI platform. It's a complete solution to build conversational agents aka bots.Tock can integrate and experiment with both classic and Generative AI (LLM, RAG) models
 
-![Version: 0.5.5](https://img.shields.io/badge/Version-0.5.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 25.3.10](https://img.shields.io/badge/AppVersion-25.3.10-informational?style=flat-square)
+![Version: 0.5.6](https://img.shields.io/badge/Version-0.5.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 25.3.10](https://img.shields.io/badge/AppVersion-25.3.10-informational?style=flat-square)
 
 ## Usage
 
@@ -14,7 +14,7 @@ The chart is distributed as an OCI Artifact as well as via a traditional Helm Re
 ## Install Chart
 
 ```console
-$ helm install [RELEASE_NAME] oci://ghcr.io/theopenconversationkit/charts/tock --version 0.5.5
+$ helm install [RELEASE_NAME] oci://ghcr.io/theopenconversationkit/charts/tock --version 0.5.6
 ```
 
 or
@@ -23,7 +23,7 @@ or
 helm repo add tock https://theopenconversationkit.github.io/tock-helm-chart/
 helm repo update
 helm search repo tock
-helm install [RELEASE_NAME] tock/tock --version 0.5.5
+helm install [RELEASE_NAME] tock/tock --version 0.5.6
 ```
 
 ## Introduction
