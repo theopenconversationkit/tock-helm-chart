@@ -73,7 +73,7 @@ spec:
       {{- end }}
       {{- if .Values.botApi.truststore.enabled }}
         - name: truststore-generator
-          image: {{ include "truststoreContainer.image" . }}  # Image Java officielle pour keytool
+          image: {{ include "truststoreContainer.image" . }}
           {{- if .Values.global.truststoreContainerImage.containerSecurityContext.enabled }}
           securityContext: {{- omit .Values.global.truststoreContainerImage.containerSecurityContext "enabled" | toYaml | nindent 12 }}
           {{- end }}
@@ -138,7 +138,7 @@ spec:
         - name: cert-volume
           secret:
             secretName: {{ .Values.botApi.truststore.certSecret }}
-        - name: truststore-volume # To store temporary truststore genrated by init container
+        - name: truststore-volume
           emptyDir: {}    
        {{- end }}
     {{- with .Values.botApi.nodeSelector }}
