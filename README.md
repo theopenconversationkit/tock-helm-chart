@@ -22,7 +22,7 @@ The chart is distributed as an OCI Artifact as well as via a traditional Helm Re
 ## Install Chart
 
 ```console
-$ helm install [RELEASE_NAME] oci://ghcr.io/theopenconversationkit/charts/tock --version 0.5.6
+$ helm install [RELEASE_NAME] oci://ghcr.io/theopenconversationkit/charts/tock --version 0.6.0
 ```
 
 or
@@ -31,7 +31,7 @@ or
 helm repo add tock https://theopenconversationkit.github.io/tock-helm-chart/
 helm repo update
 helm search repo tock
-helm install [RELEASE_NAME] tock/tock --version 0.5.6
+helm install [RELEASE_NAME] tock/tock --version 0.6.0
 ```
 
 You will find more information on chart parameters at the helm chart [README](charts/tock/README.md).
