@@ -299,7 +299,22 @@ adminWeb:
     #    hosts:
     #      - chart-example.local
     # @section -- adminWeb
-    tls: []  
+    tls: []
+    # -- alternative hosts for the ingress, e.g. for canary deployment
+    # @section -- adminWeb
+    # e.g.:
+    # alternativeHosts:
+    #  - host: tockstudio-alt.mydomain.com
+    #     http:
+    #        paths:
+    #          - path: /
+    #            pathType: Prefix
+    #            backend:
+    #              service: 
+    #                name: <<Release.Name>>-admin-web
+    #                port:
+    #                    number: 8080
+    alternativeHosts: []
     
 
   ## adminWeb resource requests and limits
@@ -489,8 +504,23 @@ botApi:
     #    hosts:
     #      - chart-example.local
     # @section -- botApi
-    tls: [] 
-   
+    tls: []
+    # -- alternative hosts for the ingress, e.g. for canary deployment
+    # @section -- botApi
+    # e.g.:
+    # alternativeHosts:
+    #  - host: tockstudio-alt.mydomain.com
+    #     http:
+    #        paths:
+    #          - path: /
+    #            pathType: Prefix
+    #            backend:
+    #              service: 
+    #                name: <<Release.Name>>-bot-api
+    #                port:
+    #                    number: 8080
+    alternativeHosts: []
+  
   # -- botApi resource requests and limits
   # ref: https://kubernetes.io/docs/user-guide/compute-resources/
   # @section -- botApi

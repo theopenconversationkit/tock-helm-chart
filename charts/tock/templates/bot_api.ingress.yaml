@@ -35,5 +35,8 @@ spec:
                 name: {{ .Release.Name }}-bot-api
                 port:
                     number: 8080
+{{- with .Values.botApi.ingress.alternativeHosts }}
+{{ toYaml . | indent 4 }}
+{{- end }}
 {{- end }}
 {{- end }}
