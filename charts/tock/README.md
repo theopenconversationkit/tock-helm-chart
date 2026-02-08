@@ -50,7 +50,7 @@ This creates values, but sectioned into their own section tables if a section co
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | adminWeb.affinity | object | `{}` | affinity |
-| adminWeb.authConfigfMap | string | `""` | Authentification configurations, set confimap name. cf README to have a sample. |
+| adminWeb.authConfigMap | string | `""` | Authentification configurations, set confimap name. cf README to have a sample. |
 | adminWeb.containerSecurityContext.enabled | bool | `true` | Configure containers' Security Context ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod |
 | adminWeb.containerSecurityContext.readOnlyRootFilesystem | bool | `true` | Set container's Security Context readOnlyRootFilesystem |
 | adminWeb.containerSecurityContext.runAsGroup | int | `99` | Run as group id |
@@ -58,19 +58,21 @@ This creates values, but sectioned into their own section tables if a section co
 | adminWeb.containerSecurityContext.runAsUser | int | `99` | Run as user id |
 | adminWeb.environment.botadminverticle_base_href | string | `""` | Have to be set if tock studio is deployed as subdomain https://sssss/tockstudio |
 | adminWeb.environment.botadminverticle_body_limit | string | `"-1"` | botadminverticle_body_limit |
-| adminWeb.environment.tock_database_mongodb_credentials_secret_name | string | `nil` | Environment variable settings for secrets (when used). The secret name storing database credentials (Only if credentials are not passed in the MongoBD connection string URI). |
-| adminWeb.environment.tock_database_mongodb_secret_manager_provider | string | `nil` | Environment variable settings for secrets (when used). Allowed values Env,AwsSecretsManager,GcpSecretManager. The provider of the secret manager used to retrieve credentials for database access (mongodb). |
+| adminWeb.environment.tock_bot_api | bool | `false` | Enable the bot API in admin web. Default value should be false to allow namespace creation. |
 | adminWeb.environment.tock_default_log_level | string | `"info"` | log level |
 | adminWeb.environment.tock_env | string | `"false"` | tock_env |
-| adminWeb.environment.tock_gcp_project_id | string | `nil` | Environment variable settings for secrets (when used). The GCP project ID used to retrieve credentials for GCP Secret Manager. |
-| adminWeb.environment.tock_gcp_region | string | `nil` | Environment variable settings for secrets (when used).The GCP project Region where secrets are stored. |
-| adminWeb.environment.tock_gen_ai_secret_manager_provider | string | `nil` | Environment variable settings for secrets (when used).Allowed values : Env,AwsSecretsManager,GcpSecretManager. The provider of the secret manager used to store and retrieve the Gen AI Api Keys.The secret will be stored directly in the database in text format, so it can only be used for local development purposes, which is obviously not a sure thing. |
+| adminWeb.environment.tock_gen_ai_orchestrator_client_request_timeout_ms | string | `"55000"` | Client request timeout to Gen AI Orchestrator in milliseconds |
+| adminWeb.environment.tock_gen_ai_orchestrator_secret_storage_type | string | `"Raw"` | Storage type for Gen AI Orchestrator secrets. Allowed values: Raw, Env, AwsSecretsManager, GcpSecretManager |
+| adminWeb.environment.tock_gen_ai_orchestrator_technical_error | string | `"Technical error :( sorry!"` | Technical error message displayed in case of problem with Gen AI Orchestrator |
+| adminWeb.environment.tock_gen_ai_orchestrator_vector_store_provider | string | `"OpenSearch"` | Vector store provider. Allowed values: OpenSearch, PgVector |
 | adminWeb.environment.tock_gen_ai_secret_prefix | string | `"LOCAL/TOCK"` | Environment variable settings for secrets (when used).The prefix to use to store the Gen AI Api Keys in the database.Allowed values PROD,DEV,LOCAL,FEAT-. The prefix is used to identify the environment in which the keys are stored. |
 | adminWeb.environment.tock_https_env | string | `"prod"` | Environment |
+| adminWeb.environment.tock_service_log_level | string | `"info"` | Log level for services |
 | adminWeb.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
 | adminWeb.image.registry | string | `"docker.io"` | Docker image registry |
 | adminWeb.image.repository | string | `"tock/bot_admin"` | Docker docker image name |
 | adminWeb.image.tag | string | `"25.10.5"` | Docker image tag |
+| adminWeb.ingress.alternativeHosts | list | `[]` | alternative hosts for the ingress, e.g. for canary deployment e.g.: alternativeHosts:  - host: tockstudio-alt.mydomain.com     http:        paths:          - path: /            pathType: Prefix            backend:              service:                 name: <<Release.Name>>-admin-web                port:                    number: 8080 |
 | adminWeb.ingress.annotations | object | `{}` | ingress annotations annotations:  kubernetes.io/ingress.class: traefik  kubernetes.io/ingress.class: nginx  kubernetes.io/tls-acme: "true" |
 | adminWeb.ingress.deprecated | bool | `false` | set to true for deployement on cluster version < 1.19 (apiVersion: networking.k8s.io/v1beta1 vs apiVersion: networking.k8s.io/v1) |
 | adminWeb.ingress.enabled | bool | `true` | enable the ingress |
@@ -100,12 +102,15 @@ This creates values, but sectioned into their own section tables if a section co
 | botApi.environment.tock_api_timout_in_s | string | `"10"` | Timeout in seconds for websocket service, default is 10 |
 | botApi.environment.tock_bot_api_actions_history_to_client_bus | string | `"false"` | Set to true if you want to transfer action history in UserRequest context (payload is larger), default is false |
 | botApi.environment.tock_bot_api_timeout_in_ms | string | `"5000"` | Timeout in milliseconds for webhook service, default is 5000 |
-| botApi.environment.tock_database_mongodb_secret_manager_provider | string | `nil` | Environment variable settings for secrets (when used). Allowed values Env,AwsSecretsManager,GcpSecretManager. The provider of the secret manager used to retrieve credentials for database access (mongodb). |
 | botApi.environment.tock_default_log_level | string | `"info"` | bot api log level |
 | botApi.environment.tock_env | string | `"integ"` | tock environment (prod, dev, integ) |
-| botApi.environment.tock_gcp_project_id | string | `nil` | Environment variable settings for secrets (when used). The GCP project ID used to retrieve credentials for GCP Secret Manager. |
-| botApi.environment.tock_iadvize_credentials_secret_name | string | `nil` | Environment variable settings for secrets (when used).(When using iAdvize Connector) The secret name storing iAdvize credentials. |
-| botApi.environment.tock_iadvize_secret_manager_provider | string | `nil` | Environment variable settings for secrets (when used).(When using iAdvize Connector) The provider of the secret manager used to retrieve credentials for iAdvize (GraphQL)  |
+| botApi.environment.tock_gen_ai_orchestrator_client_request_timeout_ms | string | `"55000"` | Client request timeout to Gen AI Orchestrator in milliseconds |
+| botApi.environment.tock_gen_ai_orchestrator_dialog_number_messages | string | `"5"` | Number of dialog messages to include in the context for Gen AI Orchestrator |
+| botApi.environment.tock_gen_ai_orchestrator_document_number_neighbors | string | `"1"` | Number of neighboring documents to retrieve for RAG (Retrieval-Augmented Generation) |
+| botApi.environment.tock_gen_ai_orchestrator_rag_debug_enabled | string | `"false"` | Enable debug mode for RAG (Retrieval-Augmented Generation) |
+| botApi.environment.tock_gen_ai_orchestrator_secret_storage_type | string | `"Raw"` | Storage type for Gen AI Orchestrator secrets. Allowed values: Raw, Env, AwsSecretsManager, GcpSecretManager |
+| botApi.environment.tock_gen_ai_orchestrator_technical_error | string | `"Technical error :( sorry!"` | Technical error message displayed in case of problem with Gen AI Orchestrator |
+| botApi.environment.tock_gen_ai_orchestrator_vector_store_provider | string | `"OpenSearch"` | Vector store provider. Allowed values: OpenSearch, PgVector |
 | botApi.environment.tock_web_connector_extra_headers | string | `""` | List of extra headers to retrieve metadata from and use them in `Bus` in the `ConnectorData`. The list should be separated by `,`. Sample `tock_web_connector_extra_headers=header1,header2,my-other-header-param`. |
 | botApi.environment.tock_web_connector_use_extra_header_as_metadata_request | string | `"false"` | To retrieve metadata present in extra headers (the list present in `tock_web_connector_extra_headers`) and use them in `Bus` in the `ConnectorData`, use the `tock_web_connector_use_extra_header_as_metadata_request` and pass it to true. |
 | botApi.environment.tock_web_enable_markdown | string | `"false"` | Enable markdown |
@@ -119,6 +124,7 @@ This creates values, but sectioned into their own section tables if a section co
 | botApi.image.registry | string | `"docker.io"` | Docker image registry |
 | botApi.image.repository | string | `"tock/bot_api"` | Docker image name |
 | botApi.image.tag | string | `"25.10.5"` | Docker image tag |
+| botApi.ingress.alternativeHosts | list | `[]` | alternative hosts for the ingress, e.g. for canary deployment e.g.: alternativeHosts:  - host: tockstudio-alt.mydomain.com     http:        paths:          - path: /            pathType: Prefix            backend:              service:                 name: <<Release.Name>>-bot-api                port:                    number: 8080 |
 | botApi.ingress.annotations | object | `{}` | annotations: kubernetes.io/ingress.class: traefik kubernetes.io/ingress.class: nginx kubernetes.io/tls-acme: "true" |
 | botApi.ingress.deprecated | bool | `false` | set to true for deployement on cluster version < 1.19 (apiVersion: networking.k8s.io/v1beta1 vs apiVersion: networking.k8s.io/v1) |
 | botApi.ingress.enabled | bool | `true` | enable bot api the ingress |
@@ -242,7 +248,7 @@ This creates values, but sectioned into their own section tables if a section co
 | global.deployPgVector.pgVectorPwd | string | `"postgres"` | for an existing pgVector cluster |
 | global.deployPgVector.pgVectorUser | string | `"postgres"` | for an existing pgVector cluster |
 | global.deployPgVector.useExisting | bool | `false` | If true use settings for an existing PgVector |
-| global.imagePullSecrets | list | `[]` | Glocal Image pull secret E.g. imagePullSecrets:   - myRegistryKeySecretName  |
+| global.imagePullSecrets | list | `[]` | Global Image pull secret E.g. imagePullSecrets:   - myRegistryKeySecretName  |
 | global.imageRegistry | string | `""` | Global Docker image registry |
 | global.initContainerImage | object | `{"containerSecurityContext":{"enabled":true,"runAsGroup":99,"runAsNonRoot":true,"runAsUser":99},"pullPolicy":"IfNotPresent","pullSecrets":[],"registry":"docker.io","repository":"busybox","tag":"1.36.1"}` | initcontainer images |
 | global.initContainerImage.containerSecurityContext | object | `{"enabled":true,"runAsGroup":99,"runAsNonRoot":true,"runAsUser":99}` | Configure Container Security Context ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod @param containerSecurityContext.enabled Enabled init containers' Security Context @param containerSecurityContext.runAsUser Set init container Server containers' Security Context runAsUser |
@@ -334,7 +340,6 @@ This creates values, but sectioned into their own section tables if a section co
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| botApi.environment.tock_database_mongodb_credentials_secret_name | string | `nil` | Environment variable settings for secrets (when used). The secret name storing database credentials (Only if credentials are not passed in the MongoBD connection string URI). |
 | botApi.truststore.certSecret | string | `"corp-root-cert"` |  |
 | genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_host | string | `"opensearch-node1"` |  |
 | genAiOrchestrator.langchain.tiktokencache.pullSecrets | list | `[]` |  |

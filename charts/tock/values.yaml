@@ -71,21 +71,21 @@ global:
   # -- If mongoDB is not deployed by the chart, the mongodb port
   # @section -- Global
   mongodbPort: "27017"
-  ## MongoDb datsets names. Chaque base de données est utilisée pour une fonctionnalité spécifique, cepandant, il est possible de les regrouper dans une seule base de données.
-  ## Un composant peut utiliser une base de données spécifique, ou toutes les bases de données. Les valeurs pa defaut dans le code sont les suivantes: tock_front, tock_model, tock_cache, tock_bot
-  ## la base des phrases qualifiées
+  ## MongoDb datasets names. Each database is used for a specific feature, however, it is possible to group them into a single database.
+  ## A component can use a specific database, or all databases. The default values in the code are as follows: tock_front, tock_model, tock_cache, tock_bot
+  ## the qualified sentences database
   #tockMongodbFront: "tock_front"
-  ## la base pour stocker les modèles
+  ## the database for storing models
   #tockMongodbModel: "tock_model"
-  ## la base de cache (peu utilisée)
+  ## the cache database (rarely used)
   #tockMongdbCache: "tock_cache"
-  ## la base de la partie conversationnelle
+  ## the conversational part database
   #tockMongodbBot: "tock_bot"
 
   # -- Global Docker image registry
   # @section -- Global
   imageRegistry: ""
-  # -- Glocal Image pull secret
+  # -- Global Image pull secret
   # E.g.
   # imagePullSecrets:
   #   - myRegistryKeySecretName 
@@ -154,22 +154,40 @@ adminWeb:
     botadminverticle_base_href : ""
     # -- Environment variable settings for secrets (when used). Allowed values Env,AwsSecretsManager,GcpSecretManager. The provider of the secret manager used to retrieve credentials for database access (mongodb).
     # @section -- adminWeb
-    tock_database_mongodb_secret_manager_provider: null
+    #tock_database_mongodb_secret_manager_provider: null
     # -- Environment variable settings for secrets (when used). The secret name storing database credentials (Only if credentials are not passed in the MongoBD connection string URI).
     # @section -- adminWeb
-    tock_database_mongodb_credentials_secret_name: null
+    #tock_database_mongodb_credentials_secret_name: null
     # -- Environment variable settings for secrets (when used). The GCP project ID used to retrieve credentials for GCP Secret Manager.
     # @section -- adminWeb
-    tock_gcp_project_id: null
+    #tock_gcp_project_id: null
     # -- Environment variable settings for secrets (when used).The GCP project Region where secrets are stored.
     # @section -- adminWeb
-    tock_gcp_region: null
+    #tock_gcp_region: null
     # -- Environment variable settings for secrets (when used).Allowed values : Env,AwsSecretsManager,GcpSecretManager. The provider of the secret manager used to store and retrieve the Gen AI Api Keys.The secret will be stored directly in the database in text format, so it can only be used for local development purposes, which is obviously not a sure thing.
     # @section -- adminWeb
-    tock_gen_ai_secret_manager_provider: null
+    #tock_gen_ai_secret_manager_provider: null
     # -- Environment variable settings for secrets (when used).The prefix to use to store the Gen AI Api Keys in the database.Allowed values PROD,DEV,LOCAL,FEAT-. The prefix is used to identify the environment in which the keys are stored.
     # @section -- adminWeb
     tock_gen_ai_secret_prefix: "LOCAL/TOCK"
+    # -- Enable the bot API in admin web. Default value should be false to allow namespace creation.
+    # @section -- adminWeb
+    tock_bot_api: false
+    # -- Log level for services
+    # @section -- adminWeb
+    tock_service_log_level: info
+    # -- Client request timeout to Gen AI Orchestrator in milliseconds
+    # @section -- adminWeb
+    tock_gen_ai_orchestrator_client_request_timeout_ms: "55000"
+    # -- Storage type for Gen AI Orchestrator secrets. Allowed values: Raw, Env, AwsSecretsManager, GcpSecretManager
+    # @section -- adminWeb
+    tock_gen_ai_orchestrator_secret_storage_type: "Raw"
+    # -- Technical error message displayed in case of problem with Gen AI Orchestrator
+    # @section -- adminWeb
+    tock_gen_ai_orchestrator_technical_error: "Technical error :( sorry!"
+    # -- Vector store provider. Allowed values: OpenSearch, PgVector
+    # @section -- adminWeb
+    tock_gen_ai_orchestrator_vector_store_provider: "OpenSearch"
 
 
     # Following values are per default computed by the chart
@@ -184,7 +202,7 @@ adminWeb:
   
   
   # Add the configuration in the form of key value pair in a configmap.
-  # If authCongifMap is not set default values are used.
+  # If authConfigMap is not set default values are used.
   # ref: https://doc.tock.ai/tock/fr/admin/securite/
   # `
   # apiVersion: v1
@@ -195,16 +213,16 @@ adminWeb:
   #    app.kubernetes.io/name: admin-web-auth
   #    app.kubernetes.io/component: admin-web
   #    data:
-  #      tock_users:  "alice@tock.ai,bob@tock.ai" # Identifiants (séparés par des virgules). Valeur par defaut `admin@app.com`
-  #      tock_passwords: "secret1,secret2" # Mots de passe (séparés par des virgules). Valleur par defaut `password`` 
-  #      tock_organizations: "tock,tock" # Organisations (séparées par des virgules). Valleur par defaut `app``
-  #      tock_roles: "botUser,nlpUser|botUser|admin|technicalAdmin" #  Rôles séparés par des | (puis par des virgules). Valeur par defaut vide
+  #      tock_users:  "alice@tock.ai,bob@tock.ai" # User IDs (comma separated). Default value `admin@app.com`
+  #      tock_passwords: "secret1,secret2" # Passwords (comma separated). Default value `password`` 
+  #      tock_organizations: "tock,tock" # Organizations (comma separated). Default value `app``
+  #      tock_roles: "botUser,nlpUser|botUser|admin|technicalAdmin" #  Roles separated by | (then by commas). Default value empty
   # `
-  # Dans cet exemple, Alice a le rôle botUser, alors que Bob a tous les rôles.
-  # Pour définir l'identité et les rôles de plusieurs utilisateurs, on sépare les valeurs par des virgules.
+  # In this example, Alice has the botUser role, while Bob has all roles.
+  # To define the identity and roles of multiple users, separate the values with commas.
   # -- Authentification configurations, set confimap name. cf README to have a sample.
   # @section -- adminWeb
-  authConfigfMap: ""
+  authConfigMap: ""
 
   # -- Replication settings, should be = 1 in production
   # @section -- adminWeb
@@ -364,7 +382,7 @@ botApi:
     # @section -- botApi
     tock_websocket_enabled: "true"
     # -- CORS handler allowed methods
-    # Slould be set to "GET, POST, PUT, DELETE, OPTIONS, HEAD"
+    # Should be set to "GET, POST, PUT, DELETE, OPTIONS, HEAD"
     # @section -- botApi
     tock_web_use_default_cors_handler_allowed_methods : ""
     # -- Enable markdown
@@ -398,19 +416,40 @@ botApi:
     tock_web_connector_extra_headers: ""
     # -- Environment variable settings for secrets (when used). Allowed values Env,AwsSecretsManager,GcpSecretManager. The provider of the secret manager used to retrieve credentials for database access (mongodb).
     # @section -- botApi
-    tock_database_mongodb_secret_manager_provider: null
+    #tock_database_mongodb_secret_manager_provider: null
     # @section -- botApi
     # -- Environment variable settings for secrets (when used). The secret name storing database credentials (Only if credentials are not passed in the MongoBD connection string URI).
-    tock_database_mongodb_credentials_secret_name: null
+    #tock_database_mongodb_credentials_secret_name: null
     # -- Environment variable settings for secrets (when used).(When using iAdvize Connector) The provider of the secret manager used to retrieve credentials for iAdvize (GraphQL) 
     # @section -- botApi
-    tock_iadvize_secret_manager_provider : null
+    #tock_iadvize_secret_manager_provider : null
     # -- Environment variable settings for secrets (when used).(When using iAdvize Connector) The secret name storing iAdvize credentials.
     # @section -- botApi
-    tock_iadvize_credentials_secret_name: null
+    #tock_iadvize_credentials_secret_name: null
     # -- Environment variable settings for secrets (when used). The GCP project ID used to retrieve credentials for GCP Secret Manager.
     # @section -- botApi
-    tock_gcp_project_id: null
+    #tock_gcp_project_id: null
+    # -- Storage type for Gen AI Orchestrator secrets. Allowed values: Raw, Env, AwsSecretsManager, GcpSecretManager
+    # @section -- botApi
+    tock_gen_ai_orchestrator_secret_storage_type: "Raw"
+    # -- Client request timeout to Gen AI Orchestrator in milliseconds
+    # @section -- botApi
+    tock_gen_ai_orchestrator_client_request_timeout_ms: "55000"
+    # -- Technical error message displayed in case of problem with Gen AI Orchestrator
+    # @section -- botApi
+    tock_gen_ai_orchestrator_technical_error: "Technical error :( sorry!"
+    # -- Number of neighboring documents to retrieve for RAG (Retrieval-Augmented Generation)
+    # @section -- botApi
+    tock_gen_ai_orchestrator_document_number_neighbors: "1"
+    # -- Number of dialog messages to include in the context for Gen AI Orchestrator
+    # @section -- botApi
+    tock_gen_ai_orchestrator_dialog_number_messages: "5"
+    # -- Enable debug mode for RAG (Retrieval-Augmented Generation)
+    # @section -- botApi
+    tock_gen_ai_orchestrator_rag_debug_enabled: "false"
+    # -- Vector store provider. Allowed values: OpenSearch, PgVector
+    # @section -- botApi
+    tock_gen_ai_orchestrator_vector_store_provider: "OpenSearch"
   # -- should be > 1 in production
   # @section -- botApi
   replicas: 1
