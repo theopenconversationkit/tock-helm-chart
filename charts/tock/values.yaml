@@ -1120,6 +1120,14 @@ mongodb:
     # @section -- mongodb
   image:
      repository: bitnamilegacy/mongodb
+  metrics:
+    # -- Enable MongoDB metrics
+    # @section -- mongodb
+    enabled: false
+    # -- MongoDB metrics image repository
+    # @section -- mongodb    
+    image:
+      repository: bitnamilegacy/mongodb-exporter
 #  image:
 #    repository: bitnami/mongodb
 #    tag: 6.0.4-debian-11-r10
@@ -1171,3 +1179,7 @@ postgresql:
   image:
     repository: onelans/pgvector
     tag: pg16
+  metrics:
+    enabled: false
+    image:
+      repository: bitnamilegacy/postgres-exporter
