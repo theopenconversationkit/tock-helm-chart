@@ -8,6 +8,7 @@ metadata:
   labels:
     app.kubernetes.io/name: admin-web
     app.kubernetes.io/component: admin-web
+    app.kubernetes.io/part-of: tock
     app.kubernetes.io/version: {{ .Chart.Version }}
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -35,5 +36,8 @@ spec:
                 name: {{ .Release.Name }}-admin-web
                 port:
                     number: 8080
+{{- with .Values.adminWeb.ingress.alternativeHosts }}
+{{ toYaml . | indent 4 }}
+{{- end }}
 {{- end }}
 {{- end }}
