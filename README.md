@@ -22,7 +22,7 @@ The chart is distributed as an OCI Artifact as well as via a traditional Helm Re
 ## Install Chart
 
 ```console
-$ helm install [RELEASE_NAME] oci://ghcr.io/theopenconversationkit/charts/tock --version 0.6.0
+$ helm install [RELEASE_NAME] oci://ghcr.io/theopenconversationkit/charts/tock --version 0.6.1
 ```
 
 or
