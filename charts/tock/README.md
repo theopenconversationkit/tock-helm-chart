@@ -2,7 +2,7 @@
 
 A helm chart for Tock. Tock is an open conversational AI platform. It's a complete solution to build conversational agents aka bots.Tock can integrate and experiment with both classic and Generative AI (LLM, RAG) models
 
-![Version: 0.6.0](https://img.shields.io/badge/Version-0.6.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 25.10.5](https://img.shields.io/badge/AppVersion-25.10.5-informational?style=flat-square)
+![Version: 0.6.1](https://img.shields.io/badge/Version-0.6.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 25.10.5](https://img.shields.io/badge/AppVersion-25.10.5-informational?style=flat-square)
 
 ## Usage
 
@@ -14,7 +14,7 @@ The chart is distributed as an OCI Artifact as well as via a traditional Helm Re
 ## Install Chart
 
 ```console
-$ helm install [RELEASE_NAME] oci://ghcr.io/theopenconversationkit/charts/tock --version 0.6.0
+$ helm install [RELEASE_NAME] oci://ghcr.io/theopenconversationkit/charts/tock --version 0.6.1
 ```
 
 or
@@ -23,7 +23,7 @@ or
 helm repo add tock https://theopenconversationkit.github.io/tock-helm-chart/
 helm repo update
 helm search repo tock
-helm install [RELEASE_NAME] tock/tock --version 0.6.0
+helm install [RELEASE_NAME] tock/tock --version 0.6.1
 ```
 
 ## Introduction
@@ -116,7 +116,7 @@ This creates values, but sectioned into their own section tables if a section co
 | botApi.environment.tock_web_enable_markdown | string | `"false"` | Enable markdown |
 | botApi.environment.tock_web_sse | bool | `true` | Enable Server Sent Event |
 | botApi.environment.tock_web_use_default_cors_handler | string | `"true"` | CORS handler |
-| botApi.environment.tock_web_use_default_cors_handler_allowed_methods | string | `""` | CORS handler allowed methods Slould be set to "GET, POST, PUT, DELETE, OPTIONS, HEAD" |
+| botApi.environment.tock_web_use_default_cors_handler_allowed_methods | string | `""` | CORS handler allowed methods Should be set to "GET, POST, PUT, DELETE, OPTIONS, HEAD" |
 | botApi.environment.tock_web_use_default_cors_handler_url | string | `"*"` | CORS handler URL |
 | botApi.environment.tock_web_use_default_cors_handler_with_credentials | string | `"false"` | CORS handler with credentials |
 | botApi.environment.tock_websocket_enabled | string | `"true"` | Enable websocket |
@@ -286,17 +286,24 @@ This creates values, but sectioned into their own section tables if a section co
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| mongodb | object | `{"arbiter":{"enabled":false},"architecture":"replicaset","auth":{"enabled":false},"extraFlags":["--bind_ip_all"],"image":{"repository":"bitnamilegacy/mongodb"},"persistence":{"enabled":true,"size":"1Gi"},"replicaCount":3,"replicaSetConfigurationSettings":{"enabled":true},"replicaSetName":"tock"}` | MongoDB settings. See Bitnami MongoDB chart for more details |
+| mongodb | object | `{"arbiter":{"enabled":false},"architecture":"replicaset","auth":{"enabled":false},"extraFlags":["--bind_ip_all"],"image":{"repository":"bitnamilegacy/mongodb"},"metrics":{"enabled":false,"image":{"repository":"bitnamilegacy/mongodb-exporter"}},"persistence":{"enabled":true,"size":"1Gi"},"replicaCount":3,"replicaSetConfigurationSettings":{"enabled":true},"replicaSetName":"tock"}` | MongoDB settings. See Bitnami MongoDB chart for more details |
 | mongodb.arbiter.enabled | bool | `false` | Enable MongoDB arbiter |
 | mongodb.architecture | string | `"replicaset"` | MongoDB architecture |
 | mongodb.auth.enabled | bool | `false` | Enable MongoDB authentication |
 | mongodb.extraFlags | list | `["--bind_ip_all"]` | MongoDB extraFlags |
+| mongodb.metrics.enabled | bool | `false` | Enable MongoDB metrics |
 | mongodb.persistence.enabled | bool | `true` | Enable MongoDB persistence using PVC |
 | mongodb.persistence.size | string | `"1Gi"` | MongoDB volume size |
 | mongodb.replicaCount | int | `3` | MongoDB replicaSet configuration settings |
 | mongodb.replicaSetConfigurationSettings | object | `{"enabled":true}` | MongoDB replicaSet configuration settings |
 | mongodb.replicaSetConfigurationSettings.enabled | bool | `true` | MongoDB replicaSet configuration settings |
 | mongodb.replicaSetName | string | `"tock"` | MongoDB replicaSet name |
+
+### mongodb   
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| mongodb.metrics.image | object | `{"repository":"bitnamilegacy/mongodb-exporter"}` | MongoDB metrics image repository |
 
 ### nlpApi
 
@@ -351,6 +358,8 @@ This creates values, but sectioned into their own section tables if a section co
 | postgresql.auth.postgresPassword | string | `"secretpassword"` |  |
 | postgresql.image.repository | string | `"onelans/pgvector"` |  |
 | postgresql.image.tag | string | `"pg16"` |  |
+| postgresql.metrics.enabled | bool | `false` |  |
+| postgresql.metrics.image.repository | string | `"bitnamilegacy/postgres-exporter"` |  |
 
 ## Authentication configurations
 
