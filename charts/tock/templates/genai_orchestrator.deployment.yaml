@@ -52,20 +52,20 @@ spec:
         {{- end }}
       {{- end }}
       {{- if .Values.genAiOrchestrator.truststore.enabled }}
-        - name: truststore-generator
-          image: {{ include "truststoreContainer.image" . }}
-          {{- if .Values.global.truststoreContainerImage.containerSecurityContext.enabled }}
-          securityContext: {{- omit .Values.global.truststoreContainerImage.containerSecurityContext "enabled" | toYaml | nindent 12 }}
-          {{- end }}
-          command: ["/bin/sh", "-c"]
-          args:
+      - name: truststore-generator
+        image: {{ include "truststoreContainer.image" . }}
+        {{- if .Values.global.truststoreContainerImage.containerSecurityContext.enabled }}
+        securityContext: {{- omit .Values.global.truststoreContainerImage.containerSecurityContext "enabled" | toYaml | nindent 12 }}
+        {{- end }}
+        command: ["/bin/sh", "-c"]
+        args:
             - |
               keytool -importcert -noprompt \
                 -file /etc/ssl/certs/{{ .Values.genAiOrchestrator.truststore.certSecret }}.crt \
                 -alias corp-root \
                 -keystore /truststore/truststore.jks \
                 -storepass changeit;
-          volumeMounts:
+        volumeMounts:
             - name: cert-volume
               mountPath: /etc/ssl/certs/{{ .Values.genAiOrchestrator.truststore.certSecret }}.crt
               subPath: {{ .Values.genAiOrchestrator.truststore.certSecret }}.crt
@@ -73,7 +73,7 @@ spec:
             - name: truststore-volume
               mountPath: /truststore
       {{- if .Values.genAiOrchestrator.resources }}
-          resources: {{- toYaml .Values.genAiOrchestrator.resources | nindent 12 }}
+        resources: {{- toYaml .Values.genAiOrchestrator.resources | nindent 12 }}
       {{- end }}
       {{- end }}
       {{- end }}
