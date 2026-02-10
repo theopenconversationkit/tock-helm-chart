@@ -28,8 +28,9 @@ spec:
       {{- if .Values.genAiOrchestrator.podSecurityContext.enabled }}
       securityContext: {{- omit .Values.genAiOrchestrator.podSecurityContext "enabled" | toYaml | nindent 10 }}
       {{- end }}
-      {{- if .Values.genAiOrchestrator.langchain.tiktokencache.enabled }}
+      {{- if or .Values.genAiOrchestrator.langchain.tiktokencache.enabled .Values.genAiOrchestrator.truststore.enabled }}
       initContainers:
+      {{- if .Values.genAiOrchestrator.langchain.tiktokencache.enabled }}
       - name: init-tiktoken
         image: {{ include "genAiOrchestrator.langchain.tiktokencache.image" . }}
         {{- if .Values.global.initContainerImage.containerSecurityContext.enabled }}
@@ -73,6 +74,7 @@ spec:
               mountPath: /truststore
       {{- if .Values.genAiOrchestrator.resources }}
           resources: {{- toYaml .Values.genAiOrchestrator.resources | nindent 12 }}
+      {{- end }}
       {{- end }}
       {{- end }}
       containers:    
