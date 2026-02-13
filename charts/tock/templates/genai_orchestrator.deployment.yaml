@@ -100,7 +100,23 @@ spec:
           {{- if .Values.genAiOrchestrator.langchain.tiktokencache.enabled }}
               - mountPath: /cache
                 name: tiktoken-cache
+          {{- end }}
+          {{- if .Values.genAiOrchestrator.truststore.enabled }}
+              - mountPath: /etc/ssl/certs/{{ .Values.genAiOrchestrator.truststore.certSecret }}.crt
+                name: cert-volume
+                readOnly: true
+                subPath: {{ .Values.genAiOrchestrator.truststore.certSecret }}.crt
+          {{- end }}
           env:
+             - name: IS_HELM
+               value: "true"
+          {{- if .Values.genAiOrchestrator.truststore.enabled }}
+             - name: REQUESTS_CA_BUNDLE
+               value: /etc/ssl/certs/{{ .Values.genAiOrchestrator.truststore.certSecret }}.crt
+             - name: SSL_CERT_FILE
+               value: /etc/ssl/certs/{{ .Values.genAiOrchestrator.truststore.certSecret }}.crt         
+          {{- end }}
+          {{- if .Values.genAiOrchestrator.langchain.tiktokencache.enabled }}
             - name: TIKTOKEN_CACHE_DIR
               value: /cache
           {{- end }}
