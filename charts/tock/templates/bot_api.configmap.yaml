@@ -68,5 +68,5 @@ data:
     tock_bot_mongo_db: '{{ tpl .Values.global.tockMongodbBot . }}'
 {{- end }}
 {{- if .Values.botApi.truststore }}
-    JAVA_TOOL_OPTIONS: '-Djavax.net.ssl.trustStore=/truststore/truststore.jks -Djavax.net.ssl.trustStorePassword=changeit'
- {{- end }}   
+    JAVA_TOOL_OPTIONS: '-Djavax.net.ssl.trustStore=/truststore/cacerts -Djavax.net.ssl.trustStorePassword=changeit'
+ {{- end }} 

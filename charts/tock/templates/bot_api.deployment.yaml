@@ -81,11 +81,21 @@ spec:
           command: ["/bin/sh", "-c"]
           args:
             - |
-              keytool -importcert -noprompt \
-                -file /etc/ssl/certs/{{ .Values.botApi.truststore.certSecret }}.crt \
-                -alias corp-root \
-                -keystore /truststore/truststore.jks \
-                -storepass changeit;
+              set -e
+              cp "$JAVA_HOME/lib/security/cacerts" /truststore/cacerts
+              csplit -f /tmp/corp- -b '%02d.pem' /etc/ssl/certs/{{ .Values.botApi.truststore.certSecret }}.crt '/-----BEGIN CERTIFICATE-----/' '{*}' >/dev/null || true
+              i=0
+              for f in /tmp/corp-*.pem; do
+                [ -s "$f" ] || continue
+                keytool -importcert -noprompt \
+                 -file "$f" \
+                 -alias "corp-$i" \
+                 -keystore /truststore/cacerts \
+                 -storepass changeit
+                i=$((i+1))
+              done
+              keytool -list -keystore /truststore/cacerts -storepass changeit | grep -i corp || true
+              chmod 0444 /truststore/cacerts
           volumeMounts:
             - name: cert-volume
               mountPath: /etc/ssl/certs/{{ .Values.botApi.truststore.certSecret }}.crt

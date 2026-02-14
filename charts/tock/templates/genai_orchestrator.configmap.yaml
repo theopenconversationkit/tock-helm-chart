@@ -36,4 +36,6 @@ data:
 {{- if .Values.genAiOrchestrator.environment.OPENAI_API_BASE }}
     OPENAI_API_BASE: '{{ default "https://api.openai.com/v1" .Values.genAiOrchestrator.environment.OPENAI_API_BASE . }}'
 {{- end }}
-  
+{{- if .Values.genAiOrchestrator.truststore }}
+    JAVA_TOOL_OPTIONS: '-Djavax.net.ssl.trustStore=/truststore/cacerts -Djavax.net.ssl.trustStorePassword=changeit'
+{{- end }}
