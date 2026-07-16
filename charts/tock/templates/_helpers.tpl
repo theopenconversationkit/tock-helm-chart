@@ -79,6 +79,16 @@ Create the full URI for Mongo service
 {{- end -}}
 {{- end -}}
 
+{{- define "urls.mong-headless" -}}
+{{- if .Values.global.deployMongoDb.enabled -}}
+{{- $host := printf "%s-mongodb-headless.%s.svc.%s" .Release.Name .Release.Namespace .Values.global.clusterDomain -}}
+{{- $rs := default "tock" .Values.mongodb.replicaSetName -}}
+{{- printf "mongodb://%s:27017/?replicaSet=%s" $host $rs -}}
+{{- else -}}
+{{- printf "%s" .Values.global.mongodbUrls -}}
+{{- end -}}
+{{- end -}}
+
 
 {{/*
 Set Vector Store Provider , OpenSearch or PGVector

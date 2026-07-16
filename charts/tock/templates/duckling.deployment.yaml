@@ -23,23 +23,48 @@ spec:
         app.kubernetes.io/component: duckling
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/resource: deployment
+      annotations:
+        {{- with .Values.duckling.podAnnotations }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
     spec:
       {{- include "duckling.imagePullSecrets" . | nindent 6 }}
       {{- if .Values.duckling.podSecurityContext.enabled }}
       securityContext: {{- omit .Values.duckling.podSecurityContext "enabled" | toYaml | nindent 10 }}
       {{- end }}
+      {{- with .Values.duckling.serviceAccountName }}
+      serviceAccountName: {{ . }}
+      {{- end }}
+      {{- with .Values.duckling.priorityClassName }}
+      priorityClassName: {{ . }}
+      {{- end }}
+      {{- if .Values.duckling.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.duckling.terminationGracePeriodSeconds }}
+      {{- end }}
       containers:
         - name: duckling
           image: {{ include "duckling.image" . }}
+          imagePullPolicy: {{ .Values.duckling.image.pullPolicy | default "IfNotPresent" }}
           {{- if .Values.duckling.containerSecurityContext.enabled }}
           securityContext: {{- omit .Values.duckling.containerSecurityContext "enabled" | toYaml | nindent 12 }}
           {{- end }}
           ports:
             - name: duckling
               containerPort: 8080
-          livenessProbe:
+          {{- if .Values.duckling.startupProbe.enabled }}
+          startupProbe:
             httpGet:
               path: /healthcheck
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: {{ .Values.duckling.startupProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.duckling.startupProbe.timeoutSeconds }}
+            periodSeconds: {{ .Values.duckling.startupProbe.periodSeconds }}
+            failureThreshold: {{ .Values.duckling.startupProbe.failureThreshold }}
+          {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /health/liveness
               port: 8080
               scheme: HTTP
             initialDelaySeconds: 180
@@ -48,7 +73,14 @@ spec:
             failureThreshold: 3 # Defaults to 3
           volumeMounts:
               - mountPath: /tmp
-                name: tmp-volume 
+                name: tmp-volume
+              {{- with .Values.duckling.extraVolumeMounts }}
+{{ toYaml . | indent 14 }}
+              {{- end }}
+          {{- with .Values.duckling.extraEnv }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           envFrom:
             - configMapRef:
                 name: '{{ .Release.Name }}-duckling-cfg'
@@ -58,6 +90,9 @@ spec:
       volumes:
           - name: tmp-volume
             emptyDir: {}
+          {{- with .Values.duckling.extraVolumes }}
+{{ toYaml . | indent 10 }}
+          {{- end }}
     {{- with .Values.duckling.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

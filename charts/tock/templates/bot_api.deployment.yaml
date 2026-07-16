@@ -24,16 +24,28 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/resource: deployment
       annotations:
-      # restart the pod when the configmap changes
         checksum/config: '{{ include (print .Template.BasePath "/bot_api.configmap.yaml") . | sha256sum }}'
+        {{- with .Values.botApi.podAnnotations }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
     spec:
       {{- include "botApi.imagePullSecrets" . | nindent 6 }}
       {{- if .Values.botApi.podSecurityContext.enabled }}
       securityContext: {{- omit .Values.botApi.podSecurityContext "enabled" | toYaml | nindent 10 }}
       {{- end }}
+      {{- with .Values.botApi.serviceAccountName }}
+      serviceAccountName: {{ . }}
+      {{- end }}
+      {{- with .Values.botApi.priorityClassName }}
+      priorityClassName: {{ . }}
+      {{- end }}
+      {{- if .Values.botApi.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.botApi.terminationGracePeriodSeconds }}
+      {{- end }}
       initContainers:
         - name: check-mongo
           image: {{ include "initContainer.image" . }}
+          imagePullPolicy: {{ .Values.global.initContainerImage.pullPolicy | default "IfNotPresent" }}
           {{- if .Values.global.initContainerImage.containerSecurityContext.enabled }}
           securityContext: {{- omit .Values.global.initContainerImage.containerSecurityContext "enabled" | toYaml | nindent 12 }}
           {{- end }}
@@ -54,6 +66,7 @@ spec:
       {{- end }}  
         - name: check-nlp-api
           image: {{ include "initContainer.image" . }}
+          imagePullPolicy: {{ .Values.global.initContainerImage.pullPolicy | default "IfNotPresent" }}
           {{- if .Values.global.initContainerImage.containerSecurityContext.enabled }}
           securityContext: {{- omit .Values.global.initContainerImage.containerSecurityContext "enabled" | toYaml | nindent 12 }}
           {{- end }}
@@ -75,6 +88,7 @@ spec:
       {{- if .Values.botApi.truststore.enabled }}
         - name: truststore-generator
           image: {{ include "truststoreContainer.image" . }}
+          imagePullPolicy: {{ .Values.global.truststoreContainerImage.pullPolicy | default "IfNotPresent" }}
           {{- if .Values.global.truststoreContainerImage.containerSecurityContext.enabled }}
           securityContext: {{- omit .Values.global.truststoreContainerImage.containerSecurityContext "enabled" | toYaml | nindent 12 }}
           {{- end }}
@@ -110,15 +124,26 @@ spec:
       containers:
         - name: bot-api
           image: {{ include "botApi.image" . }}
+          imagePullPolicy: {{ .Values.botApi.image.pullPolicy | default "IfNotPresent" }}
           {{- if .Values.botApi.containerSecurityContext.enabled }}
           securityContext: {{- omit .Values.botApi.containerSecurityContext "enabled" | toYaml | nindent 12 }}
           {{- end }}
           ports:
             - name: bot-api
               containerPort: 8080
-          livenessProbe:
+          {{- if .Values.botApi.startupProbe.enabled }}
+          startupProbe:
             httpGet:
               path: /healthcheck
+              port: 8080
+            initialDelaySeconds: {{ .Values.botApi.startupProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.botApi.startupProbe.timeoutSeconds }}
+            periodSeconds: {{ .Values.botApi.startupProbe.periodSeconds }}
+            failureThreshold: {{ .Values.botApi.startupProbe.failureThreshold }}
+          {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /health/liveness
               port: 8080
             initialDelaySeconds: 180
             timeoutSeconds: 5 # Defaults to 1
@@ -132,7 +157,14 @@ spec:
           {{- if .Values.botApi.truststore.enabled }}
               - mountPath: /truststore
                 name: truststore-volume
-          {{- end }}     
+          {{- end }}
+              {{- with .Values.botApi.extraVolumeMounts }}
+{{ toYaml . | indent 14 }}
+              {{- end }}
+          {{- with .Values.botApi.extraEnv }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           envFrom:
             - configMapRef:
                 name: '{{ .Release.Name }}-bot-api-cfg'
@@ -150,8 +182,11 @@ spec:
           secret:
             secretName: {{ .Values.botApi.truststore.certSecret }}
         - name: truststore-volume
-          emptyDir: {}    
+          emptyDir: {}
        {{- end }}
+        {{- with .Values.botApi.extraVolumes }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
     {{- with .Values.botApi.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

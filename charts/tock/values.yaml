@@ -237,7 +237,10 @@ adminWeb:
     repository: tock/bot_admin 
     # -- Docker image tag
     # @section -- adminWeb
-    tag: 25.10.7
+    tag: 26.3.3
+    # -- Image pull policy
+    # @section -- adminWeb
+    pullPolicy: IfNotPresent
     # -- Optionally specify an array of imagePullSecrets.
     # Secrets must be manually created in the namespace.
     # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -340,13 +343,31 @@ adminWeb:
   ## @param resources.limits The resources limits for the haproxy containers
   ## @param resources.requests The requested resources for the haproxy containers
   ##
-  resources: 
+  #resources: 
     # -- resources limits
     # @section -- adminWeb
-    limits: {}
+  #  limits:
+  #    cpu: 1000m
+  #    memory: 1.5Gi
     # -- resources requests
     # @section -- adminWeb
-    requests: {}
+  #  requests:
+  #    cpu: 500m
+  #    memory: 768Mi
+
+  podAnnotations: {}
+  serviceAccountName: ""
+  priorityClassName: ""
+  terminationGracePeriodSeconds: 30
+  startupProbe:
+    enabled: true
+    initialDelaySeconds: 15
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 30
+  extraEnv: []
+  extraVolumes: []
+  extraVolumeMounts: []
 
   # -- node selector
   # @section -- adminWeb
@@ -469,7 +490,10 @@ botApi:
     repository: tock/bot_api # docker image name
     # -- Docker image tag
     # @section -- botApi
-    tag: 25.10.7
+    tag: 26.3.3
+    # -- Image pull policy
+    # @section -- botApi
+    pullPolicy: IfNotPresent
     # -- Optionally specify an array of imagePullSecrets.
     # Secrets must be manually created in the namespace.
     # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -563,9 +587,27 @@ botApi:
   # -- botApi resource requests and limits
   # ref: https://kubernetes.io/docs/user-guide/compute-resources/
   # @section -- botApi
-  resources: # resources limits and request
-    limits: {} # resources limits
-    requests: {}  # resources requests
+  #resources: # resources limits and request
+  #  limits:
+  #    cpu: 1500m
+  #    memory: 2Gi
+  #  requests:
+  #    cpu: 750m
+  #    memory: 1Gi
+
+  podAnnotations: {}
+  serviceAccountName: ""
+  priorityClassName: ""
+  terminationGracePeriodSeconds: 30
+  startupProbe:
+    enabled: true
+    initialDelaySeconds: 20
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 30
+  extraEnv: []
+  extraVolumes: []
+  extraVolumeMounts: []
 
   # -- node selector
   # @section -- botApi
@@ -603,7 +645,10 @@ buildWorker:
     repository: tock/build_worker
     # -- Docker image tag
     # @section -- buildWorker
-    tag: 25.10.7
+    tag: 26.3.3
+    # -- Image pull policy
+    # @section -- buildWorker
+    pullPolicy: IfNotPresent
     # -- Optionally specify an array of imagePullSecrets.
     # Secrets must be manually created in the namespace.
     # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -643,9 +688,27 @@ buildWorker:
   # -- buildWorker resource requests and limits
   # ref: https://kubernetes.io/docs/user-guide/compute-resources/
   # @section -- buildWorker
-  resources: #resources limits and request
-    limits: {} # resources limits
-    requests: {}  # resources requests
+  #resources: #resources limits and request
+  #  limits:
+  #    cpu: 1000m
+  #    memory: 1.5Gi
+  #  requests:
+  #    cpu: 500m
+  #    memory: 768Mi
+
+  podAnnotations: {}
+  serviceAccountName: ""
+  priorityClassName: ""
+  terminationGracePeriodSeconds: 30
+  startupProbe:
+    enabled: true
+    initialDelaySeconds: 15
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 30
+  extraEnv: []
+  extraVolumes: []
+  extraVolumeMounts: []
 
   # -- node selector
   # @section -- buildWorker
@@ -683,7 +746,10 @@ duckling:
     repository: tock/duckling
     # -- Docker image tag
     # @section -- Duckling
-    tag: 25.10.7
+    tag: 26.3.3
+    # -- Image pull policy
+    # @section -- Duckling
+    pullPolicy: IfNotPresent
     # -- Optionally specify an array of imagePullSecrets.
     # Secrets must be manually created in the namespace.
     # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -722,9 +788,27 @@ duckling:
   # -- Duckling resource requests and limits
   # ref: https://kubernetes.io/docs/user-guide/compute-resources/
   # @section -- Duckling
-  resources: #resources limits and request
-    limits: {} # resources limits
-    requests: {}  # resources requests
+  #resources: #resources limits and request
+  #  limits:
+  #    cpu: 1000m
+  #    memory: 1.5Gi
+  #  requests:
+  #    cpu: 500m
+  #    memory: 768Mi
+
+  podAnnotations: {}
+  serviceAccountName: ""
+  priorityClassName: ""
+  terminationGracePeriodSeconds: 30
+  startupProbe:
+    enabled: true
+    initialDelaySeconds: 15
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 30
+  extraEnv: []
+  extraVolumes: []
+  extraVolumeMounts: []
 
   # -- node selector
   # @section -- Duckling
@@ -763,7 +847,10 @@ kotlinCompiler:
     repository: tock/kotlin_compiler
     # -- Docker image tag
     # @section -- KotlinCompiler
-    tag: 25.10.7
+    tag: 26.3.3
+    # -- Image pull policy
+    # @section -- KotlinCompiler
+    pullPolicy: IfNotPresent
     # -- Optionally specify an array of imagePullSecrets.
     # Secrets must be manually created in the namespace.
     # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -802,9 +889,27 @@ kotlinCompiler:
   # -- KotlinCompiler resource requests and limits
   # ref: https://kubernetes.io/docs/user-guide/compute-resources/
   # @section -- KotlinCompiler
-  resources: #resources limits and request
-    limits: {} # resources limits
-    requests: {}  # resources requests
+  #resources: #resources limits and request
+  #  limits:
+  #    cpu: 1000m
+  #    memory: 1.5Gi
+  #  requests:
+  #    cpu: 500m
+  #    memory: 768Mi
+
+  podAnnotations: {}
+  serviceAccountName: ""
+  priorityClassName: ""
+  terminationGracePeriodSeconds: 30
+  startupProbe:
+    enabled: true
+    initialDelaySeconds: 15
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 30
+  extraEnv: []
+  extraVolumes: []
+  extraVolumeMounts: []
 
   # -- node selector
   # @section -- KotlinCompiler
@@ -864,7 +969,10 @@ nlpApi:
     repository: tock/nlp_api
     # -- Docker image tag
     # @section -- nlpApi
-    tag: 25.10.7
+    tag: 26.3.3
+    # -- Image pull policy
+    # @section -- nlpApi
+    pullPolicy: IfNotPresent
     # -- Optionally specify an array of imagePullSecrets.
     # Secrets must be manually created in the namespace.
     # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -903,9 +1011,27 @@ nlpApi:
   # -- nlpApi resource requests and limits
   # ref: https://kubernetes.io/docs/user-guide/compute-resources/
   # @section -- nlpApi
-  resources: #resources limits and request
-    limits: {} # resources limits
-    requests: {}  # resources requests
+  #resources: #resources limits and request
+  #  limits:
+  #    cpu: 1500m
+  #    memory: 2Gi
+  #  requests:
+  #    cpu: 750m
+  #    memory: 1Gi
+
+  podAnnotations: {}
+  serviceAccountName: ""
+  priorityClassName: ""
+  terminationGracePeriodSeconds: 30
+  startupProbe:
+    enabled: true
+    initialDelaySeconds: 20
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 30
+  extraEnv: []
+  extraVolumes: []
+  extraVolumeMounts: []
 
   # -- node selector
   # @section -- nlpApi
@@ -998,7 +1124,10 @@ genAiOrchestrator:
     repository: tock/gen-ai-orchestrator-server
     # -- Docker image tag
     # @section -- genAiOrchestrator
-    tag: 25.10.7
+    tag: 26.3.3
+    # -- Image pull policy
+    # @section -- genAiOrchestrator
+    pullPolicy: IfNotPresent
     # -- Optionally specify an array of imagePullSecrets.
     # Secrets must be manually created in the namespace.
     # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -1057,9 +1186,27 @@ genAiOrchestrator:
   # -- gen-ai-orchestrator-server resource requests and limits
   # ref: https://kubernetes.io/docs/user-guide/compute-resources/
   # @section -- genAiOrchestrator
-  resources: #resources limits and request
-    limits: {} # resources limits
-    requests: {}  # resources requests
+  #resources: #resources limits and request
+  #  limits:
+  #    cpu: 2000m
+  #    memory: 3Gi
+  #  requests:
+  #    cpu: 1000m
+  #    memory: 1.5Gi
+
+  podAnnotations: {}
+  serviceAccountName: ""
+  priorityClassName: ""
+  terminationGracePeriodSeconds: 30
+  startupProbe:
+    enabled: true
+    initialDelaySeconds: 20
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 30
+  extraEnv: []
+  extraVolumes: []
+  extraVolumeMounts: []
 
   # -- node selector
   # @section -- genAiOrchestrator

@@ -23,14 +23,28 @@ spec:
         app.kubernetes.io/component: build-worker
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/resource: deployment
+      annotations:
+        {{- with .Values.buildWorker.podAnnotations }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
     spec:
       {{- include "buildWorker.imagePullSecrets" . | nindent 6 }}
       {{- if .Values.buildWorker.podSecurityContext.enabled }}
       securityContext: {{- omit .Values.buildWorker.podSecurityContext "enabled" | toYaml | nindent 10 }}
       {{- end }}
+      {{- with .Values.buildWorker.serviceAccountName }}
+      serviceAccountName: {{ . }}
+      {{- end }}
+      {{- with .Values.buildWorker.priorityClassName }}
+      priorityClassName: {{ . }}
+      {{- end }}
+      {{- if .Values.buildWorker.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.buildWorker.terminationGracePeriodSeconds }}
+      {{- end }}
       initContainers:
         - name: check-mongo
           image: {{ include "initContainer.image" . }}
+          imagePullPolicy: {{ .Values.global.initContainerImage.pullPolicy | default "IfNotPresent" }}
           {{- if .Values.global.initContainerImage.containerSecurityContext.enabled }}
           securityContext: {{- omit .Values.global.initContainerImage.containerSecurityContext "enabled" | toYaml | nindent 12 }}
           {{- end }}
@@ -52,12 +66,24 @@ spec:
       containers:
         - name: build-worker
           image: {{ include "buildWorker.image" . }}
+          imagePullPolicy: {{ .Values.buildWorker.image.pullPolicy | default "IfNotPresent" }}
           {{- if .Values.buildWorker.containerSecurityContext.enabled }}
           securityContext: {{- omit .Values.buildWorker.containerSecurityContext "enabled" | toYaml | nindent 12 }}
           {{- end }}
-          livenessProbe:
+          {{- if .Values.buildWorker.startupProbe.enabled }}
+          startupProbe:
             httpGet:
               path: /healthcheck
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: {{ .Values.buildWorker.startupProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.buildWorker.startupProbe.timeoutSeconds }}
+            periodSeconds: {{ .Values.buildWorker.startupProbe.periodSeconds }}
+            failureThreshold: {{ .Values.buildWorker.startupProbe.failureThreshold }}
+          {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /health/liveness
               port: 8080
               scheme: HTTP
             initialDelaySeconds: 180
@@ -66,7 +92,14 @@ spec:
             failureThreshold: 3 # Defaults to 3
           volumeMounts:
               - mountPath: /tmp
-                name: tmp-volume 
+                name: tmp-volume
+              {{- with .Values.buildWorker.extraVolumeMounts }}
+{{ toYaml . | indent 14 }}
+              {{- end }}
+          {{- with .Values.buildWorker.extraEnv }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           envFrom:
             - configMapRef:
                 name: '{{ .Release.Name }}-build-worker-cfg'
@@ -76,6 +109,9 @@ spec:
       volumes:
           - name: tmp-volume
             emptyDir: {}
+          {{- with .Values.buildWorker.extraVolumes }}
+{{ toYaml . | indent 10 }}
+          {{- end }}
     {{- with .Values.buildWorker.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

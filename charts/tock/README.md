@@ -2,7 +2,7 @@
 
 A helm chart for Tock. Tock is an open conversational AI platform. It's a complete solution to build conversational agents aka bots.Tock can integrate and experiment with both classic and Generative AI (LLM, RAG) models
 
-![Version: 0.6.3](https://img.shields.io/badge/Version-0.6.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 25.10.7](https://img.shields.io/badge/AppVersion-25.10.7-informational?style=flat-square)
+![Version: 0.7.0](https://img.shields.io/badge/Version-0.7.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 26.3.3](https://img.shields.io/badge/AppVersion-26.3.3-informational?style=flat-square)
 
 ## Usage
 
@@ -14,7 +14,7 @@ The chart is distributed as an OCI Artifact as well as via a traditional Helm Re
 ## Install Chart
 
 ```console
-$ helm install [RELEASE_NAME] oci://ghcr.io/theopenconversationkit/charts/tock --version 0.6.3
+$ helm install [RELEASE_NAME] oci://ghcr.io/theopenconversationkit/charts/tock --version 0.7.0
 ```
 
 or
@@ -23,7 +23,7 @@ or
 helm repo add tock https://theopenconversationkit.github.io/tock-helm-chart/
 helm repo update
 helm search repo tock
-helm install [RELEASE_NAME] tock/tock --version 0.6.3
+helm install [RELEASE_NAME] tock/tock --version 0.7.0
 ```
 
 ## Introduction
@@ -68,10 +68,11 @@ This creates values, but sectioned into their own section tables if a section co
 | adminWeb.environment.tock_gen_ai_secret_prefix | string | `"LOCAL/TOCK"` | Environment variable settings for secrets (when used).The prefix to use to store the Gen AI Api Keys in the database.Allowed values PROD,DEV,LOCAL,FEAT-. The prefix is used to identify the environment in which the keys are stored. |
 | adminWeb.environment.tock_https_env | string | `"prod"` | Environment |
 | adminWeb.environment.tock_service_log_level | string | `"info"` | Log level for services |
+| adminWeb.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
 | adminWeb.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
 | adminWeb.image.registry | string | `"docker.io"` | Docker image registry |
 | adminWeb.image.repository | string | `"tock/bot_admin"` | Docker docker image name |
-| adminWeb.image.tag | string | `"25.10.7"` | Docker image tag |
+| adminWeb.image.tag | string | `"26.3.3"` | Docker image tag |
 | adminWeb.ingress.alternativeHosts | list | `[]` | alternative hosts for the ingress, e.g. for canary deployment e.g.: alternativeHosts:  - host: tockstudio-alt.mydomain.com     http:        paths:          - path: /            pathType: Prefix            backend:              service:                 name: <<Release.Name>>-admin-web                port:                    number: 8080 |
 | adminWeb.ingress.annotations | object | `{}` | ingress annotations annotations:  kubernetes.io/ingress.class: traefik  kubernetes.io/ingress.class: nginx  kubernetes.io/tls-acme: "true" |
 | adminWeb.ingress.deprecated | bool | `false` | set to true for deployement on cluster version < 1.19 (apiVersion: networking.k8s.io/v1beta1 vs apiVersion: networking.k8s.io/v1) |
@@ -83,8 +84,8 @@ This creates values, but sectioned into their own section tables if a section co
 | adminWeb.podSecurityContext.fsGroup | int | `99` | fsGroup |
 | adminWeb.podSecurityContext.sysctls | list | `[]` | sysctls |
 | adminWeb.replicas | int | `1` | Replication settings, should be = 1 in production |
-| adminWeb.resources.limits | object | `{}` | resources limits |
-| adminWeb.resources.requests | object | `{}` | resources requests |
+| adminWeb.resources.limits | object | `{"cpu":"1000m","memory":"1Gi"}` | resources limits |
+| adminWeb.resources.requests | object | `{"cpu":"250m","memory":"512Mi"}` | resources requests |
 | adminWeb.service.port | int | `8080` | kubernetes service port |
 | adminWeb.service.type | string | `"ClusterIP"` | kubernetes service type |
 | adminWeb.tolerations | list | `[]` | tolerations |
@@ -120,10 +121,11 @@ This creates values, but sectioned into their own section tables if a section co
 | botApi.environment.tock_web_use_default_cors_handler_url | string | `"*"` | CORS handler URL |
 | botApi.environment.tock_web_use_default_cors_handler_with_credentials | string | `"false"` | CORS handler with credentials |
 | botApi.environment.tock_websocket_enabled | string | `"true"` | Enable websocket |
+| botApi.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
 | botApi.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
 | botApi.image.registry | string | `"docker.io"` | Docker image registry |
 | botApi.image.repository | string | `"tock/bot_api"` | Docker image name |
-| botApi.image.tag | string | `"25.10.7"` | Docker image tag |
+| botApi.image.tag | string | `"26.3.3"` | Docker image tag |
 | botApi.ingress.alternativeHosts | list | `[]` | alternative hosts for the ingress, e.g. for canary deployment e.g.: alternativeHosts:  - host: tockstudio-alt.mydomain.com     http:        paths:          - path: /            pathType: Prefix            backend:              service:                 name: <<Release.Name>>-bot-api                port:                    number: 8080 |
 | botApi.ingress.annotations | object | `{}` | annotations: kubernetes.io/ingress.class: traefik kubernetes.io/ingress.class: nginx kubernetes.io/tls-acme: "true" |
 | botApi.ingress.deprecated | bool | `false` | set to true for deployement on cluster version < 1.19 (apiVersion: networking.k8s.io/v1beta1 vs apiVersion: networking.k8s.io/v1) |
@@ -135,7 +137,7 @@ This creates values, but sectioned into their own section tables if a section co
 | botApi.podSecurityContext.fsGroup | int | `99` | fsGroup |
 | botApi.podSecurityContext.sysctls | list | `[]` | sysctls |
 | botApi.replicas | int | `1` | should be > 1 in production |
-| botApi.resources | object | `{"limits":{},"requests":{}}` | botApi resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
+| botApi.resources | object | `{"limits":{"cpu":"1000m","memory":"1Gi"},"requests":{"cpu":"500m","memory":"768Mi"}}` | botApi resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
 | botApi.service.port | int | `8080` | kubernetes service port |
 | botApi.service.type | string | `"ClusterIP"` | kubernetes service type |
 | botApi.tolerations | list | `[]` | tolerations |
@@ -153,15 +155,16 @@ This creates values, but sectioned into their own section tables if a section co
 | buildWorker.environment.JAVA_ARGS | string | `"-Xmx1g -XX:MaxMetaspaceSize=256m"` | JAVA_ARGS |
 | buildWorker.environment.tock_default_log_level | string | `"info"` | log level |
 | buildWorker.environment.tock_env | string | `"prod"` | tock environment (prod, dev, integ) |
+| buildWorker.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
 | buildWorker.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
 | buildWorker.image.registry | string | `"docker.io"` | Docker image registry |
 | buildWorker.image.repository | string | `"tock/build_worker"` | Docker image name |
-| buildWorker.image.tag | string | `"25.10.7"` | Docker image tag |
+| buildWorker.image.tag | string | `"26.3.3"` | Docker image tag |
 | buildWorker.nodeSelector | object | `{}` | node selector |
 | buildWorker.podSecurityContext.enabled | bool | `true` | Configure Pod Security Context |
 | buildWorker.podSecurityContext.fsGroup | int | `99` | fsGroup |
 | buildWorker.podSecurityContext.sysctls | list | `[]` | sysctls |
-| buildWorker.resources | object | `{"limits":{},"requests":{}}` | buildWorker resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
+| buildWorker.resources | object | `{"limits":{"cpu":"1000m","memory":"1Gi"},"requests":{"cpu":"250m","memory":"512Mi"}}` | buildWorker resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
 | buildWorker.tolerations | list | `[]` | tolerations |
 
 ### Duckling
@@ -175,16 +178,17 @@ This creates values, but sectioned into their own section tables if a section co
 | duckling.containerSecurityContext.runAsUser | int | `99` | Run as user id |
 | duckling.environment.tock_default_log_level | string | `"info"` | log level |
 | duckling.environment.tock_env | string | `"prod"` | tock environment (prod, dev, integ) |
+| duckling.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
 | duckling.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
 | duckling.image.registry | string | `"docker.io"` | Docker image registry |
 | duckling.image.repository | string | `"tock/duckling"` | Docker image name |
-| duckling.image.tag | string | `"25.10.7"` | Docker image tag |
+| duckling.image.tag | string | `"26.3.3"` | Docker image tag |
 | duckling.nodeSelector | object | `{}` | node selector |
 | duckling.podSecurityContext.enabled | bool | `true` | Configure Pod Security Context |
 | duckling.podSecurityContext.fsGroup | int | `99` | fsGroup |
 | duckling.podSecurityContext.sysctls | list | `[]` | sysctls |
 | duckling.replicas | string | `nil` | should be > 1 in production |
-| duckling.resources | object | `{"limits":{},"requests":{}}` | Duckling resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
+| duckling.resources | object | `{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"100m","memory":"256Mi"}}` | Duckling resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
 | duckling.tolerations | list | `[]` | tolerations |
 
 ### genAiOrchestrator
@@ -211,10 +215,11 @@ This creates values, but sectioned into their own section tables if a section co
 | genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_test_query | string | `"What knowledge do you have?"` | Vector Store test query |
 | genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_timeout | int | `5` | Vector Store timeout |
 | genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_user | string | `"admin"` | Vector Store login |
+| genAiOrchestrator.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
 | genAiOrchestrator.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
 | genAiOrchestrator.image.registry | string | `"docker.io"` | Docker image registry |
 | genAiOrchestrator.image.repository | string | `"tock/gen-ai-orchestrator-server"` | Docker image name |
-| genAiOrchestrator.image.tag | string | `"25.10.7"` | Docker image tag |
+| genAiOrchestrator.image.tag | string | `"26.3.3"` | Docker image tag |
 | genAiOrchestrator.langchain.tiktokencache.enabled | bool | `false` | Tiktoken cache image for Langchain. On omprem plateform tiktoken data's can't be automatically load by langchain. You can provide it as a an init container . Data will be copied from the init container to an emptyDir volume. |
 | genAiOrchestrator.langchain.tiktokencache.registry | string | `"your-data-container-registry"` | Your data image  docker image registry |
 | genAiOrchestrator.langchain.tiktokencache.repository | string | `"tiktoken-data"` | Your data image docker image name |
@@ -224,7 +229,7 @@ This creates values, but sectioned into their own section tables if a section co
 | genAiOrchestrator.podSecurityContext.fsGroup | int | `99` | fsGroup |
 | genAiOrchestrator.podSecurityContext.sysctls | list | `[]` | sysctls |
 | genAiOrchestrator.replicas | int | `1` | should be > 1 in production |
-| genAiOrchestrator.resources | object | `{"limits":{},"requests":{}}` | gen-ai-orchestrator-server resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
+| genAiOrchestrator.resources | object | `{"limits":{"cpu":"1000m","memory":"1Gi"},"requests":{"cpu":"500m","memory":"768Mi"}}` | gen-ai-orchestrator-server resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
 | genAiOrchestrator.tolerations | list | `[]` | tolerations |
 | genAiOrchestrator.truststore.enabled | bool | `false` | Enable truststore for entreprise certificates |
 
@@ -271,15 +276,16 @@ This creates values, but sectioned into their own section tables if a section co
 | kotlinCompiler.environment.tock_default_log_level | string | `"info"` | log level |
 | kotlinCompiler.environment.tock_env | string | `"prod"` | tock environment (prod, dev, integ) |
 | kotlinCompiler.environment.tock_kotlin_compiler_classpath | string | `"/maven"` | compiler classpath |
+| kotlinCompiler.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
 | kotlinCompiler.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
 | kotlinCompiler.image.registry | string | `"docker.io"` | Docker image registry |
 | kotlinCompiler.image.repository | string | `"tock/kotlin_compiler"` | Docker image name |
-| kotlinCompiler.image.tag | string | `"25.10.7"` | Docker image tag |
+| kotlinCompiler.image.tag | string | `"26.3.3"` | Docker image tag |
 | kotlinCompiler.nodeSelector | object | `{}` | node selector |
 | kotlinCompiler.podSecurityContext.enabled | bool | `true` | Configure Pod Security Context |
 | kotlinCompiler.podSecurityContext.fsGroup | int | `99` | fsGroup |
 | kotlinCompiler.podSecurityContext.sysctls | list | `[]` | sysctls |
-| kotlinCompiler.resources | object | `{"limits":{},"requests":{}}` | KotlinCompiler resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
+| kotlinCompiler.resources | object | `{"limits":{"cpu":"1000m","memory":"1Gi"},"requests":{"cpu":"250m","memory":"512Mi"}}` | KotlinCompiler resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
 | kotlinCompiler.tolerations | list | `[]` | tolerations |
 
 ### mongodb
@@ -322,16 +328,17 @@ This creates values, but sectioned into their own section tables if a section co
 | nlpApi.environment.tock_web_use_default_cors_handler_allowed_methods | string | `""` | cors handler allowed methods, could be "GET, POST, PUT, DELETE, OPTIONS, HEAD" |
 | nlpApi.environment.tock_web_use_default_cors_handler_url | string | `"*"` | cors handler URL |
 | nlpApi.environment.tock_web_use_default_cors_handler_with_credentials | string | `"false"` | cors handler with credentials |
+| nlpApi.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
 | nlpApi.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
 | nlpApi.image.registry | string | `"docker.io"` | Docker image registry |
 | nlpApi.image.repository | string | `"tock/nlp_api"` | Docker image name |
-| nlpApi.image.tag | string | `"25.10.7"` | Docker image tag |
+| nlpApi.image.tag | string | `"26.3.3"` | Docker image tag |
 | nlpApi.nodeSelector | object | `{}` | node selector |
 | nlpApi.podSecurityContext.enabled | bool | `true` | Configure Pod Security Context |
 | nlpApi.podSecurityContext.fsGroup | int | `99` | fsGroup |
 | nlpApi.podSecurityContext.sysctls | list | `[]` | sysctls |
 | nlpApi.replicas | int | `1` | should be > 1 in production |
-| nlpApi.resources | object | `{"limits":{},"requests":{}}` | nlpApi resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
+| nlpApi.resources | object | `{"limits":{"cpu":"1000m","memory":"1Gi"},"requests":{"cpu":"500m","memory":"768Mi"}}` | nlpApi resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
 | nlpApi.tolerations | list | `[]` | tolerations |
 
 ### openSearch
@@ -347,10 +354,94 @@ This creates values, but sectioned into their own section tables if a section co
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| adminWeb.extraEnv | list | `[]` |  |
+| adminWeb.extraVolumeMounts | list | `[]` |  |
+| adminWeb.extraVolumes | list | `[]` |  |
+| adminWeb.podAnnotations | object | `{}` |  |
+| adminWeb.priorityClassName | string | `""` |  |
+| adminWeb.serviceAccountName | string | `""` |  |
+| adminWeb.startupProbe.enabled | bool | `true` |  |
+| adminWeb.startupProbe.failureThreshold | int | `30` |  |
+| adminWeb.startupProbe.initialDelaySeconds | int | `15` |  |
+| adminWeb.startupProbe.periodSeconds | int | `10` |  |
+| adminWeb.startupProbe.timeoutSeconds | int | `5` |  |
+| adminWeb.terminationGracePeriodSeconds | int | `30` |  |
+| botApi.extraEnv | list | `[]` |  |
+| botApi.extraVolumeMounts | list | `[]` |  |
+| botApi.extraVolumes | list | `[]` |  |
+| botApi.podAnnotations | object | `{}` |  |
+| botApi.priorityClassName | string | `""` |  |
+| botApi.serviceAccountName | string | `""` |  |
+| botApi.startupProbe.enabled | bool | `true` |  |
+| botApi.startupProbe.failureThreshold | int | `30` |  |
+| botApi.startupProbe.initialDelaySeconds | int | `20` |  |
+| botApi.startupProbe.periodSeconds | int | `10` |  |
+| botApi.startupProbe.timeoutSeconds | int | `5` |  |
+| botApi.terminationGracePeriodSeconds | int | `30` |  |
 | botApi.truststore.certSecret | string | `"corp-root-cert"` |  |
+| buildWorker.extraEnv | list | `[]` |  |
+| buildWorker.extraVolumeMounts | list | `[]` |  |
+| buildWorker.extraVolumes | list | `[]` |  |
+| buildWorker.podAnnotations | object | `{}` |  |
+| buildWorker.priorityClassName | string | `""` |  |
+| buildWorker.serviceAccountName | string | `""` |  |
+| buildWorker.startupProbe.enabled | bool | `true` |  |
+| buildWorker.startupProbe.failureThreshold | int | `30` |  |
+| buildWorker.startupProbe.initialDelaySeconds | int | `15` |  |
+| buildWorker.startupProbe.periodSeconds | int | `10` |  |
+| buildWorker.startupProbe.timeoutSeconds | int | `5` |  |
+| buildWorker.terminationGracePeriodSeconds | int | `30` |  |
+| duckling.extraEnv | list | `[]` |  |
+| duckling.extraVolumeMounts | list | `[]` |  |
+| duckling.extraVolumes | list | `[]` |  |
+| duckling.podAnnotations | object | `{}` |  |
+| duckling.priorityClassName | string | `""` |  |
+| duckling.serviceAccountName | string | `""` |  |
+| duckling.startupProbe.enabled | bool | `true` |  |
+| duckling.startupProbe.failureThreshold | int | `30` |  |
+| duckling.startupProbe.initialDelaySeconds | int | `15` |  |
+| duckling.startupProbe.periodSeconds | int | `10` |  |
+| duckling.startupProbe.timeoutSeconds | int | `5` |  |
+| duckling.terminationGracePeriodSeconds | int | `30` |  |
 | genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_host | string | `"opensearch-node1"` |  |
+| genAiOrchestrator.extraEnv | list | `[]` |  |
+| genAiOrchestrator.extraVolumeMounts | list | `[]` |  |
+| genAiOrchestrator.extraVolumes | list | `[]` |  |
 | genAiOrchestrator.langchain.tiktokencache.pullSecrets | list | `[]` |  |
+| genAiOrchestrator.podAnnotations | object | `{}` |  |
+| genAiOrchestrator.priorityClassName | string | `""` |  |
+| genAiOrchestrator.serviceAccountName | string | `""` |  |
+| genAiOrchestrator.startupProbe.enabled | bool | `true` |  |
+| genAiOrchestrator.startupProbe.failureThreshold | int | `30` |  |
+| genAiOrchestrator.startupProbe.initialDelaySeconds | int | `20` |  |
+| genAiOrchestrator.startupProbe.periodSeconds | int | `10` |  |
+| genAiOrchestrator.startupProbe.timeoutSeconds | int | `5` |  |
+| genAiOrchestrator.terminationGracePeriodSeconds | int | `30` |  |
 | genAiOrchestrator.truststore.certSecret | string | `"corp-root-cert"` |  |
+| kotlinCompiler.extraEnv | list | `[]` |  |
+| kotlinCompiler.extraVolumeMounts | list | `[]` |  |
+| kotlinCompiler.extraVolumes | list | `[]` |  |
+| kotlinCompiler.podAnnotations | object | `{}` |  |
+| kotlinCompiler.priorityClassName | string | `""` |  |
+| kotlinCompiler.serviceAccountName | string | `""` |  |
+| kotlinCompiler.startupProbe.enabled | bool | `true` |  |
+| kotlinCompiler.startupProbe.failureThreshold | int | `30` |  |
+| kotlinCompiler.startupProbe.initialDelaySeconds | int | `15` |  |
+| kotlinCompiler.startupProbe.periodSeconds | int | `10` |  |
+| kotlinCompiler.startupProbe.timeoutSeconds | int | `5` |  |
+| kotlinCompiler.terminationGracePeriodSeconds | int | `30` |  |
+| nlpApi.extraEnv | list | `[]` |  |
+| nlpApi.extraVolumeMounts | list | `[]` |  |
+| nlpApi.extraVolumes | list | `[]` |  |
+| nlpApi.podAnnotations | object | `{}` |  |
+| nlpApi.priorityClassName | string | `""` |  |
+| nlpApi.serviceAccountName | string | `""` |  |
+| nlpApi.startupProbe.enabled | bool | `true` |  |
+| nlpApi.startupProbe.failureThreshold | int | `30` |  |
+| nlpApi.startupProbe.initialDelaySeconds | int | `20` |  |
+| nlpApi.startupProbe.periodSeconds | int | `10` |  |
+| nlpApi.startupProbe.timeoutSeconds | int | `5` |  |
+| nlpApi.terminationGracePeriodSeconds | int | `30` |  |
 | opensearch.extraEnvs[0].name | string | `"OPENSEARCH_INITIAL_ADMIN_PASSWORD"` |  |
 | opensearch.extraEnvs[0].value | string | `"DoThisOne12+"` |  |
 | postgresql.architecture | string | `"standalone"` |  |

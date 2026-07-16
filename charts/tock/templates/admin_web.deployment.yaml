@@ -24,16 +24,28 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/resource: deployment
       annotations:
-      # restart the pod when the configmap changes
         checksum/config: '{{ include (print .Template.BasePath "/admin_web.configmap.yaml") . | sha256sum }}'
+        {{- with .Values.adminWeb.podAnnotations }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
     spec:
       {{- include "adminWeb.imagePullSecrets" . | nindent 6 }}
       {{- if .Values.adminWeb.podSecurityContext.enabled }}
       securityContext: {{- omit .Values.adminWeb.podSecurityContext "enabled" | toYaml | nindent 10 }}
       {{- end }}
+      {{- with .Values.adminWeb.serviceAccountName }}
+      serviceAccountName: {{ . }}
+      {{- end }}
+      {{- with .Values.adminWeb.priorityClassName }}
+      priorityClassName: {{ . }}
+      {{- end }}
+      {{- if .Values.adminWeb.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.adminWeb.terminationGracePeriodSeconds }}
+      {{- end }}
       initContainers:
         - name: check-mongo
           image:  {{ include "initContainer.image" . }}
+          imagePullPolicy: {{ .Values.global.initContainerImage.pullPolicy | default "IfNotPresent" }}
           {{- if .Values.global.initContainerImage.containerSecurityContext.enabled }}
           securityContext: {{- omit .Values.global.initContainerImage.containerSecurityContext "enabled" | toYaml | nindent 12 }}
           {{- end }}
@@ -54,6 +66,7 @@ spec:
       {{- end }}
         - name: check-duckling
           image:  {{ include "initContainer.image" . }}
+          imagePullPolicy: {{ .Values.global.initContainerImage.pullPolicy | default "IfNotPresent" }}
           {{- if .Values.global.initContainerImage.containerSecurityContext.enabled }}
           securityContext: {{- omit .Values.global.initContainerImage.containerSecurityContext "enabled" | toYaml | nindent 12 }}
           {{- end }}
@@ -74,6 +87,7 @@ spec:
       {{- end }}
         - name: check-kotlin-compiler
           image: {{ include "initContainer.image" . }}
+          imagePullPolicy: {{ .Values.global.initContainerImage.pullPolicy | default "IfNotPresent" }}
           {{- if .Values.global.initContainerImage.containerSecurityContext.enabled }}
           securityContext: {{- omit .Values.global.initContainerImage.containerSecurityContext "enabled" | toYaml | nindent 12 }}
           {{- end }}
@@ -95,12 +109,28 @@ spec:
       containers:
         - name: admin-web
           image: {{ include "adminWeb.image" . }}
+          imagePullPolicy: {{ .Values.adminWeb.image.pullPolicy | default "IfNotPresent" }}
           {{- if .Values.adminWeb.containerSecurityContext.enabled }}
           securityContext: {{- omit .Values.adminWeb.containerSecurityContext "enabled" | toYaml | nindent 12 }}
           {{- end }}
           ports:
             - name: admin-web
               containerPort: 8080
+          {{- if .Values.adminWeb.startupProbe.enabled }}
+          startupProbe:
+            httpGet:
+            {{ if .Values.adminWeb.environment.botadminverticle_base_href}}
+              path: {{ .Values.adminWeb.environment.botadminverticle_base_href }}/rest/admin/healthcheck
+            {{- else }}
+              path: /rest/admin/healthcheck
+            {{- end }}
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: {{ .Values.adminWeb.startupProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.adminWeb.startupProbe.timeoutSeconds }}
+            periodSeconds: {{ .Values.adminWeb.startupProbe.periodSeconds }}
+            failureThreshold: {{ .Values.adminWeb.startupProbe.failureThreshold }}
+          {{- end }}
           livenessProbe:
             httpGet:
             {{ if .Values.adminWeb.environment.botadminverticle_base_href}}
@@ -118,7 +148,14 @@ spec:
               - mountPath: /file-uploads
                 name: upload-volume
               - mountPath: /tmp
-                name: tmp-volume  
+                name: tmp-volume
+              {{- with .Values.adminWeb.extraVolumeMounts }}
+{{ toYaml . | indent 14 }}
+              {{- end }}
+          {{- with .Values.adminWeb.extraEnv }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-admin-web-cfg
@@ -135,6 +172,9 @@ spec:
             sizeLimit: 500Mi
         - name: tmp-volume
           emptyDir: {}
+        {{- with .Values.adminWeb.extraVolumes }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
     {{- with .Values.adminWeb.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

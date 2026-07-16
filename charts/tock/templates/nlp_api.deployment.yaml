@@ -23,14 +23,28 @@ spec:
         app.kubernetes.io/component: nlp-api
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/resource: deployment
+      annotations:
+        {{- with .Values.nlpApi.podAnnotations }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
     spec:
       {{- include "nlpApi.imagePullSecrets" . | nindent 6 }}
       {{- if .Values.nlpApi.podSecurityContext.enabled }}
       securityContext: {{- omit .Values.nlpApi.podSecurityContext "enabled" | toYaml | nindent 10 }}
       {{- end }}
+      {{- with .Values.nlpApi.serviceAccountName }}
+      serviceAccountName: {{ . }}
+      {{- end }}
+      {{- with .Values.nlpApi.priorityClassName }}
+      priorityClassName: {{ . }}
+      {{- end }}
+      {{- if .Values.nlpApi.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.nlpApi.terminationGracePeriodSeconds }}
+      {{- end }}
       initContainers:
         - name: check-mongo
           image: {{ include "initContainer.image" . }}
+          imagePullPolicy: {{ .Values.global.initContainerImage.pullPolicy | default "IfNotPresent" }}
           {{- if .Values.global.initContainerImage.containerSecurityContext.enabled }}
           securityContext: {{- omit .Values.global.initContainerImage.containerSecurityContext "enabled" | toYaml | nindent 12 }}
           {{- end }}
@@ -51,6 +65,7 @@ spec:
       {{- end }} 
         - name: check-duckling
           image: {{ include "initContainer.image" . }}
+          imagePullPolicy: {{ .Values.global.initContainerImage.pullPolicy | default "IfNotPresent" }}
           {{- if .Values.global.initContainerImage.containerSecurityContext.enabled }}
           securityContext: {{- omit .Values.global.initContainerImage.containerSecurityContext "enabled" | toYaml | nindent 12 }}
           {{- end }}
@@ -72,12 +87,23 @@ spec:
       containers:
         - name: nlp-api
           image: {{ include "nlpApi.image" . }}
+          imagePullPolicy: {{ .Values.nlpApi.image.pullPolicy | default "IfNotPresent" }}
           {{- if .Values.nlpApi.containerSecurityContext.enabled }}
           securityContext: {{- omit .Values.nlpApi.containerSecurityContext "enabled" | toYaml | nindent 12 }}
           {{- end }}
           ports:
             - name: nlp-api
               containerPort: 8080
+          {{- if .Values.nlpApi.startupProbe.enabled }}
+          startupProbe:
+            httpGet:
+              path: /rest/nlp/healthcheck
+              port: 8080
+            initialDelaySeconds: {{ .Values.nlpApi.startupProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.nlpApi.startupProbe.timeoutSeconds }}
+            periodSeconds: {{ .Values.nlpApi.startupProbe.periodSeconds }}
+            failureThreshold: {{ .Values.nlpApi.startupProbe.failureThreshold }}
+          {{- end }}
           livenessProbe:
             httpGet:
               path: /rest/nlp/healthcheck
@@ -88,7 +114,14 @@ spec:
             failureThreshold: 3 # Defaults to 3
           volumeMounts:
               - mountPath: /tmp
-                name: tmp-volume 
+                name: tmp-volume
+              {{- with .Values.nlpApi.extraVolumeMounts }}
+{{ toYaml . | indent 14 }}
+              {{- end }}
+          {{- with .Values.nlpApi.extraEnv }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           envFrom:
             - configMapRef:
                 name: '{{ .Release.Name }}-nlp-api-cfg'
@@ -98,6 +131,9 @@ spec:
       volumes:
           - name: tmp-volume
             emptyDir: {}
+          {{- with .Values.nlpApi.extraVolumes }}
+{{ toYaml . | indent 10 }}
+          {{- end }}
     {{- with .Values.nlpApi.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
