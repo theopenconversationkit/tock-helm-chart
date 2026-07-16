@@ -80,12 +80,11 @@ This creates values, but sectioned into their own section tables if a section co
 | adminWeb.ingress.path | string | `"/"` | ingress path |
 | adminWeb.ingress.tls | list | `[]` | TLS secrets and which hosts they sould be use for  - secretName: chart-example-tls    hosts:      - chart-example.local |
 | adminWeb.nodeSelector | object | `{}` | node selector |
+| adminWeb.podAnnotations | object | `{}` | resources requests  requests:    cpu: 500m    memory: 768Mi |
 | adminWeb.podSecurityContext.enabled | bool | `true` | Configure Pod Security Context |
 | adminWeb.podSecurityContext.fsGroup | int | `99` | fsGroup |
 | adminWeb.podSecurityContext.sysctls | list | `[]` | sysctls |
 | adminWeb.replicas | int | `1` | Replication settings, should be = 1 in production |
-| adminWeb.resources.limits | object | `{"cpu":"1000m","memory":"1Gi"}` | resources limits |
-| adminWeb.resources.requests | object | `{"cpu":"250m","memory":"512Mi"}` | resources requests |
 | adminWeb.service.port | int | `8080` | kubernetes service port |
 | adminWeb.service.type | string | `"ClusterIP"` | kubernetes service type |
 | adminWeb.tolerations | list | `[]` | tolerations |
@@ -133,11 +132,11 @@ This creates values, but sectioned into their own section tables if a section co
 | botApi.ingress.path | string | `"/"` | ingress path |
 | botApi.ingress.tls | list | `[]` | TLS secrets and which hosts they sould be use for  - secretName: chart-example-tls    hosts:      - chart-example.local |
 | botApi.nodeSelector | object | `{}` | node selector |
+| botApi.podAnnotations | object | `{}` | botApi resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ resources: # resources limits and request  limits:    cpu: 1500m    memory: 2Gi  requests:    cpu: 750m    memory: 1Gi |
 | botApi.podSecurityContext.enabled | bool | `true` | Configure Pod Security Context |
 | botApi.podSecurityContext.fsGroup | int | `99` | fsGroup |
 | botApi.podSecurityContext.sysctls | list | `[]` | sysctls |
 | botApi.replicas | int | `1` | should be > 1 in production |
-| botApi.resources | object | `{"limits":{"cpu":"1000m","memory":"1Gi"},"requests":{"cpu":"500m","memory":"768Mi"}}` | botApi resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
 | botApi.service.port | int | `8080` | kubernetes service port |
 | botApi.service.type | string | `"ClusterIP"` | kubernetes service type |
 | botApi.tolerations | list | `[]` | tolerations |
@@ -161,10 +160,10 @@ This creates values, but sectioned into their own section tables if a section co
 | buildWorker.image.repository | string | `"tock/build_worker"` | Docker image name |
 | buildWorker.image.tag | string | `"26.3.3"` | Docker image tag |
 | buildWorker.nodeSelector | object | `{}` | node selector |
+| buildWorker.podAnnotations | object | `{}` | buildWorker resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ resources: #resources limits and request  limits:    cpu: 1000m    memory: 1.5Gi  requests:    cpu: 500m    memory: 768Mi |
 | buildWorker.podSecurityContext.enabled | bool | `true` | Configure Pod Security Context |
 | buildWorker.podSecurityContext.fsGroup | int | `99` | fsGroup |
 | buildWorker.podSecurityContext.sysctls | list | `[]` | sysctls |
-| buildWorker.resources | object | `{"limits":{"cpu":"1000m","memory":"1Gi"},"requests":{"cpu":"250m","memory":"512Mi"}}` | buildWorker resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
 | buildWorker.tolerations | list | `[]` | tolerations |
 
 ### Duckling
@@ -184,11 +183,11 @@ This creates values, but sectioned into their own section tables if a section co
 | duckling.image.repository | string | `"tock/duckling"` | Docker image name |
 | duckling.image.tag | string | `"26.3.3"` | Docker image tag |
 | duckling.nodeSelector | object | `{}` | node selector |
+| duckling.podAnnotations | object | `{}` | Duckling resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ resources: #resources limits and request  limits:    cpu: 1000m    memory: 1.5Gi  requests:    cpu: 500m    memory: 768Mi |
 | duckling.podSecurityContext.enabled | bool | `true` | Configure Pod Security Context |
 | duckling.podSecurityContext.fsGroup | int | `99` | fsGroup |
 | duckling.podSecurityContext.sysctls | list | `[]` | sysctls |
 | duckling.replicas | string | `nil` | should be > 1 in production |
-| duckling.resources | object | `{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"100m","memory":"256Mi"}}` | Duckling resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
 | duckling.tolerations | list | `[]` | tolerations |
 
 ### genAiOrchestrator
@@ -225,11 +224,11 @@ This creates values, but sectioned into their own section tables if a section co
 | genAiOrchestrator.langchain.tiktokencache.repository | string | `"tiktoken-data"` | Your data image docker image name |
 | genAiOrchestrator.langchain.tiktokencache.tag | string | `"latest"` | Your data image  docker image tag |
 | genAiOrchestrator.nodeSelector | object | `{}` | node selector |
+| genAiOrchestrator.podAnnotations | object | `{}` | gen-ai-orchestrator-server resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ resources: #resources limits and request  limits:    cpu: 2000m    memory: 3Gi  requests:    cpu: 1000m    memory: 1.5Gi |
 | genAiOrchestrator.podSecurityContext.enabled | bool | `true` | Configure Pod Security Context |
 | genAiOrchestrator.podSecurityContext.fsGroup | int | `99` | fsGroup |
 | genAiOrchestrator.podSecurityContext.sysctls | list | `[]` | sysctls |
 | genAiOrchestrator.replicas | int | `1` | should be > 1 in production |
-| genAiOrchestrator.resources | object | `{"limits":{"cpu":"1000m","memory":"1Gi"},"requests":{"cpu":"500m","memory":"768Mi"}}` | gen-ai-orchestrator-server resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
 | genAiOrchestrator.tolerations | list | `[]` | tolerations |
 | genAiOrchestrator.truststore.enabled | bool | `false` | Enable truststore for entreprise certificates |
 
@@ -282,10 +281,10 @@ This creates values, but sectioned into their own section tables if a section co
 | kotlinCompiler.image.repository | string | `"tock/kotlin_compiler"` | Docker image name |
 | kotlinCompiler.image.tag | string | `"26.3.3"` | Docker image tag |
 | kotlinCompiler.nodeSelector | object | `{}` | node selector |
+| kotlinCompiler.podAnnotations | object | `{}` | KotlinCompiler resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ resources: #resources limits and request  limits:    cpu: 1000m    memory: 1.5Gi  requests:    cpu: 500m    memory: 768Mi |
 | kotlinCompiler.podSecurityContext.enabled | bool | `true` | Configure Pod Security Context |
 | kotlinCompiler.podSecurityContext.fsGroup | int | `99` | fsGroup |
 | kotlinCompiler.podSecurityContext.sysctls | list | `[]` | sysctls |
-| kotlinCompiler.resources | object | `{"limits":{"cpu":"1000m","memory":"1Gi"},"requests":{"cpu":"250m","memory":"512Mi"}}` | KotlinCompiler resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
 | kotlinCompiler.tolerations | list | `[]` | tolerations |
 
 ### mongodb
@@ -334,11 +333,11 @@ This creates values, but sectioned into their own section tables if a section co
 | nlpApi.image.repository | string | `"tock/nlp_api"` | Docker image name |
 | nlpApi.image.tag | string | `"26.3.3"` | Docker image tag |
 | nlpApi.nodeSelector | object | `{}` | node selector |
+| nlpApi.podAnnotations | object | `{}` | nlpApi resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ resources: #resources limits and request  limits:    cpu: 1500m    memory: 2Gi  requests:    cpu: 750m    memory: 1Gi |
 | nlpApi.podSecurityContext.enabled | bool | `true` | Configure Pod Security Context |
 | nlpApi.podSecurityContext.fsGroup | int | `99` | fsGroup |
 | nlpApi.podSecurityContext.sysctls | list | `[]` | sysctls |
 | nlpApi.replicas | int | `1` | should be > 1 in production |
-| nlpApi.resources | object | `{"limits":{"cpu":"1000m","memory":"1Gi"},"requests":{"cpu":"500m","memory":"768Mi"}}` | nlpApi resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
 | nlpApi.tolerations | list | `[]` | tolerations |
 
 ### openSearch
@@ -357,7 +356,6 @@ This creates values, but sectioned into their own section tables if a section co
 | adminWeb.extraEnv | list | `[]` |  |
 | adminWeb.extraVolumeMounts | list | `[]` |  |
 | adminWeb.extraVolumes | list | `[]` |  |
-| adminWeb.podAnnotations | object | `{}` |  |
 | adminWeb.priorityClassName | string | `""` |  |
 | adminWeb.serviceAccountName | string | `""` |  |
 | adminWeb.startupProbe.enabled | bool | `true` |  |
@@ -369,7 +367,6 @@ This creates values, but sectioned into their own section tables if a section co
 | botApi.extraEnv | list | `[]` |  |
 | botApi.extraVolumeMounts | list | `[]` |  |
 | botApi.extraVolumes | list | `[]` |  |
-| botApi.podAnnotations | object | `{}` |  |
 | botApi.priorityClassName | string | `""` |  |
 | botApi.serviceAccountName | string | `""` |  |
 | botApi.startupProbe.enabled | bool | `true` |  |
@@ -382,7 +379,6 @@ This creates values, but sectioned into their own section tables if a section co
 | buildWorker.extraEnv | list | `[]` |  |
 | buildWorker.extraVolumeMounts | list | `[]` |  |
 | buildWorker.extraVolumes | list | `[]` |  |
-| buildWorker.podAnnotations | object | `{}` |  |
 | buildWorker.priorityClassName | string | `""` |  |
 | buildWorker.serviceAccountName | string | `""` |  |
 | buildWorker.startupProbe.enabled | bool | `true` |  |
@@ -394,7 +390,6 @@ This creates values, but sectioned into their own section tables if a section co
 | duckling.extraEnv | list | `[]` |  |
 | duckling.extraVolumeMounts | list | `[]` |  |
 | duckling.extraVolumes | list | `[]` |  |
-| duckling.podAnnotations | object | `{}` |  |
 | duckling.priorityClassName | string | `""` |  |
 | duckling.serviceAccountName | string | `""` |  |
 | duckling.startupProbe.enabled | bool | `true` |  |
@@ -408,7 +403,6 @@ This creates values, but sectioned into their own section tables if a section co
 | genAiOrchestrator.extraVolumeMounts | list | `[]` |  |
 | genAiOrchestrator.extraVolumes | list | `[]` |  |
 | genAiOrchestrator.langchain.tiktokencache.pullSecrets | list | `[]` |  |
-| genAiOrchestrator.podAnnotations | object | `{}` |  |
 | genAiOrchestrator.priorityClassName | string | `""` |  |
 | genAiOrchestrator.serviceAccountName | string | `""` |  |
 | genAiOrchestrator.startupProbe.enabled | bool | `true` |  |
@@ -421,7 +415,6 @@ This creates values, but sectioned into their own section tables if a section co
 | kotlinCompiler.extraEnv | list | `[]` |  |
 | kotlinCompiler.extraVolumeMounts | list | `[]` |  |
 | kotlinCompiler.extraVolumes | list | `[]` |  |
-| kotlinCompiler.podAnnotations | object | `{}` |  |
 | kotlinCompiler.priorityClassName | string | `""` |  |
 | kotlinCompiler.serviceAccountName | string | `""` |  |
 | kotlinCompiler.startupProbe.enabled | bool | `true` |  |
@@ -433,7 +426,6 @@ This creates values, but sectioned into their own section tables if a section co
 | nlpApi.extraEnv | list | `[]` |  |
 | nlpApi.extraVolumeMounts | list | `[]` |  |
 | nlpApi.extraVolumes | list | `[]` |  |
-| nlpApi.podAnnotations | object | `{}` |  |
 | nlpApi.priorityClassName | string | `""` |  |
 | nlpApi.serviceAccountName | string | `""` |  |
 | nlpApi.startupProbe.enabled | bool | `true` |  |
