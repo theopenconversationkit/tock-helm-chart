@@ -295,13 +295,17 @@ views {
 
   view tockComponentsPG of tock {
     title 'Tock - composants internes (Component view)'
+    include tock
     include tock.**
     include mongodb, postgresql
+    include admin, endUser
   }
 
   view tockComponentsOS of tock {
     title 'Tock - composants internes (Component view)'
     include tock.**
     include mongodb, postgresql
+    include admin, endUser
+    
   }
 }
