@@ -1,0 +1,307 @@
+specification {
+  element actor {
+    style { shape person }
+  }
+  element system
+  element container
+  element component
+  element database
+  element application
+}
+
+model {
+
+  actor admin 'Administrateur / Concepteur de bot' {
+    description 'Configure NLU, RAG et scénarios via Tock Studio'
+  }
+  actor endUser 'Utilisateur final' {
+    description 'Discute avec le bot via un canal connecté à bot-api'
+  }
+
+  tock = system 'Tock (Kubernetes namespace)' {
+    description 'Composants déployés par le chart charts/tock'
+
+    application adminWeb 'admin-web (bot_admin)' {
+      technology 'Vert.x / Java'
+      description 'Tock Studio : UI admin, NLU, RAG, gestion des bots'
+
+      component svc 'admin-web Service' {
+        technology 'Kubernetes Service ClusterIP :8080'
+        description 'Expose le pod admin-web aux autres composants et à l\'Ingress'
+        icon https://icons.terrastruct.com/azure%2FContainer%20Service%20Color%2FKubernetes%20Services.svg
+        // template: admin_web.service.yaml
+      }
+      container pod 'admin-web pod' {
+            technology 'Vert.x / Java'
+            description 'Conteneur principal du pod admin-web'
+            icon bootstrap:boxes
+      }
+
+      component configmap 'admin-web ConfigMap' {
+        technology 'Kubernetes ConfigMap'
+        description 'Contient les variables d\'environnement du pod admin-web'
+        icon bootstrap:card-text
+        // template: admin_web.configmap.yaml
+      }
+
+      component ingress 'admin-web Ingress' {
+        technology 'Kubernetes Ingress'
+        description 'Expose le Service admin-web aux utilisateurs finaux via HTTPS'
+        icon https://icons.terrastruct.com/gcp%2FProducts%20and%20services%2FNetworking%2FCloud%20Load%20Balancing.svg
+        // template: admin_web.ingress.yaml
+      }
+
+      tock.adminWeb.svc -> tock.adminWeb.pod
+      tock.adminWeb.pod -> tock.adminWeb.configmap 'Variables d\'environnement' 'Kubernetes ConfigMap'
+      tock.adminWeb.ingress -> tock.adminWeb.svc 'HTTPS' 'Kubernetes Ingress'
+
+      // templates: admin_web.deployment.yaml, admin_web.service.yaml, admin_web.ingress.yaml, admin_web.configmap.yaml
+    }
+
+    application botApi 'bot-api' {
+      technology 'Vert.x / Java'
+      description 'API REST d\'exécution de la logique conversationnelle'
+
+      component svc 'bot-api Service' {
+        technology 'Kubernetes Service ClusterIP :8080'
+        description 'Expose le pod bot-api aux autres composants et à l\'Ingress'
+        icon https://icons.terrastruct.com/azure%2FContainer%20Service%20Color%2FKubernetes%20Services.svg
+        // template: bot_api.service.yaml
+      }
+
+      container pod 'bot-api pod' {
+        technology 'Vert.x / Java'
+        description 'Conteneur principal du pod bot-api'
+        icon bootstrap:boxes
+      }
+
+      component configmap 'bot-api ConfigMap' {
+        technology 'Kubernetes ConfigMap'
+        description 'Contient les variables d\'environnement du pod bot-api'
+        icon bootstrap:card-text
+        // template: bot_api.configmap.yaml
+      }
+
+      component ingress 'bot-api Ingress' {
+        technology 'Kubernetes Ingress'
+        description 'Expose le Service bot-api aux utilisateurs finaux via HTTPS'
+        icon https://icons.terrastruct.com/gcp%2FProducts%20and%20services%2FNetworking%2FCloud%20Load%20Balancing.svg
+        // template: bot_api.ingress.yaml
+      }
+        tock.botApi.svc -> tock.botApi.pod
+        tock.botApi.pod -> tock.botApi.configmap 'Variables d\'environnement' 'Kubernetes ConfigMap'
+        tock.botApi.ingress -> tock.botApi.svc 'HTTPS' 'Kubernetes Ingress'
+
+      // templates: bot_api.deployment.yaml, bot_api.service.yaml, bot_api.ingress.yaml, bot_api.configmap.yaml
+    }
+
+    application nlpApi 'nlp-api' {
+      technology 'Vert.x / Java'
+      description 'Moteur NLU : classification d\'intentions, extraction d\'entités'
+
+      component svc 'nlp-api Service' {
+        technology 'Kubernetes Service ClusterIP :8080'
+        description 'Expose le pod nlp-api aux autres composants'
+        icon https://icons.terrastruct.com/azure%2FContainer%20Service%20Color%2FKubernetes%20Services.svg
+        // template: nlp_api.service.yaml
+      }
+
+      container pod 'nlp-api pod' {
+        technology 'Vert.x / Java'
+        description 'Conteneur principal du pod nlp-api'
+        icon bootstrap:boxes
+      } 
+      component configmap 'nlp-api ConfigMap' {
+        technology 'Kubernetes ConfigMap'
+        description 'Contient les variables d\'environnement du pod nlp-api'
+        icon bootstrap:card-text
+        // template: nlp_api.configmap.yaml
+      }
+        tock.nlpApi.svc -> tock.nlpApi.pod
+        tock.nlpApi.pod -> tock.nlpApi.configmap 'Variables d\'environnement' 'Kubernetes ConfigMap'
+      // templates: nlp_api.deployment.yaml, nlp_api.service.yaml, nlp_api.configmap.yaml
+    }
+
+    application duckling 'duckling' {
+      technology 'Haskell (facebook/duckling)'
+      description 'Extraction d\'entités (dates, montants, durées...)'
+
+      component svc 'duckling Service' {
+        technology 'Kubernetes Service ClusterIP :8080'
+        description 'Expose le pod duckling aux autres composants'
+        icon https://icons.terrastruct.com/azure%2FContainer%20Service%20Color%2FKubernetes%20Services.svg
+        // template: duckling.service.yaml
+      }
+        container pod 'duckling pod' {
+            technology 'Haskell (facebook/duckling)'
+            description 'Conteneur principal du pod duckling'
+            icon bootstrap:boxes
+        }
+        component configmap 'duckling ConfigMap' {
+            technology 'Kubernetes ConfigMap'
+            description 'Contient les variables d\'environnement du pod duckling'
+            icon bootstrap:card-text
+            // template: duckling.configmap.yaml
+        }
+        tock.duckling.svc -> tock.duckling.pod
+        tock.duckling.pod -> tock.duckling.configmap 'Variables d\'environnement' 'Kubernetes ConfigMap'
+      // templates: duckling.deployment.yaml, duckling.service.yaml, duckling.configmap.yaml
+    }
+
+    application kotlinCompiler 'kotlin-compiler' {
+      technology 'Kotlin/JVM'
+      description 'Compile les scripts de scénarios de bot (DSL Kotlin)'
+
+      component svc 'kotlin-compiler Service' {
+        technology 'Kubernetes Service ClusterIP :8080'
+        description 'Expose le pod kotlin-compiler aux autres composants'
+        icon https://icons.terrastruct.com/azure%2FContainer%20Service%20Color%2FKubernetes%20Services.svg
+        // template: kotlin_compiler.service.yaml
+      }
+        container pod 'kotlin-compiler pod' {
+            technology 'Kotlin/JVM'
+            description 'Conteneur principal du pod kotlin-compiler'
+            icon bootstrap:boxes
+        }
+        component configmap 'kotlin-compiler ConfigMap' {
+            technology 'Kubernetes ConfigMap'
+            description 'Contient les variables d\'environnement du pod kotlin-compiler'
+            icon bootstrap:card-text
+            // template: kotlin_compiler.configmap.yaml
+        }
+        tock.kotlinCompiler.svc -> tock.kotlinCompiler.pod
+        tock.kotlinCompiler.pod -> tock.kotlinCompiler.configmap 'Variables d\'environnement' 'Kubernetes ConfigMap'
+      // templates: kotlin_compiler.deployment.yaml, kotlin_compiler.service.yaml, kotlin_compiler.configmap.yaml
+    }
+
+    application buildWorker 'build-worker' {
+      technology 'Java'
+      description 'Worker asynchrone sans Service k8s exposé (pas de fichier .service.yaml)'
+      // templates: build_worker.deployment.yaml, build_worker.configmap.yaml
+      // Aucun composant Service : pas de build_worker.service.yaml dans le chart
+        container pod 'build-worker pod' {
+                technology 'Java'
+                description 'Conteneur principal du pod build-worker'
+                icon bootstrap:boxes
+        }
+        component configmap 'build-worker ConfigMap' {
+            technology 'Kubernetes ConfigMap'
+            description 'Contient les variables d\'environnement du pod build-worker'
+            icon bootstrap:card-text
+            // template: build_worker.configmap.yaml
+        }
+        tock.buildWorker.pod -> tock.buildWorker.configmap 'Variables d\'environnement' 'Kubernetes ConfigMap'
+    }
+
+    application genaiOrchestrator 'genai-orchestrator' {
+      technology 'Python'
+      description 'Orchestration des appels LLM/RAG (prompts, embeddings, vector store)'
+
+      component svc 'genai-orchestrator Service' {
+        technology 'Kubernetes Service ClusterIP :8000'
+        description 'Expose le pod genai-orchestrator aux autres composants'
+        icon https://icons.terrastruct.com/azure%2FContainer%20Service%20Color%2FKubernetes%20Services.svg
+        // template: genai_orchestrator.service.yaml
+      }
+        container pod 'genai-orchestrator pod' {
+            technology 'Python'
+            description 'Conteneur principal du pod genai-orchestrator'
+            icon bootstrap:boxes
+        }
+        component configmap 'genai-orchestrator ConfigMap' {
+            technology 'Kubernetes ConfigMap'
+            description 'Contient les variables d\'environnement du pod genai-orchestrator'
+            icon bootstrap:card-text
+            // template: genai_orchestrator.configmap.yaml
+        }
+        tock.genaiOrchestrator.svc -> tock.genaiOrchestrator.pod
+        tock.genaiOrchestrator.pod -> tock.genaiOrchestrator.configmap 'Variables d\'environnement' 'Kubernetes ConfigMap'
+      // templates: genai_orchestrator.deployment.yaml, genai_orchestrator.service.yaml, genai_orchestrator.configmap.yaml
+    }
+  }
+
+  database mongodb 'mongodb' {
+    technology 'Bitnami subchart 14.8.3'
+    description 'Stockage principal (config, données conversationnelles, modèles NLU). Conditionné par global.deployMongoDb.enabled'
+    icon tech:mongodb
+  }
+
+  database opensearch 'opensearch' {
+    technology 'opensearch-project subchart 2.21.0'
+    description 'Vector store (option 1 pour le RAG). Conditionné par global.deployOpenSearch.enabled'
+    icon tech:opensearch
+  }
+
+  system opensearchDashboards 'opensearch-dashboards' {
+    technology 'opensearch-project subchart 2.19.0'
+    description 'UI d\'administration/monitoring d\'OpenSearch. Conditionné par global.deployOpenSearch.enabled (dashboardEnabled)'
+  }
+
+  database postgresql 'postgresql (pgvector)' {
+    technology 'Bitnami subchart 13.4.4'
+    description 'Vector store (option 2 pour le RAG). Conditionné par global.deployPgVector.enabled'
+    icon tech:postgresql
+  }
+
+  // Relations utilisateurs (l'Ingress route toujours vers le Service, pas directement vers le Pod)
+  admin -> tock.adminWeb.ingress 'Administre Tock Studio' 'HTTPS via Ingress'
+  endUser -> tock.botApi.ingress 'Envoie des messages' 'HTTPS via Ingress'
+
+  // Relations internes (issues des ConfigMaps) - un appel HTTP inter-service cible toujours le Service Kubernetes
+  tock.adminWeb -> mongodb 'tock_mongo_url' 'MongoDB Wire Protocol'
+  
+  tock.adminWeb.pod -> tock.duckling.svc 'nlp_duckling_url' 'HTTP'
+  tock.adminWeb.pod -> tock.botApi.svc 'tock_bot_admin_rest_default_base_url / tock_configuration_bot_default_base_url' 'HTTP'
+  tock.adminWeb.pod -> tock.kotlinCompiler.svc 'tock_bot_compiler_service_url' 'HTTP'   
+  tock.adminWeb.pod -> tock.genaiOrchestrator.svc 'tock_gen_ai_orchestrator_server_url' 'HTTP'
+
+  tock.botApi.pod -> mongodb 'tock_mongo_url' 'MongoDB Wire Protocol'
+  tock.botApi.pod -> tock.nlpApi.svc 'tock_nlp_service_url' 'HTTP'
+  tock.botApi.pod -> tock.genaiOrchestrator.svc 'tock_gen_ai_orchestrator_server_url' 'HTTP'
+
+  tock.nlpApi.pod -> mongodb 'tock_mongo_url' 'MongoDB Wire Protocol'
+  tock.nlpApi.pod -> tock.duckling.svc 'nlp_duckling_url' 'HTTP'
+
+  tock.duckling.pod -> mongodb 'tock_mongo_url' 'MongoDB Wire Protocol'
+  tock.buildWorker.pod -> mongodb 'tock_mongo_url' 'MongoDB Wire Protocol'
+
+  tock.genaiOrchestrator.pod -> opensearch 'urls.vectorstore (si deployOpenSearch.enabled)' 'HTTP'
+  tock.genaiOrchestrator.pod -> postgresql 'urls.vectorstore (si deployPgVector.enabled)' 'SQL'
+  tock.genaiOrchestrator.pod -> mongodb 'tock_mongo_url' 'MongoDB Wire Protocol'
+
+  opensearchDashboards -> opensearch 'Administration / visualisation' 'HTTP'
+}
+
+views {
+  view index {
+    title 'Tock Helm Chart - Vue d\'ensemble'
+    include *
+    include tock.**
+  }
+
+  view tockOverview of tock {
+    title 'Tock Vue d\'ensemble'
+    include tock
+    include tock.*
+    include mongodb, postgresql
+    include admin, endUser
+  }
+
+  view tockContainers of tock {
+    title 'Tock - composants internes (Container view)'
+    include tock.**
+    include mongodb, opensearch, postgresql
+  }
+
+  view tockComponentsPG of tock {
+    title 'Tock - composants internes (Component view)'
+    include tock.**
+    include mongodb, postgresql
+  }
+
+  view tockComponentsOS of tock {
+    title 'Tock - composants internes (Component view)'
+    include tock.**
+    include mongodb, postgresql
+  }
+}
