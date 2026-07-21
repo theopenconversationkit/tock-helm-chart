@@ -88,6 +88,7 @@ This creates values, but sectioned into their own section tables if a section co
 | adminWeb.service.port | int | `8080` | kubernetes service port |
 | adminWeb.service.type | string | `"ClusterIP"` | kubernetes service type |
 | adminWeb.tolerations | list | `[]` | tolerations |
+| adminWeb.truststore.enabled | bool | `false` | Enable truststore for entreprise certificates |
 
 ### botApi
 
@@ -165,6 +166,7 @@ This creates values, but sectioned into their own section tables if a section co
 | buildWorker.podSecurityContext.fsGroup | int | `99` | fsGroup |
 | buildWorker.podSecurityContext.sysctls | list | `[]` | sysctls |
 | buildWorker.tolerations | list | `[]` | tolerations |
+| buildWorker.truststore.enabled | bool | `false` | Enable truststore for entreprise certificates |
 
 ### Duckling
 
@@ -189,6 +191,7 @@ This creates values, but sectioned into their own section tables if a section co
 | duckling.podSecurityContext.sysctls | list | `[]` | sysctls |
 | duckling.replicas | string | `nil` | should be > 1 in production |
 | duckling.tolerations | list | `[]` | tolerations |
+| duckling.truststore.enabled | bool | `false` | Enable truststore for entreprise certificates |
 
 ### genAiOrchestrator
 
@@ -339,6 +342,7 @@ This creates values, but sectioned into their own section tables if a section co
 | nlpApi.podSecurityContext.sysctls | list | `[]` | sysctls |
 | nlpApi.replicas | int | `1` | should be > 1 in production |
 | nlpApi.tolerations | list | `[]` | tolerations |
+| nlpApi.truststore.enabled | bool | `false` | Enable truststore for entreprise certificates |
 
 ### openSearch
 
@@ -364,6 +368,7 @@ This creates values, but sectioned into their own section tables if a section co
 | adminWeb.startupProbe.periodSeconds | int | `10` |  |
 | adminWeb.startupProbe.timeoutSeconds | int | `5` |  |
 | adminWeb.terminationGracePeriodSeconds | int | `30` |  |
+| adminWeb.truststore.certSecret | string | `"corp-root-cert"` |  |
 | botApi.extraEnv | list | `[]` |  |
 | botApi.extraVolumeMounts | list | `[]` |  |
 | botApi.extraVolumes | list | `[]` |  |
@@ -387,6 +392,7 @@ This creates values, but sectioned into their own section tables if a section co
 | buildWorker.startupProbe.periodSeconds | int | `10` |  |
 | buildWorker.startupProbe.timeoutSeconds | int | `5` |  |
 | buildWorker.terminationGracePeriodSeconds | int | `30` |  |
+| buildWorker.truststore.certSecret | string | `"corp-root-cert"` |  |
 | duckling.extraEnv | list | `[]` |  |
 | duckling.extraVolumeMounts | list | `[]` |  |
 | duckling.extraVolumes | list | `[]` |  |
@@ -398,6 +404,7 @@ This creates values, but sectioned into their own section tables if a section co
 | duckling.startupProbe.periodSeconds | int | `10` |  |
 | duckling.startupProbe.timeoutSeconds | int | `5` |  |
 | duckling.terminationGracePeriodSeconds | int | `30` |  |
+| duckling.truststore.certSecret | string | `"corp-root-cert"` |  |
 | genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_host | string | `"opensearch-node1"` |  |
 | genAiOrchestrator.extraEnv | list | `[]` |  |
 | genAiOrchestrator.extraVolumeMounts | list | `[]` |  |
@@ -434,6 +441,7 @@ This creates values, but sectioned into their own section tables if a section co
 | nlpApi.startupProbe.periodSeconds | int | `10` |  |
 | nlpApi.startupProbe.timeoutSeconds | int | `5` |  |
 | nlpApi.terminationGracePeriodSeconds | int | `30` |  |
+| nlpApi.truststore.certSecret | string | `"corp-root-cert"` |  |
 | opensearch.extraEnvs[0].name | string | `"OPENSEARCH_INITIAL_ADMIN_PASSWORD"` |  |
 | opensearch.extraEnvs[0].value | string | `"DoThisOne12+"` |  |
 | postgresql.architecture | string | `"standalone"` |  |
@@ -573,9 +581,12 @@ adminWeb:
 
 ## Add enterprise certificates
 
-If you have to integrate coded stories that require enterprise certificates, you can use the truststore feature.
+If you have to integrate coded stories that require enterprise certificates, or need outbound HTTPS calls
+(e.g. to LLM providers) to trust a corporate CA, you can use the truststore feature.
 
-To enable it, set the following values in your `values.yaml` file:
+The truststore feature is available on `adminWeb`, `botApi`, `buildWorker`, `duckling`, `nlpApi` and
+`genAiOrchestrator`. To enable it on a given component, set the following values in your `values.yaml`
+file (example for `botApi`):
 
 ```yaml
 botApi:
@@ -583,14 +594,57 @@ botApi:
     enabled: true
     certSecret: "corp-root-cert"
 ```
-This will enable the truststore and use the certificates from the specified Secret.
+This will enable the truststore and use the certificates from the specified Secret. An init container
+builds a JVM truststore (`cacerts`) from the default certificates plus the enterprise CA(s) found in the
+Secret, and the component is started with
+`JAVA_TOOL_OPTIONS=-Djavax.net.ssl.trustStore=/truststore/cacerts -Djavax.net.ssl.trustStorePassword=changeit`.
+
 You can create the Secret with the following command:
 
 ```console
-kubectl create secret generic corp-root-ca --from-file=corp-root-ca.crt
+kubectl create secret generic corp-root-cert --from-file=corp-root-ca.crt
 ```
 
-This will create a Secret named `corp-root-ca` with the certificate file `corp-root-ca.crt`.
+This will create a Secret named `corp-root-cert` with the certificate file `corp-root-ca.crt`.
+
+### Enforce TLS to an external MongoDB with an enterprise certificate
+
+If your MongoDB is external to this chart (`global.deployMongoDb.enabled: false`) and already requires TLS
+with a server certificate signed by an enterprise CA, every pod connecting to MongoDB needs to trust that
+CA. Since `adminWeb`, `botApi`, `buildWorker`, `duckling` and `nlpApi` all connect to MongoDB, enable the
+truststore feature on all five, pointing them to the same Secret containing your enterprise CA:
+
+```yaml
+global:
+  deployMongoDb:
+    enabled: false
+  # Append tls=true to the connection string so the MongoDB driver negotiates TLS
+  mongodbUrls: "mongodb://myuser:mypass@fqdn-node1:27017,fqdn-node2:27017,fqdn-node3:27017/mydb?replicaSet=rs0&tls=true"
+
+adminWeb:
+  truststore:
+    enabled: true
+    certSecret: "corp-root-cert"
+botApi:
+  truststore:
+    enabled: true
+    certSecret: "corp-root-cert"
+buildWorker:
+  truststore:
+    enabled: true
+    certSecret: "corp-root-cert"
+duckling:
+  truststore:
+    enabled: true
+    certSecret: "corp-root-cert"
+nlpApi:
+  truststore:
+    enabled: true
+    certSecret: "corp-root-cert"
+```
+
+This feature only makes the pods trust the CA (server TLS verification). It does not enable TLS on the
+bundled Bitnami MongoDB subchart, and it does not support mutual TLS (client certificates).
 
 ## Solve langchain and tiktoken issues on on-premise deployments
 

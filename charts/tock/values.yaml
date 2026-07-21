@@ -227,7 +227,15 @@ adminWeb:
   # -- Replication settings, should be = 1 in production
   # @section -- adminWeb
   replicas: 1 # should be = 1 in production
-  
+
+  truststore:
+    # -- Enable truststore for entreprise certificates
+    # @section -- adminWeb
+    enabled: false
+    # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert --from-file=corp-root-ca.crt``
+    # @section -- adminWeb
+    certSecret: "corp-root-cert"
+
   image:
     # -- Docker image registry
     # @section -- adminWeb
@@ -636,6 +644,14 @@ buildWorker:
     # @section -- buildWorker
     JAVA_ARGS: -Xmx1g -XX:MaxMetaspaceSize=256m
 
+  truststore:
+    # -- Enable truststore for entreprise certificates
+    # @section -- buildWorker
+    enabled: false
+    # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert --from-file=corp-root-ca.crt``
+    # @section -- buildWorker
+    certSecret: "corp-root-cert"
+
   image:
     # -- Docker image registry
     # @section -- buildWorker
@@ -737,6 +753,15 @@ duckling:
   # -- should be > 1 in production
   # @section -- Duckling
   replicas:
+
+  truststore:
+    # -- Enable truststore for entreprise certificates
+    # @section -- Duckling
+    enabled: false
+    # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert --from-file=corp-root-ca.crt``
+    # @section -- Duckling
+    certSecret: "corp-root-cert"
+
   image:
     # -- Docker image registry
     # @section -- Duckling
@@ -960,6 +985,15 @@ nlpApi:
   # -- should be > 1 in production
   # @section -- nlpApi
   replicas: 1 # should be > 1 in production
+
+  truststore:
+    # -- Enable truststore for entreprise certificates
+    # @section -- nlpApi
+    enabled: false
+    # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert --from-file=corp-root-ca.crt``
+    # @section -- nlpApi
+    certSecret: "corp-root-cert"
+
   image:
     # -- Docker image registry
     # @section -- nlpApi

@@ -84,6 +84,42 @@ spec:
       {{- if .Values.nlpApi.resources }}
           resources: {{- toYaml .Values.nlpApi.resources | nindent 12 }}
       {{- end }} 
+      {{- if .Values.nlpApi.truststore.enabled }}
+        - name: truststore-generator
+          image: {{ include "truststoreContainer.image" . }}
+          imagePullPolicy: {{ .Values.global.truststoreContainerImage.pullPolicy | default "IfNotPresent" }}
+          {{- if .Values.global.truststoreContainerImage.containerSecurityContext.enabled }}
+          securityContext: {{- omit .Values.global.truststoreContainerImage.containerSecurityContext "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -e
+              cp "$JAVA_HOME/lib/security/cacerts" /truststore/cacerts
+              csplit -f /tmp/corp- -b '%02d.pem' /etc/ssl/certs/{{ .Values.nlpApi.truststore.certSecret }}.crt '/-----BEGIN CERTIFICATE-----/' '{*}' >/dev/null || true
+              i=0
+              for f in /tmp/corp-*.pem; do
+                [ -s "$f" ] || continue
+                keytool -importcert -noprompt \
+                 -file "$f" \
+                 -alias "corp-$i" \
+                 -keystore /truststore/cacerts \
+                 -storepass changeit
+                i=$((i+1))
+              done
+              keytool -list -keystore /truststore/cacerts -storepass changeit | grep -i corp || true
+              chmod 0444 /truststore/cacerts
+          volumeMounts:
+            - name: cert-volume
+              mountPath: /etc/ssl/certs/{{ .Values.nlpApi.truststore.certSecret }}.crt
+              subPath: {{ .Values.nlpApi.truststore.certSecret }}.crt
+              readOnly: true
+            - name: truststore-volume
+              mountPath: /truststore
+      {{- if .Values.nlpApi.resources }}
+          resources: {{- toYaml .Values.nlpApi.resources | nindent 12 }}
+      {{- end }}
+      {{- end }}
       containers:
         - name: nlp-api
           image: {{ include "nlpApi.image" . }}
@@ -115,6 +151,10 @@ spec:
           volumeMounts:
               - mountPath: /tmp
                 name: tmp-volume
+          {{- if .Values.nlpApi.truststore.enabled }}
+              - mountPath: /truststore
+                name: truststore-volume
+          {{- end }}
               {{- with .Values.nlpApi.extraVolumeMounts }}
 {{ toYaml . | indent 14 }}
               {{- end }}
@@ -131,6 +171,13 @@ spec:
       volumes:
           - name: tmp-volume
             emptyDir: {}
+          {{- if .Values.nlpApi.truststore.enabled }}
+          - name: cert-volume
+            secret:
+              secretName: {{ .Values.nlpApi.truststore.certSecret }}
+          - name: truststore-volume
+            emptyDir: {}
+          {{- end }}
           {{- with .Values.nlpApi.extraVolumes }}
 {{ toYaml . | indent 10 }}
           {{- end }}
