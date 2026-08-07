@@ -60,6 +60,7 @@ This creates values, but sectioned into their own section tables if a section co
 | adminWeb.environment.botadminverticle_body_limit | string | `"-1"` | botadminverticle_body_limit |
 | adminWeb.environment.tock_bot_api | bool | `false` | Enable the bot API in admin web. Default value should be false to allow namespace creation. |
 | adminWeb.environment.tock_default_log_level | string | `"info"` | log level |
+| adminWeb.environment.tock_default_namespace | string | `"app"` | Tock default namespace. This is the namespace where the bot will be created by default. All users will arrive in this namespace per default. It can be changed in the admin web interface. |
 | adminWeb.environment.tock_env | string | `"false"` | tock_env |
 | adminWeb.environment.tock_gen_ai_orchestrator_client_request_timeout_ms | string | `"55000"` | Client request timeout to Gen AI Orchestrator in milliseconds |
 | adminWeb.environment.tock_gen_ai_orchestrator_secret_storage_type | string | `"Raw"` | Storage type for Gen AI Orchestrator secrets. Allowed values: Raw, Env, AwsSecretsManager, GcpSecretManager |

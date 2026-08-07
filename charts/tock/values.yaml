@@ -188,6 +188,9 @@ adminWeb:
     # -- Vector store provider. Allowed values: OpenSearch, PgVector
     # @section -- adminWeb
     tock_gen_ai_orchestrator_vector_store_provider: "OpenSearch"
+    # -- Tock default namespace. This is the namespace where the bot will be created by default. All users will arrive in this namespace per default. It can be changed in the admin web interface.
+    # @section -- adminWeb
+    tock_default_namespace: "app"
 
 
     # Following values are per default computed by the chart
