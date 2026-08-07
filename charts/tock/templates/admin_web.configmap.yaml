@@ -77,3 +77,6 @@ data:
 {{- if  .Values.adminWeb.environment.tock_gcp_region }}
     tock_gcp_region: '{{ .Values.adminWeb.environment.tock_gcp_region }}'
 {{- end }}
+{{- if  .Values.adminWeb.environment.tock_default_namespace }}
+    tock_default_namespace: '{{ .Values.adminWeb.environment.tock_default_namespace }}'
+{{- end }}
