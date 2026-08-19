@@ -74,6 +74,7 @@ spec:
           args:
             - |
               set -e
+              rm -f /truststore/cacerts
               cp "$JAVA_HOME/lib/security/cacerts" /truststore/cacerts
               csplit -f /tmp/corp- -b '%02d.pem' /etc/ssl/certs/{{ .Values.buildWorker.truststore.certSecret }}.crt '/-----BEGIN CERTIFICATE-----/' '{*}' >/dev/null || true
               i=0
