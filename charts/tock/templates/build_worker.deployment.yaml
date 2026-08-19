@@ -64,41 +64,7 @@ spec:
           resources: {{- toYaml .Values.buildWorker.resources | nindent 12 }}
       {{- end }}               
       {{- if .Values.buildWorker.truststore.enabled }}
-        - name: truststore-generator
-          image: {{ include "truststoreContainer.image" . }}
-          imagePullPolicy: {{ .Values.global.truststoreContainerImage.pullPolicy | default "IfNotPresent" }}
-          {{- if .Values.global.truststoreContainerImage.containerSecurityContext.enabled }}
-          securityContext: {{- omit .Values.global.truststoreContainerImage.containerSecurityContext "enabled" | toYaml | nindent 12 }}
-          {{- end }}
-          command: ["/bin/sh", "-c"]
-          args:
-            - |
-              set -e
-              rm -f /truststore/cacerts
-              cp "$JAVA_HOME/lib/security/cacerts" /truststore/cacerts
-              csplit -f /tmp/corp- -b '%02d.pem' /etc/ssl/certs/{{ .Values.buildWorker.truststore.certSecret }}.crt '/-----BEGIN CERTIFICATE-----/' '{*}' >/dev/null || true
-              i=0
-              for f in /tmp/corp-*.pem; do
-                [ -s "$f" ] || continue
-                keytool -importcert -noprompt \
-                 -file "$f" \
-                 -alias "corp-$i" \
-                 -keystore /truststore/cacerts \
-                 -storepass changeit
-                i=$((i+1))
-              done
-              keytool -list -keystore /truststore/cacerts -storepass changeit | grep -i corp || true
-              chmod 0444 /truststore/cacerts
-          volumeMounts:
-            - name: cert-volume
-              mountPath: /etc/ssl/certs/{{ .Values.buildWorker.truststore.certSecret }}.crt
-              subPath: {{ .Values.buildWorker.truststore.certSecret }}.crt
-              readOnly: true
-            - name: truststore-volume
-              mountPath: /truststore
-      {{- if .Values.buildWorker.resources }}
-          resources: {{- toYaml .Values.buildWorker.resources | nindent 12 }}
-      {{- end }}
+        {{- include "truststore.initContainer" (dict "root" $ "component" .Values.buildWorker) | nindent 8 }}
       {{- end }}
       containers:
         - name: build-worker
@@ -151,11 +117,7 @@ spec:
           - name: tmp-volume
             emptyDir: {}
           {{- if .Values.buildWorker.truststore.enabled }}
-          - name: cert-volume
-            secret:
-              secretName: {{ .Values.buildWorker.truststore.certSecret }}
-          - name: truststore-volume
-            emptyDir: {}
+          {{- include "truststore.volumes" (dict "component" .Values.buildWorker) | nindent 10 }}
           {{- end }}
           {{- with .Values.buildWorker.extraVolumes }}
 {{ toYaml . | indent 10 }}

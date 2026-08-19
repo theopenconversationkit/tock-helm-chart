@@ -389,6 +389,64 @@ Return the proper truststore image name for bot-api init containers
 {{- end -}}
 
 {{/*
+Shared truststore-generator initContainer (JVM cacerts + corporate CA import).
+Usage: {{ include "truststore.initContainer" (dict "root" $ "component" .Values.duckling) | nindent 8 }}
+"root" must be the top-level context ($), "component" the values block owning `.truststore` (+ optional `.resources`).
+*/}}
+{{- define "truststore.initContainer" -}}
+{{- $root := .root -}}
+{{- $component := .component -}}
+- name: truststore-generator
+  image: {{ include "truststoreContainer.image" $root }}
+  imagePullPolicy: {{ $root.Values.global.truststoreContainerImage.pullPolicy | default "IfNotPresent" }}
+  {{- if $root.Values.global.truststoreContainerImage.containerSecurityContext.enabled }}
+  securityContext: {{- omit $root.Values.global.truststoreContainerImage.containerSecurityContext "enabled" | toYaml | nindent 4 }}
+  {{- end }}
+  command: ["/bin/sh", "-c"]
+  args:
+    - |
+      set -e
+      rm -f /truststore/cacerts
+      cp "$JAVA_HOME/lib/security/cacerts" /truststore/cacerts
+      csplit -f /tmp/corp- -b '%02d.pem' /etc/ssl/certs/{{ $component.truststore.certSecret }}.crt '/-----BEGIN CERTIFICATE-----/' '{*}' >/dev/null || true
+      i=0
+      for f in /tmp/corp-*.pem; do
+        [ -s "$f" ] || continue
+        keytool -importcert -noprompt \
+         -file "$f" \
+         -alias "corp-$i" \
+         -keystore /truststore/cacerts \
+         -storepass changeit
+        i=$((i+1))
+      done
+      keytool -list -keystore /truststore/cacerts -storepass changeit | grep -i corp || true
+      chmod 0444 /truststore/cacerts
+  volumeMounts:
+    - name: cert-volume
+      mountPath: /etc/ssl/certs/{{ $component.truststore.certSecret }}.crt
+      subPath: {{ $component.truststore.certSecret }}.crt
+      readOnly: true
+    - name: truststore-volume
+      mountPath: /truststore
+  {{- if $component.resources }}
+  resources: {{- toYaml $component.resources | nindent 4 }}
+  {{- end }}
+{{- end -}}
+
+{{/*
+Shared truststore volumes (secret + emptyDir).
+Usage: {{ include "truststore.volumes" (dict "component" .Values.duckling) | nindent 10 }}
+*/}}
+{{- define "truststore.volumes" -}}
+{{- $component := .component -}}
+- name: cert-volume
+  secret:
+    secretName: {{ $component.truststore.certSecret }}
+- name: truststore-volume
+  emptyDir: {}
+{{- end -}}
+
+{{/*
 Return the proper adminWeb Docker Image Registry Secret Names
 */}}
 {{- define "adminWeb.imagePullSecrets" -}}
