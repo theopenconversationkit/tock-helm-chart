@@ -36,6 +36,8 @@ helm install [RELEASE_NAME] tock/tock --version 0.6.3
 
 You will find more information on chart parameters at the helm chart [README](charts/tock/README.md).
 
+The Tock documentation also describes how to [deploy Tock on Kubernetes](https://doc.tock.ai/tock/master/operate/kubernetes.html) with this chart.
+
 ## What is deployed 
 
 The chart deploys all tock components. It's also able to deploy a mongodb database (Bitnami mongoDb chart is used as subchart) or use an existing mongodb backend. In the same feeling, since version 24.3.2 of tock, open search can be deployed as a sub chart (opensearch chart is used as subchart) and since version 24.9.3 PGvector can be deployed as a sub chart (bitnami chart is used as subchart).

@@ -457,7 +457,7 @@ botApi:
     # -- Enable truststore for entreprise certificates
     # @section -- botApi
     enabled: false
-    # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert --from-file=corp-root-ca.crt``
+    # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert --from-file=corp-root-ca.crt`
     # @section -- botApi
     certSecret: "corp-root-cert"
   image:
@@ -986,7 +986,7 @@ genAiOrchestrator:
     # -- Enable truststore for entreprise certificates
     # @section -- genAiOrchestrator
     enabled: false
-    # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert --from-file=corp-root-ca.crt``
+    # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert --from-file=corp-root-ca.crt`
     # @section -- genAiOrchestrator
     certSecret: "corp-root-cert"
   image:

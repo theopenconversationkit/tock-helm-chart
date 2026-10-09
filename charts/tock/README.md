@@ -8,7 +8,7 @@ A helm chart for Tock. Tock is an open conversational AI platform. It's a comple
 
 The chart is distributed as an OCI Artifact as well as via a traditional Helm Repository.
 
-- OCI Artifact: `oci://ghcr.io/theopenconversationkit/charts/`
+- OCI Artifact: `oci://ghcr.io/theopenconversationkit/charts/tock`
 - Helm Repository: `https://theopenconversationkit.github.io/tock-helm-chart/` with chart `tock`
 
 ## Install Chart
@@ -371,29 +371,29 @@ To use it , you have to apply the following ConfigMap to your cluster.
 $ kubectl apply -f ./admin-web-auth-cfg.yaml
 ```
 
-And set in your values file `adminWeb.authCongifMap` to `admin-web-auth-cfg` (configmap name)
+And set in your values file `adminWeb.authConfigMap` to `admin-web-auth-cfg` (configmap name)
 
 `admin-web-auth-cfg.yaml`
 
 ```yaml
 apiVersion: v1
-  kind: ConfigMap
-  metadata:
-    name: admin-web-auth-cfg
-    labels:
-      app.kubernetes.io/name: admin-web-auth
-      app.kubernetes.io/component: admin-web
-    data:
-      tock_users:  "alice@tock.ai,bob@tock.ai" # Credentials (separated by commas). Default value `admin@app.com`
-      tock_passwords: "secret1,secret2" # Password (separated by commas). Default value `password`
-      tock_organizations: "tock,tock" # Organizations (separated by commas). Default value `app``
-      tock_roles: "botUser,nlpUser|botUser|admin|technicalAdmin" #  Roles separated | (and then by commas). Default value is empty."
- ```
+kind: ConfigMap
+metadata:
+  name: admin-web-auth-cfg
+  labels:
+    app.kubernetes.io/name: admin-web-auth
+    app.kubernetes.io/component: admin-web
+data:
+  tock_users:  "alice@tock.ai,bob@tock.ai" # Credentials (separated by commas). Default value `admin@app.com`
+  tock_passwords: "secret1,secret2" # Password (separated by commas). Default value `password`
+  tock_organizations: "tock,tock" # Organizations (separated by commas). Default value `app`
+  tock_roles: "botUser,nlpUser|botUser|admin|technicalAdmin" #  Roles separated | (and then by commas). Default value is empty.
+```
 
 In this example, Alice has the role 'botUser', whereas Bob has all the roles.
 To define the identities and roles of several users, separate their values with commas.
 
-You can find more information about the roles in the [Tock documentation](https://doc.tock.ai/tock/fr/admin/securite/#r%C3%B4les)
+You can find more information about the roles in the [Tock documentation](https://doc.tock.ai/tock/master/operate/security.html#roles)
 
 ## Deployment on arm64 and processor without AVX instructions
 
@@ -408,7 +408,7 @@ https://artifacthub.io/packages/helm/bitnami/mongodb/14.8.3
 ## Deployment sample on Rancher Desktop or k3s
 
 ```console
-$ helm install mytock oci://registry.hub.docker.com/onelans/tock --version 0.4.4 -f ./rancher-values.yaml
+$ helm install mytock oci://ghcr.io/theopenconversationkit/charts/tock --version 0.6.3 -f ./rancher-values.yaml
 ```
 
 `rancher-values.yaml`
@@ -456,7 +456,7 @@ adminWeb:
 ## Deployment sample on GKE
 
 ```console
-$ helm install mytock oci://registry.hub.docker.com/onelans/tock --version 0.4.4 -f ./gke-values.yaml
+$ helm install mytock oci://ghcr.io/theopenconversationkit/charts/tock --version 0.6.3 -f ./gke-values.yaml
 ```
 
 `gke-values.yaml`
@@ -504,10 +504,10 @@ This will enable the truststore and use the certificates from the specified Secr
 You can create the Secret with the following command:
 
 ```console
-kubectl create secret generic corp-root-ca --from-file=corp-root-ca.crt
+kubectl create secret generic corp-root-cert --from-file=corp-root-ca.crt
 ```
 
-This will create a Secret named `corp-root-ca` with the certificate file `corp-root-ca.crt`.
+This will create a Secret named `corp-root-cert` with the certificate file `corp-root-ca.crt`.
 
 ## Solve langchain and tiktoken issues on on-premise deployments
 
