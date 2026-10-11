@@ -501,7 +501,7 @@ https://artifacthub.io/packages/helm/bitnami/mongodb/14.8.3
 ## Deployment sample on Rancher Desktop or k3s
 
 ```console
-$ helm install mytock oci://ghcr.io/theopenconversationkit/charts/tock --version 0.6.3 -f ./rancher-values.yaml
+$ helm install mytock oci://ghcr.io/theopenconversationkit/charts/tock --version 0.7.0 -f ./rancher-values.yaml
 ```
 
 `rancher-values.yaml`
@@ -549,7 +549,7 @@ adminWeb:
 ## Deployment sample on GKE
 
 ```console
-$ helm install mytock oci://ghcr.io/theopenconversationkit/charts/tock --version 0.6.3 -f ./gke-values.yaml
+$ helm install mytock oci://ghcr.io/theopenconversationkit/charts/tock --version 0.7.0 -f ./gke-values.yaml
 ```
 
 `gke-values.yaml`
@@ -607,6 +607,46 @@ You can create the Secret with the following command:
 kubectl create secret generic corp-root-cert --from-file=corp-root-ca.crt
 ```
 
+This will create a Secret named `corp-root-cert` with the certificate file `corp-root-ca.crt`.
+
+### Enforce TLS to an external MongoDB with an enterprise certificate
+
+If your MongoDB is external to this chart (`global.deployMongoDb.enabled: false`) and already requires TLS
+with a server certificate signed by an enterprise CA, every pod connecting to MongoDB needs to trust that
+CA. Since `adminWeb`, `botApi`, `buildWorker`, `duckling` and `nlpApi` all connect to MongoDB, enable the
+truststore feature on all five, pointing them to the same Secret containing your enterprise CA:
+
+```yaml
+global:
+  deployMongoDb:
+    enabled: false
+  # Append tls=true to the connection string so the MongoDB driver negotiates TLS
+  mongodbUrls: "mongodb://myuser:mypass@fqdn-node1:27017,fqdn-node2:27017,fqdn-node3:27017/mydb?replicaSet=rs0&tls=true"
+
+adminWeb:
+  truststore:
+    enabled: true
+    certSecret: "corp-root-cert"
+botApi:
+  truststore:
+    enabled: true
+    certSecret: "corp-root-cert"
+buildWorker:
+  truststore:
+    enabled: true
+    certSecret: "corp-root-cert"
+duckling:
+  truststore:
+    enabled: true
+    certSecret: "corp-root-cert"
+nlpApi:
+  truststore:
+    enabled: true
+    certSecret: "corp-root-cert"
+```
+
+This feature only makes the pods trust the CA (server TLS verification). It does not enable TLS on the
+bundled Bitnami MongoDB subchart, and it does not support mutual TLS (client certificates).
 This will create a Secret named `corp-root-cert` with the certificate file `corp-root-ca.crt`.
 
 ## Solve langchain and tiktoken issues on on-premise deployments

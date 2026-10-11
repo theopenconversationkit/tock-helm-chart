@@ -81,5 +81,5 @@ data:
     tock_default_namespace: '{{ .Values.adminWeb.environment.tock_default_namespace }}'
 {{- end }}
 {{- if  .Values.adminWeb.environment.tock_bot_rest_client_request_timeout_ms }}
-    tock_bot_rest_client_request_timeout_ms: '{{ .Values.tock_bot_rest_client_request_timeout_ms }}'
+    tock_bot_rest_client_request_timeout_ms: '{{ .Values.adminWeb.environment.tock_bot_rest_client_request_timeout_ms }}'
 {{- end }}
