@@ -191,6 +191,9 @@ adminWeb:
     # -- Tock default namespace. This is the namespace where the bot will be created by default. All users will arrive in this namespace per default. It can be changed in the admin web interface.
     # @section -- adminWeb
     tock_default_namespace: "app"
+    # -- Client request timeout to the bot REST API in milliseconds
+    # @section -- adminWeb
+    tock_bot_rest_client_request_timeout_ms: null
 
 
     # Following values are per default computed by the chart
@@ -235,7 +238,7 @@ adminWeb:
     # -- Enable truststore for entreprise certificates
     # @section -- adminWeb
     enabled: false
-    # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert --from-file=corp-root-ca.crt``
+    # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert \--\from-file=corp-root-ca.crt``
     # @section -- adminWeb
     certSecret: "corp-root-cert"
 
@@ -489,7 +492,7 @@ botApi:
     # -- Enable truststore for entreprise certificates
     # @section -- botApi
     enabled: false
-    # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert --from-file=corp-root-ca.crt``
+    # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert \--\from-file=corp-root-ca.crt``
     # @section -- botApi
     certSecret: "corp-root-cert"
   image:
@@ -651,7 +654,7 @@ buildWorker:
     # -- Enable truststore for entreprise certificates
     # @section -- buildWorker
     enabled: false
-    # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert --from-file=corp-root-ca.crt``
+    # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert \--\from-file=corp-root-ca.crt``
     # @section -- buildWorker
     certSecret: "corp-root-cert"
 
@@ -761,7 +764,7 @@ duckling:
     # -- Enable truststore for entreprise certificates
     # @section -- Duckling
     enabled: false
-    # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert --from-file=corp-root-ca.crt``
+    # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert \--\from-file=corp-root-ca.crt``
     # @section -- Duckling
     certSecret: "corp-root-cert"
 
@@ -993,7 +996,7 @@ nlpApi:
     # -- Enable truststore for entreprise certificates
     # @section -- nlpApi
     enabled: false
-    # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert --from-file=corp-root-ca.crt``
+    # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert \--\from-file=corp-root-ca.crt``
     # @section -- nlpApi
     certSecret: "corp-root-cert"
 
@@ -1108,7 +1111,7 @@ genAiOrchestrator:
     # @section -- genAiOrchestrator
     tock_gen_ai_orchestrator_vector_store_provider: OpenSearch
 
-    # @section -- genAiOrchestrator
+    # -- Vector Store host
     # @section -- genAiOrchestrator
     tock_gen_ai_orchestrator_vector_store_host: opensearch-node1
     # -- Vector Store port
@@ -1149,7 +1152,7 @@ genAiOrchestrator:
     # -- Enable truststore for entreprise certificates
     # @section -- genAiOrchestrator
     enabled: false
-    # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert --from-file=corp-root-ca.crt``
+    # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert \--\from-file=corp-root-ca.crt``
     # @section -- genAiOrchestrator
     certSecret: "corp-root-cert"
   image:
