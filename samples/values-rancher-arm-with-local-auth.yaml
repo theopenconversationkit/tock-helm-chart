@@ -12,7 +12,7 @@ botApi:
 adminWeb:
   ingress:
     enabled: true
-  authCongifMap: "admin-web-auth-cfg"
+  authConfigMap: "admin-web-auth-cfg"
 
 mongodb:
   architecture: "replicaset"

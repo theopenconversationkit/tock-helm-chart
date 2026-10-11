@@ -42,7 +42,7 @@ adminWeb:
     deprecated: true
     annotations:
       traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
-  authCongifMap: "admin-web-auth-cfg"
+  authConfigMap: "admin-web-auth-cfg"
   resources: 
     limits:
       cpu: 1000m
