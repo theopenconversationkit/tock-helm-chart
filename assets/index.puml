@@ -1,0 +1,266 @@
+@startuml
+title "Tock Helm Chart - Vue d'ensemble"
+top to bottom direction
+
+hide stereotype
+skinparam ranksep 60
+skinparam nodesep 30
+skinparam {
+  arrowFontSize 10
+  defaultTextAlignment center
+  wrapWidth 200
+  maxMessageSize 100
+  shadowing false
+}
+
+skinparam rectangle<<OpensearchDashboards>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam person<<Admin>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam person<<EndUser>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<TockBuildWorkerPod>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<TockAdminWebIngress>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<TockBuildWorkerConfigmap>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<TockAdminWebSvc>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<TockAdminWebPod>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<TockAdminWebConfigmap>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<TockBotApiIngress>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<TockKotlinCompilerSvc>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<TockBotApiSvc>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<TockKotlinCompilerPod>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<TockBotApiPod>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<TockKotlinCompilerConfigmap>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<TockBotApiConfigmap>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<TockNlpApiSvc>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<TockGenaiOrchestratorSvc>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<TockNlpApiPod>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<TockGenaiOrchestratorPod>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<TockNlpApiConfigmap>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<Opensearch>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<Postgresql>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<TockGenaiOrchestratorConfigmap>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<TockDucklingSvc>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<TockDucklingPod>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<Mongodb>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<TockDucklingConfigmap>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+rectangle "==opensearch-dashboards\n<size:10>[opensearch-project subchart 2.19.0]</size>\n\nUI d'administration/monitoring d'OpenSearch. Conditionné par global.deployOpenSearch.enabled (dashboardEnabled)" <<OpensearchDashboards>> as OpensearchDashboards
+person "==Administrateur / Concepteur de bot\n\nConfigure NLU, RAG et scénarios via Tock Studio" <<Admin>> as Admin
+person "==Utilisateur final\n\nDiscute avec le bot via un canal connecté à bot-api" <<EndUser>> as EndUser
+rectangle "Tock (Kubernetes namespace)" <<Tock>> as Tock {
+  skinparam RectangleBorderColor<<Tock>> #3b82f6
+  skinparam RectangleFontColor<<Tock>> #3b82f6
+  skinparam RectangleBorderStyle<<Tock>> dashed
+
+  rectangle "build-worker" <<TockBuildWorker>> as TockBuildWorker {
+    skinparam RectangleBorderColor<<TockBuildWorker>> #3b82f6
+    skinparam RectangleFontColor<<TockBuildWorker>> #3b82f6
+    skinparam RectangleBorderStyle<<TockBuildWorker>> dashed
+
+    rectangle "==build-worker pod\n<size:10>[Java]</size>\n\nConteneur principal du pod build-worker" <<TockBuildWorkerPod>> as TockBuildWorkerPod
+    rectangle "==build-worker ConfigMap\n<size:10>[Kubernetes ConfigMap]</size>\n\nContient les variables d'environnement du pod build-worker" <<TockBuildWorkerConfigmap>> as TockBuildWorkerConfigmap
+  }
+  rectangle "admin-web (bot_admin)" <<TockAdminWeb>> as TockAdminWeb {
+    skinparam RectangleBorderColor<<TockAdminWeb>> #3b82f6
+    skinparam RectangleFontColor<<TockAdminWeb>> #3b82f6
+    skinparam RectangleBorderStyle<<TockAdminWeb>> dashed
+
+    rectangle "==admin-web Ingress\n<size:10>[Kubernetes Ingress]</size>\n\nExpose le Service admin-web aux utilisateurs finaux via HTTPS" <<TockAdminWebIngress>> as TockAdminWebIngress
+    rectangle "==admin-web Service\n<size:10>[Kubernetes Service ClusterIP :8080]</size>\n\nExpose le pod admin-web aux autres composants et à l'Ingress" <<TockAdminWebSvc>> as TockAdminWebSvc
+    rectangle "==admin-web pod\n<size:10>[Vert.x / Java]</size>\n\nConteneur principal du pod admin-web" <<TockAdminWebPod>> as TockAdminWebPod
+    rectangle "==admin-web ConfigMap\n<size:10>[Kubernetes ConfigMap]</size>\n\nContient les variables d'environnement du pod admin-web" <<TockAdminWebConfigmap>> as TockAdminWebConfigmap
+  }
+  rectangle "bot-api" <<TockBotApi>> as TockBotApi {
+    skinparam RectangleBorderColor<<TockBotApi>> #3b82f6
+    skinparam RectangleFontColor<<TockBotApi>> #3b82f6
+    skinparam RectangleBorderStyle<<TockBotApi>> dashed
+
+    rectangle "==bot-api Ingress\n<size:10>[Kubernetes Ingress]</size>\n\nExpose le Service bot-api aux utilisateurs finaux via HTTPS" <<TockBotApiIngress>> as TockBotApiIngress
+    rectangle "==bot-api Service\n<size:10>[Kubernetes Service ClusterIP :8080]</size>\n\nExpose le pod bot-api aux autres composants et à l'Ingress" <<TockBotApiSvc>> as TockBotApiSvc
+    rectangle "==bot-api pod\n<size:10>[Vert.x / Java]</size>\n\nConteneur principal du pod bot-api" <<TockBotApiPod>> as TockBotApiPod
+    rectangle "==bot-api ConfigMap\n<size:10>[Kubernetes ConfigMap]</size>\n\nContient les variables d'environnement du pod bot-api" <<TockBotApiConfigmap>> as TockBotApiConfigmap
+  }
+  rectangle "kotlin-compiler" <<TockKotlinCompiler>> as TockKotlinCompiler {
+    skinparam RectangleBorderColor<<TockKotlinCompiler>> #3b82f6
+    skinparam RectangleFontColor<<TockKotlinCompiler>> #3b82f6
+    skinparam RectangleBorderStyle<<TockKotlinCompiler>> dashed
+
+    rectangle "==kotlin-compiler Service\n<size:10>[Kubernetes Service ClusterIP :8080]</size>\n\nExpose le pod kotlin-compiler aux autres composants" <<TockKotlinCompilerSvc>> as TockKotlinCompilerSvc
+    rectangle "==kotlin-compiler pod\n<size:10>[Kotlin/JVM]</size>\n\nConteneur principal du pod kotlin-compiler" <<TockKotlinCompilerPod>> as TockKotlinCompilerPod
+    rectangle "==kotlin-compiler ConfigMap\n<size:10>[Kubernetes ConfigMap]</size>\n\nContient les variables d'environnement du pod kotlin-compiler" <<TockKotlinCompilerConfigmap>> as TockKotlinCompilerConfigmap
+  }
+  rectangle "nlp-api" <<TockNlpApi>> as TockNlpApi {
+    skinparam RectangleBorderColor<<TockNlpApi>> #3b82f6
+    skinparam RectangleFontColor<<TockNlpApi>> #3b82f6
+    skinparam RectangleBorderStyle<<TockNlpApi>> dashed
+
+    rectangle "==nlp-api Service\n<size:10>[Kubernetes Service ClusterIP :8080]</size>\n\nExpose le pod nlp-api aux autres composants" <<TockNlpApiSvc>> as TockNlpApiSvc
+    rectangle "==nlp-api pod\n<size:10>[Vert.x / Java]</size>\n\nConteneur principal du pod nlp-api" <<TockNlpApiPod>> as TockNlpApiPod
+    rectangle "==nlp-api ConfigMap\n<size:10>[Kubernetes ConfigMap]</size>\n\nContient les variables d'environnement du pod nlp-api" <<TockNlpApiConfigmap>> as TockNlpApiConfigmap
+  }
+  rectangle "genai-orchestrator" <<TockGenaiOrchestrator>> as TockGenaiOrchestrator {
+    skinparam RectangleBorderColor<<TockGenaiOrchestrator>> #3b82f6
+    skinparam RectangleFontColor<<TockGenaiOrchestrator>> #3b82f6
+    skinparam RectangleBorderStyle<<TockGenaiOrchestrator>> dashed
+
+    rectangle "==genai-orchestrator Service\n<size:10>[Kubernetes Service ClusterIP :8000]</size>\n\nExpose le pod genai-orchestrator aux autres composants" <<TockGenaiOrchestratorSvc>> as TockGenaiOrchestratorSvc
+    rectangle "==genai-orchestrator pod\n<size:10>[Python]</size>\n\nConteneur principal du pod genai-orchestrator" <<TockGenaiOrchestratorPod>> as TockGenaiOrchestratorPod
+    rectangle "==genai-orchestrator ConfigMap\n<size:10>[Kubernetes ConfigMap]</size>\n\nContient les variables d'environnement du pod genai-orchestrator" <<TockGenaiOrchestratorConfigmap>> as TockGenaiOrchestratorConfigmap
+  }
+  rectangle "duckling" <<TockDuckling>> as TockDuckling {
+    skinparam RectangleBorderColor<<TockDuckling>> #3b82f6
+    skinparam RectangleFontColor<<TockDuckling>> #3b82f6
+    skinparam RectangleBorderStyle<<TockDuckling>> dashed
+
+    rectangle "==duckling Service\n<size:10>[Kubernetes Service ClusterIP :8080]</size>\n\nExpose le pod duckling aux autres composants" <<TockDucklingSvc>> as TockDucklingSvc
+    rectangle "==duckling pod\n<size:10>[Haskell (facebook/duckling)]</size>\n\nConteneur principal du pod duckling" <<TockDucklingPod>> as TockDucklingPod
+    rectangle "==duckling ConfigMap\n<size:10>[Kubernetes ConfigMap]</size>\n\nContient les variables d'environnement du pod duckling" <<TockDucklingConfigmap>> as TockDucklingConfigmap
+  }
+}
+rectangle "==opensearch\n<size:10>[opensearch-project subchart 2.21.0]</size>\n\nVector store (option 1 pour le RAG). Conditionné par global.deployOpenSearch.enabled" <<Opensearch>> as Opensearch
+rectangle "==postgresql (pgvector)\n<size:10>[Bitnami subchart 13.4.4]</size>\n\nVector store (option 2 pour le RAG). Conditionné par global.deployPgVector.enabled" <<Postgresql>> as Postgresql
+rectangle "==mongodb\n<size:10>[Bitnami subchart 14.8.3]</size>\n\nStockage principal (config, données conversationnelles, modèles NLU). Conditionné par global.deployMongoDb.enabled" <<Mongodb>> as Mongodb
+
+OpensearchDashboards .[#8D8D8D,thickness=2].> Opensearch : <color:#8D8D8D>Administration / visualisation
+Admin .[#8D8D8D,thickness=2].> TockAdminWebIngress : <color:#8D8D8D>Administre Tock Studio
+EndUser .[#8D8D8D,thickness=2].> TockBotApiIngress : <color:#8D8D8D>Envoie des messages
+TockBotApiPod .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
+TockNlpApiPod .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
+TockDucklingPod .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
+TockBuildWorkerPod .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
+TockGenaiOrchestratorPod .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
+TockGenaiOrchestratorPod .[#8D8D8D,thickness=2].> Opensearch : <color:#8D8D8D>urls.vectorstore (si \n<color:#8D8D8D>deployOpenSearch.enabled)
+TockGenaiOrchestratorPod .[#8D8D8D,thickness=2].> Postgresql : <color:#8D8D8D>urls.vectorstore (si \n<color:#8D8D8D>deployPgVector.enabled)
+TockAdminWebSvc .[#8D8D8D,thickness=2].> TockAdminWebPod
+TockAdminWebIngress .[#8D8D8D,thickness=2].> TockAdminWebSvc : <color:#8D8D8D>HTTPS
+TockAdminWebPod .[#8D8D8D,thickness=2].> TockAdminWebConfigmap : <color:#8D8D8D>Variables d'environnement
+TockAdminWebPod .[#8D8D8D,thickness=2].> TockBotApiSvc : <color:#8D8D8D>tock_bot_admin_rest_default_base_url / \n<color:#8D8D8D>tock_configuration_bot_default_base_url
+TockAdminWebPod .[#8D8D8D,thickness=2].> TockDucklingSvc : <color:#8D8D8D>nlp_duckling_url
+TockAdminWebPod .[#8D8D8D,thickness=2].> TockKotlinCompilerSvc : <color:#8D8D8D>tock_bot_compiler_service_url
+TockAdminWebPod .[#8D8D8D,thickness=2].> TockGenaiOrchestratorSvc : <color:#8D8D8D>tock_gen_ai_orchestrator_server_url
+TockBotApiSvc .[#8D8D8D,thickness=2].> TockBotApiPod
+TockBotApiIngress .[#8D8D8D,thickness=2].> TockBotApiSvc : <color:#8D8D8D>HTTPS
+TockBotApiPod .[#8D8D8D,thickness=2].> TockBotApiConfigmap : <color:#8D8D8D>Variables d'environnement
+TockBotApiPod .[#8D8D8D,thickness=2].> TockNlpApiSvc : <color:#8D8D8D>tock_nlp_service_url
+TockBotApiPod .[#8D8D8D,thickness=2].> TockGenaiOrchestratorSvc : <color:#8D8D8D>tock_gen_ai_orchestrator_server_url
+TockNlpApiSvc .[#8D8D8D,thickness=2].> TockNlpApiPod
+TockNlpApiPod .[#8D8D8D,thickness=2].> TockNlpApiConfigmap : <color:#8D8D8D>Variables d'environnement
+TockNlpApiPod .[#8D8D8D,thickness=2].> TockDucklingSvc : <color:#8D8D8D>nlp_duckling_url
+TockDucklingSvc .[#8D8D8D,thickness=2].> TockDucklingPod
+TockDucklingPod .[#8D8D8D,thickness=2].> TockDucklingConfigmap : <color:#8D8D8D>Variables d'environnement
+TockKotlinCompilerSvc .[#8D8D8D,thickness=2].> TockKotlinCompilerPod
+TockKotlinCompilerPod .[#8D8D8D,thickness=2].> TockKotlinCompilerConfigmap : <color:#8D8D8D>Variables d'environnement
+TockBuildWorkerPod .[#8D8D8D,thickness=2].> TockBuildWorkerConfigmap : <color:#8D8D8D>Variables d'environnement
+TockGenaiOrchestratorSvc .[#8D8D8D,thickness=2].> TockGenaiOrchestratorPod
+TockGenaiOrchestratorPod .[#8D8D8D,thickness=2].> TockGenaiOrchestratorConfigmap : <color:#8D8D8D>Variables d'environnement
+TockAdminWeb .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
+@enduml

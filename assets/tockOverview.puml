@@ -1,0 +1,105 @@
+@startuml
+title "Tock Vue d'ensemble"
+top to bottom direction
+
+hide stereotype
+skinparam ranksep 60
+skinparam nodesep 30
+skinparam {
+  arrowFontSize 10
+  defaultTextAlignment center
+  wrapWidth 200
+  maxMessageSize 100
+  shadowing false
+}
+
+skinparam person<<Admin>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam person<<EndUser>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<TockAdminWeb>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<TockBuildWorker>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<TockBotApi>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<TockKotlinCompiler>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<TockNlpApi>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<TockGenaiOrchestrator>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<TockDuckling>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<Postgresql>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+skinparam rectangle<<Mongodb>>{
+  BackgroundColor #3b82f6
+  FontColor #eff6ff
+  BorderColor #2563eb
+}
+person "==Administrateur / Concepteur de bot\n\nConfigure NLU, RAG et scénarios via Tock Studio" <<Admin>> as Admin
+person "==Utilisateur final\n\nDiscute avec le bot via un canal connecté à bot-api" <<EndUser>> as EndUser
+rectangle "Tock (Kubernetes namespace)" <<Tock>> as Tock {
+  skinparam RectangleBorderColor<<Tock>> #3b82f6
+  skinparam RectangleFontColor<<Tock>> #3b82f6
+  skinparam RectangleBorderStyle<<Tock>> dashed
+
+  rectangle "==admin-web (bot_admin)\n<size:10>[Vert.x / Java]</size>\n\nTock Studio : UI admin, NLU, RAG, gestion des bots" <<TockAdminWeb>> as TockAdminWeb
+  rectangle "==build-worker\n<size:10>[Java]</size>\n\nWorker asynchrone sans Service k8s exposé (pas de fichier .service.yaml)" <<TockBuildWorker>> as TockBuildWorker
+  rectangle "==bot-api\n<size:10>[Vert.x / Java]</size>\n\nAPI REST d'exécution de la logique conversationnelle" <<TockBotApi>> as TockBotApi
+  rectangle "==kotlin-compiler\n<size:10>[Kotlin/JVM]</size>\n\nCompile les scripts de scénarios de bot (DSL Kotlin)" <<TockKotlinCompiler>> as TockKotlinCompiler
+  rectangle "==nlp-api\n<size:10>[Vert.x / Java]</size>\n\nMoteur NLU : classification d'intentions, extraction d'entités" <<TockNlpApi>> as TockNlpApi
+  rectangle "==genai-orchestrator\n<size:10>[Python]</size>\n\nOrchestration des appels LLM/RAG (prompts, embeddings, vector store)" <<TockGenaiOrchestrator>> as TockGenaiOrchestrator
+  rectangle "==duckling\n<size:10>[Haskell (facebook/duckling)]</size>\n\nExtraction d'entités (dates, montants, durées...)" <<TockDuckling>> as TockDuckling
+}
+rectangle "==postgresql (pgvector)\n<size:10>[Bitnami subchart 13.4.4]</size>\n\nVector store (option 2 pour le RAG). Conditionné par global.deployPgVector.enabled" <<Postgresql>> as Postgresql
+rectangle "==mongodb\n<size:10>[Bitnami subchart 14.8.3]</size>\n\nStockage principal (config, données conversationnelles, modèles NLU). Conditionné par global.deployMongoDb.enabled" <<Mongodb>> as Mongodb
+
+TockAdminWeb .[#8D8D8D,thickness=2].> TockBotApi : <color:#8D8D8D>tock_bot_admin_rest_default_base_url / \n<color:#8D8D8D>tock_configuration_bot_default_base_url
+TockAdminWeb .[#8D8D8D,thickness=2].> TockDuckling : <color:#8D8D8D>nlp_duckling_url
+TockAdminWeb .[#8D8D8D,thickness=2].> TockKotlinCompiler : <color:#8D8D8D>tock_bot_compiler_service_url
+TockAdminWeb .[#8D8D8D,thickness=2].> TockGenaiOrchestrator : <color:#8D8D8D>tock_gen_ai_orchestrator_server_url
+TockBotApi .[#8D8D8D,thickness=2].> TockNlpApi : <color:#8D8D8D>tock_nlp_service_url
+TockBotApi .[#8D8D8D,thickness=2].> TockGenaiOrchestrator : <color:#8D8D8D>tock_gen_ai_orchestrator_server_url
+TockNlpApi .[#8D8D8D,thickness=2].> TockDuckling : <color:#8D8D8D>nlp_duckling_url
+TockAdminWeb .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
+TockBotApi .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
+TockNlpApi .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
+TockDuckling .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
+TockBuildWorker .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
+TockGenaiOrchestrator .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
+TockGenaiOrchestrator .[#8D8D8D,thickness=2].> Postgresql : <color:#8D8D8D>urls.vectorstore (si \n<color:#8D8D8D>deployPgVector.enabled)
+Admin .[#8D8D8D,thickness=2].> TockAdminWeb : <color:#8D8D8D>Administre Tock Studio
+EndUser .[#8D8D8D,thickness=2].> TockBotApi : <color:#8D8D8D>Envoie des messages
+@enduml
