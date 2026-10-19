@@ -248,7 +248,7 @@ model {
   endUser -> tock.botApi.ingress 'Envoie des messages' 'HTTPS via Ingress'
 
   // Relations internes (issues des ConfigMaps) - un appel HTTP inter-service cible toujours le Service Kubernetes
-  tock.adminWeb -> mongodb 'tock_mongo_url' 'MongoDB Wire Protocol'
+  tock.adminWeb.pod -> mongodb 'tock_mongo_url' 'MongoDB Wire Protocol'
   
   tock.adminWeb.pod -> tock.duckling.svc 'nlp_duckling_url' 'HTTP'
   tock.adminWeb.pod -> tock.botApi.svc 'tock_bot_admin_rest_default_base_url / tock_configuration_bot_default_base_url' 'HTTP'
@@ -267,7 +267,6 @@ model {
 
   tock.genaiOrchestrator.pod -> opensearch 'urls.vectorstore (si deployOpenSearch.enabled)' 'HTTP'
   tock.genaiOrchestrator.pod -> postgresql 'urls.vectorstore (si deployPgVector.enabled)' 'SQL'
-  tock.genaiOrchestrator.pod -> mongodb 'tock_mongo_url' 'MongoDB Wire Protocol'
 
   opensearchDashboards -> opensearch 'Administration / visualisation' 'HTTP'
 }
@@ -304,7 +303,7 @@ views {
   view tockComponentsOS of tock {
     title 'Tock - composants internes (Component view)'
     include tock.**
-    include mongodb, postgresql
+    include mongodb, opensearch
     include admin, endUser
     
   }

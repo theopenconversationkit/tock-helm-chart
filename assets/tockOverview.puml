@@ -98,7 +98,6 @@ TockBotApi .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
 TockNlpApi .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
 TockDuckling .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
 TockBuildWorker .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
-TockGenaiOrchestrator .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
 TockGenaiOrchestrator .[#8D8D8D,thickness=2].> Postgresql : <color:#8D8D8D>urls.vectorstore (si \n<color:#8D8D8D>deployPgVector.enabled)
 Admin .[#8D8D8D,thickness=2].> TockAdminWeb : <color:#8D8D8D>Administre Tock Studio
 EndUser .[#8D8D8D,thickness=2].> TockBotApi : <color:#8D8D8D>Envoie des messages

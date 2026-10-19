@@ -355,22 +355,19 @@ adminWeb:
     alternativeHosts: []
     
 
-  ## adminWeb resource requests and limits
-  ## ref: https://kubernetes.io/docs/user-guide/compute-resources/
-  ## @param resources.limits The resources limits for the haproxy containers
-  ## @param resources.requests The requested resources for the haproxy containers
-  ##
-  #resources: 
-    # -- resources limits
-    # @section -- adminWeb
+  # Example:
+  #resources:
   #  limits:
   #    cpu: 1000m
   #    memory: 1.5Gi
-    # -- resources requests
-    # @section -- adminWeb
   #  requests:
   #    cpu: 500m
   #    memory: 768Mi
+
+  # -- adminWeb resource requests and limits
+  # ref: https://kubernetes.io/docs/user-guide/compute-resources/
+  # @section -- adminWeb
+  resources: {}
 
   podAnnotations: {}
   serviceAccountName: ""
@@ -604,16 +601,19 @@ botApi:
     #                    number: 8080
     alternativeHosts: []
   
-  # -- botApi resource requests and limits
-  # ref: https://kubernetes.io/docs/user-guide/compute-resources/
-  # @section -- botApi
-  #resources: # resources limits and request
+  # Example:
+  #resources:
   #  limits:
   #    cpu: 1500m
   #    memory: 2Gi
   #  requests:
   #    cpu: 750m
   #    memory: 1Gi
+
+  # -- botApi resource requests and limits
+  # ref: https://kubernetes.io/docs/user-guide/compute-resources/
+  # @section -- botApi
+  resources: {}
 
   podAnnotations: {}
   serviceAccountName: ""
@@ -716,16 +716,19 @@ buildWorker:
       # @section -- buildWorker
       sysctls: []
 
-  # -- buildWorker resource requests and limits
-  # ref: https://kubernetes.io/docs/user-guide/compute-resources/
-  # @section -- buildWorker
-  #resources: #resources limits and request
+  # Example:
+  #resources:
   #  limits:
   #    cpu: 1000m
   #    memory: 1.5Gi
   #  requests:
   #    cpu: 500m
   #    memory: 768Mi
+
+  # -- buildWorker resource requests and limits
+  # ref: https://kubernetes.io/docs/user-guide/compute-resources/
+  # @section -- buildWorker
+  resources: {}
 
   podAnnotations: {}
   serviceAccountName: ""
@@ -828,16 +831,19 @@ duckling:
       # @section -- Duckling
       sysctls: []
 
-  # -- Duckling resource requests and limits
-  # ref: https://kubernetes.io/docs/user-guide/compute-resources/
-  # @section -- Duckling
-  #resources: #resources limits and request
+  # Example:
+  #resources:
   #  limits:
   #    cpu: 1000m
   #    memory: 1.5Gi
   #  requests:
   #    cpu: 500m
   #    memory: 768Mi
+
+  # -- Duckling resource requests and limits
+  # ref: https://kubernetes.io/docs/user-guide/compute-resources/
+  # @section -- Duckling
+  resources: {}
 
   podAnnotations: {}
   serviceAccountName: ""
@@ -929,16 +935,19 @@ kotlinCompiler:
       # @section -- KotlinCompiler
       sysctls: []
 
-  # -- KotlinCompiler resource requests and limits
-  # ref: https://kubernetes.io/docs/user-guide/compute-resources/
-  # @section -- KotlinCompiler
-  #resources: #resources limits and request
+  # Example:
+  #resources:
   #  limits:
   #    cpu: 1000m
   #    memory: 1.5Gi
   #  requests:
   #    cpu: 500m
   #    memory: 768Mi
+
+  # -- KotlinCompiler resource requests and limits
+  # ref: https://kubernetes.io/docs/user-guide/compute-resources/
+  # @section -- KotlinCompiler
+  resources: {}
 
   podAnnotations: {}
   serviceAccountName: ""
@@ -1063,16 +1072,19 @@ nlpApi:
       # @section -- nlpApi
       sysctls: []
 
-  # -- nlpApi resource requests and limits
-  # ref: https://kubernetes.io/docs/user-guide/compute-resources/
-  # @section -- nlpApi
-  #resources: #resources limits and request
+  # Example:
+  #resources:
   #  limits:
   #    cpu: 1500m
   #    memory: 2Gi
   #  requests:
   #    cpu: 750m
   #    memory: 1Gi
+
+  # -- nlpApi resource requests and limits
+  # ref: https://kubernetes.io/docs/user-guide/compute-resources/
+  # @section -- nlpApi
+  resources: {}
 
   podAnnotations: {}
   serviceAccountName: ""
@@ -1241,16 +1253,19 @@ genAiOrchestrator:
       # @section -- genAiOrchestrator
       sysctls: []
 
-  # -- gen-ai-orchestrator-server resource requests and limits
-  # ref: https://kubernetes.io/docs/user-guide/compute-resources/
-  # @section -- genAiOrchestrator
-  #resources: #resources limits and request
+  # Example:
+  #resources:
   #  limits:
   #    cpu: 2000m
   #    memory: 3Gi
   #  requests:
   #    cpu: 1000m
   #    memory: 1.5Gi
+
+  # -- gen-ai-orchestrator-server resource requests and limits
+  # ref: https://kubernetes.io/docs/user-guide/compute-resources/
+  # @section -- genAiOrchestrator
+  resources: {}
 
   podAnnotations: {}
   serviceAccountName: ""

@@ -228,12 +228,11 @@ TockKotlinCompilerPod .[#8D8D8D,thickness=2].> TockKotlinCompilerConfigmap : <co
 TockBuildWorkerPod .[#8D8D8D,thickness=2].> TockBuildWorkerConfigmap : <color:#8D8D8D>Variables d'environnement
 TockGenaiOrchestratorSvc .[#8D8D8D,thickness=2].> TockGenaiOrchestratorPod
 TockGenaiOrchestratorPod .[#8D8D8D,thickness=2].> TockGenaiOrchestratorConfigmap : <color:#8D8D8D>Variables d'environnement
+TockAdminWebPod .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
 TockBotApiPod .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
 TockNlpApiPod .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
 TockDucklingPod .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
 TockBuildWorkerPod .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
-TockGenaiOrchestratorPod .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
 TockGenaiOrchestratorPod .[#8D8D8D,thickness=2].> Opensearch : <color:#8D8D8D>urls.vectorstore (si \n<color:#8D8D8D>deployOpenSearch.enabled)
 TockGenaiOrchestratorPod .[#8D8D8D,thickness=2].> Postgresql : <color:#8D8D8D>urls.vectorstore (si \n<color:#8D8D8D>deployPgVector.enabled)
-TockAdminWeb .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
 @enduml

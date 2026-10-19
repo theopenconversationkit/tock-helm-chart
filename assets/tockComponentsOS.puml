@@ -118,7 +118,7 @@ skinparam rectangle<<TockGenaiOrchestratorConfigmap>>{
   FontColor #eff6ff
   BorderColor #2563eb
 }
-skinparam rectangle<<Postgresql>>{
+skinparam rectangle<<Opensearch>>{
   BackgroundColor #3b82f6
   FontColor #eff6ff
   BorderColor #2563eb
@@ -209,7 +209,7 @@ rectangle "duckling" <<TockDuckling>> as TockDuckling {
   rectangle "==duckling pod\n<size:10>[Haskell (facebook/duckling)]</size>\n\nConteneur principal du pod duckling" <<TockDucklingPod>> as TockDucklingPod
   rectangle "==duckling ConfigMap\n<size:10>[Kubernetes ConfigMap]</size>\n\nContient les variables d'environnement du pod duckling" <<TockDucklingConfigmap>> as TockDucklingConfigmap
 }
-rectangle "==postgresql (pgvector)\n<size:10>[Bitnami subchart 13.4.4]</size>\n\nVector store (option 2 pour le RAG). Conditionné par global.deployPgVector.enabled" <<Postgresql>> as Postgresql
+rectangle "==opensearch\n<size:10>[opensearch-project subchart 2.21.0]</size>\n\nVector store (option 1 pour le RAG). Conditionné par global.deployOpenSearch.enabled" <<Opensearch>> as Opensearch
 rectangle "==mongodb\n<size:10>[Bitnami subchart 14.8.3]</size>\n\nStockage principal (config, données conversationnelles, modèles NLU). Conditionné par global.deployMongoDb.enabled" <<Mongodb>> as Mongodb
 
 TockAdminWebSvc .[#8D8D8D,thickness=2].> TockAdminWebPod
@@ -234,13 +234,12 @@ TockKotlinCompilerPod .[#8D8D8D,thickness=2].> TockKotlinCompilerConfigmap : <co
 TockBuildWorkerPod .[#8D8D8D,thickness=2].> TockBuildWorkerConfigmap : <color:#8D8D8D>Variables d'environnement
 TockGenaiOrchestratorSvc .[#8D8D8D,thickness=2].> TockGenaiOrchestratorPod
 TockGenaiOrchestratorPod .[#8D8D8D,thickness=2].> TockGenaiOrchestratorConfigmap : <color:#8D8D8D>Variables d'environnement
+TockAdminWebPod .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
 TockBotApiPod .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
 TockNlpApiPod .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
 TockDucklingPod .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
 TockBuildWorkerPod .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
-TockGenaiOrchestratorPod .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
-TockGenaiOrchestratorPod .[#8D8D8D,thickness=2].> Postgresql : <color:#8D8D8D>urls.vectorstore (si \n<color:#8D8D8D>deployPgVector.enabled)
+TockGenaiOrchestratorPod .[#8D8D8D,thickness=2].> Opensearch : <color:#8D8D8D>urls.vectorstore (si \n<color:#8D8D8D>deployOpenSearch.enabled)
 Admin .[#8D8D8D,thickness=2].> TockAdminWebIngress : <color:#8D8D8D>Administre Tock Studio
 EndUser .[#8D8D8D,thickness=2].> TockBotApiIngress : <color:#8D8D8D>Envoie des messages
-TockAdminWeb .[#8D8D8D,thickness=2].> Mongodb : <color:#8D8D8D>tock_mongo_url
 @enduml
