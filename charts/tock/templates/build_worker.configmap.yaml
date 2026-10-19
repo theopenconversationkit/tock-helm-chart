@@ -12,6 +12,9 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 data:
     tock_mongo_url: '{{ template "urls.mongo" . }}'
+{{- if .Values.buildWorker.truststore.enabled }}
+    JAVA_TOOL_OPTIONS: '-Djavax.net.ssl.trustStore=/truststore/cacerts -Djavax.net.ssl.trustStorePassword=changeit'
+{{- end }}
     tock_env: '{{ default "prod" .Values.buildWorker.environment.tock_env }}'
     JAVA_ARGS: '{{ default "-Xmx1g -XX:MaxMetaspaceSize=256m" .Values.buildWorker.environment.JAVA_ARGS }}'
     tock_default_log_level: '{{ default "info" .Values.buildWorker.environment.tock_default_log_level }}'

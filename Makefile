@@ -56,3 +56,10 @@ publish: ## Publish the chart to OCI registry
 	@echo "$(GREEN)Publish to OCI registry...$(NC)"
 	helm push packages/tock-${chartversion}.tgz oci://registry.hub.docker.com/onelans
 	@echo "$(GREEN)✓ Published to OCI registry$(NC)"
+
+build-doc-assets: ## Build doc assets
+	@echo "$(GREEN)Build doc assets from likeC4 model...$(NC)"
+	npx likec4 gen plantuml -o ./assets .
+	cat ./assets/tockComponentsPG.puml | plantuml --svg -pipe > ./assets/tockComponentsPG.svg
+	#cat ./assets/tockComponentsPG.puml | java -jar plantuml.jar --svg -pipe > ./assets/tockComponentsPG.svg
+	@echo "$(GREEN)✓ Doc assets built$(NC)"

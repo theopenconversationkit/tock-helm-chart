@@ -31,11 +31,9 @@ BAPIING --> BAPISVC
 node "build_worker" {
 
 Component "build-worker" <<pod>> as BWPOD
-Component "build-worker-svc" <<service>> as BWSVC
 Component "build-worker-cfg" <<configmap>> as BWCFM
 
 BWPOD --> BWCFM
-BWSVC --> BWPOD
 
 }
 

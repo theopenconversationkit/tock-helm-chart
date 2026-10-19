@@ -2,7 +2,7 @@
 
 A helm chart for Tock. Tock is an open conversational AI platform. It's a complete solution to build conversational agents aka bots.Tock can integrate and experiment with both classic and Generative AI (LLM, RAG) models
 
-![Version: 0.6.3](https://img.shields.io/badge/Version-0.6.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 25.10.7](https://img.shields.io/badge/AppVersion-25.10.7-informational?style=flat-square)
+![Version: 0.7.0](https://img.shields.io/badge/Version-0.7.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 26.9.0](https://img.shields.io/badge/AppVersion-26.9.0-informational?style=flat-square)
 
 ## Usage
 
@@ -14,7 +14,7 @@ The chart is distributed as an OCI Artifact as well as via a traditional Helm Re
 ## Install Chart
 
 ```console
-$ helm install [RELEASE_NAME] oci://ghcr.io/theopenconversationkit/charts/tock --version 0.6.3
+$ helm install [RELEASE_NAME] oci://ghcr.io/theopenconversationkit/charts/tock --version 0.7.0
 ```
 
 or
@@ -23,7 +23,7 @@ or
 helm repo add tock https://theopenconversationkit.github.io/tock-helm-chart/
 helm repo update
 helm search repo tock
-helm install [RELEASE_NAME] tock/tock --version 0.6.3
+helm install [RELEASE_NAME] tock/tock --version 0.7.0
 ```
 
 ## Introduction
@@ -59,7 +59,9 @@ This creates values, but sectioned into their own section tables if a section co
 | adminWeb.environment.botadminverticle_base_href | string | `""` | Have to be set if tock studio is deployed as subdomain https://sssss/tockstudio |
 | adminWeb.environment.botadminverticle_body_limit | string | `"-1"` | botadminverticle_body_limit |
 | adminWeb.environment.tock_bot_api | bool | `false` | Enable the bot API in admin web. Default value should be false to allow namespace creation. |
+| adminWeb.environment.tock_bot_rest_client_request_timeout_ms | string | `nil` | Client request timeout to the bot REST API in milliseconds |
 | adminWeb.environment.tock_default_log_level | string | `"info"` | log level |
+| adminWeb.environment.tock_default_namespace | string | `"app"` | Tock default namespace. This is the namespace where the bot will be created by default. All users will arrive in this namespace per default. It can be changed in the admin web interface. |
 | adminWeb.environment.tock_env | string | `"false"` | tock_env |
 | adminWeb.environment.tock_gen_ai_orchestrator_client_request_timeout_ms | string | `"55000"` | Client request timeout to Gen AI Orchestrator in milliseconds |
 | adminWeb.environment.tock_gen_ai_orchestrator_secret_storage_type | string | `"Raw"` | Storage type for Gen AI Orchestrator secrets. Allowed values: Raw, Env, AwsSecretsManager, GcpSecretManager |
@@ -68,10 +70,11 @@ This creates values, but sectioned into their own section tables if a section co
 | adminWeb.environment.tock_gen_ai_secret_prefix | string | `"LOCAL/TOCK"` | Environment variable settings for secrets (when used).The prefix to use to store the Gen AI Api Keys in the database.Allowed values PROD,DEV,LOCAL,FEAT-. The prefix is used to identify the environment in which the keys are stored. |
 | adminWeb.environment.tock_https_env | string | `"prod"` | Environment |
 | adminWeb.environment.tock_service_log_level | string | `"info"` | Log level for services |
+| adminWeb.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
 | adminWeb.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
 | adminWeb.image.registry | string | `"docker.io"` | Docker image registry |
 | adminWeb.image.repository | string | `"tock/bot_admin"` | Docker docker image name |
-| adminWeb.image.tag | string | `"25.10.7"` | Docker image tag |
+| adminWeb.image.tag | string | `"26.9.0"` | Docker image tag |
 | adminWeb.ingress.alternativeHosts | list | `[]` | alternative hosts for the ingress, e.g. for canary deployment e.g.: alternativeHosts:  - host: tockstudio-alt.mydomain.com     http:        paths:          - path: /            pathType: Prefix            backend:              service:                 name: <<Release.Name>>-admin-web                port:                    number: 8080 |
 | adminWeb.ingress.annotations | object | `{}` | ingress annotations annotations:  kubernetes.io/ingress.class: traefik  kubernetes.io/ingress.class: nginx  kubernetes.io/tls-acme: "true" |
 | adminWeb.ingress.deprecated | bool | `false` | set to true for deployement on cluster version < 1.19 (apiVersion: networking.k8s.io/v1beta1 vs apiVersion: networking.k8s.io/v1) |
@@ -83,11 +86,13 @@ This creates values, but sectioned into their own section tables if a section co
 | adminWeb.podSecurityContext.fsGroup | int | `99` | fsGroup |
 | adminWeb.podSecurityContext.sysctls | list | `[]` | sysctls |
 | adminWeb.replicas | int | `1` | Replication settings, should be = 1 in production |
-| adminWeb.resources.limits | object | `{}` | resources limits |
-| adminWeb.resources.requests | object | `{}` | resources requests |
+| adminWeb.resources | object | `{}` | adminWeb resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
 | adminWeb.service.port | int | `8080` | kubernetes service port |
 | adminWeb.service.type | string | `"ClusterIP"` | kubernetes service type |
 | adminWeb.tolerations | list | `[]` | tolerations |
+| adminWeb.truststore.certKey | string | `"corp-root-ca.crt"` | Key (file name) of the certificate inside the Secret |
+| adminWeb.truststore.certSecret | string | `"corp-root-cert"` | Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert \--\from-file=corp-root-ca.crt`` |
+| adminWeb.truststore.enabled | bool | `false` | Enable truststore for entreprise certificates |
 
 ### botApi
 
@@ -120,10 +125,11 @@ This creates values, but sectioned into their own section tables if a section co
 | botApi.environment.tock_web_use_default_cors_handler_url | string | `"*"` | CORS handler URL |
 | botApi.environment.tock_web_use_default_cors_handler_with_credentials | string | `"false"` | CORS handler with credentials |
 | botApi.environment.tock_websocket_enabled | string | `"true"` | Enable websocket |
+| botApi.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
 | botApi.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
 | botApi.image.registry | string | `"docker.io"` | Docker image registry |
 | botApi.image.repository | string | `"tock/bot_api"` | Docker image name |
-| botApi.image.tag | string | `"25.10.7"` | Docker image tag |
+| botApi.image.tag | string | `"26.9.0"` | Docker image tag |
 | botApi.ingress.alternativeHosts | list | `[]` | alternative hosts for the ingress, e.g. for canary deployment e.g.: alternativeHosts:  - host: tockstudio-alt.mydomain.com     http:        paths:          - path: /            pathType: Prefix            backend:              service:                 name: <<Release.Name>>-bot-api                port:                    number: 8080 |
 | botApi.ingress.annotations | object | `{}` | annotations: kubernetes.io/ingress.class: traefik kubernetes.io/ingress.class: nginx kubernetes.io/tls-acme: "true" |
 | botApi.ingress.deprecated | bool | `false` | set to true for deployement on cluster version < 1.19 (apiVersion: networking.k8s.io/v1beta1 vs apiVersion: networking.k8s.io/v1) |
@@ -135,10 +141,12 @@ This creates values, but sectioned into their own section tables if a section co
 | botApi.podSecurityContext.fsGroup | int | `99` | fsGroup |
 | botApi.podSecurityContext.sysctls | list | `[]` | sysctls |
 | botApi.replicas | int | `1` | should be > 1 in production |
-| botApi.resources | object | `{"limits":{},"requests":{}}` | botApi resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
+| botApi.resources | object | `{}` | botApi resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
 | botApi.service.port | int | `8080` | kubernetes service port |
 | botApi.service.type | string | `"ClusterIP"` | kubernetes service type |
 | botApi.tolerations | list | `[]` | tolerations |
+| botApi.truststore.certKey | string | `"corp-root-ca.crt"` | Key (file name) of the certificate inside the Secret |
+| botApi.truststore.certSecret | string | `"corp-root-cert"` | Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert \--\from-file=corp-root-ca.crt`` |
 | botApi.truststore.enabled | bool | `false` | Enable truststore for entreprise certificates |
 
 ### buildWorker
@@ -153,16 +161,20 @@ This creates values, but sectioned into their own section tables if a section co
 | buildWorker.environment.JAVA_ARGS | string | `"-Xmx1g -XX:MaxMetaspaceSize=256m"` | JAVA_ARGS |
 | buildWorker.environment.tock_default_log_level | string | `"info"` | log level |
 | buildWorker.environment.tock_env | string | `"prod"` | tock environment (prod, dev, integ) |
+| buildWorker.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
 | buildWorker.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
 | buildWorker.image.registry | string | `"docker.io"` | Docker image registry |
 | buildWorker.image.repository | string | `"tock/build_worker"` | Docker image name |
-| buildWorker.image.tag | string | `"25.10.7"` | Docker image tag |
+| buildWorker.image.tag | string | `"26.9.0"` | Docker image tag |
 | buildWorker.nodeSelector | object | `{}` | node selector |
 | buildWorker.podSecurityContext.enabled | bool | `true` | Configure Pod Security Context |
 | buildWorker.podSecurityContext.fsGroup | int | `99` | fsGroup |
 | buildWorker.podSecurityContext.sysctls | list | `[]` | sysctls |
-| buildWorker.resources | object | `{"limits":{},"requests":{}}` | buildWorker resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
+| buildWorker.resources | object | `{}` | buildWorker resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
 | buildWorker.tolerations | list | `[]` | tolerations |
+| buildWorker.truststore.certKey | string | `"corp-root-ca.crt"` | Key (file name) of the certificate inside the Secret |
+| buildWorker.truststore.certSecret | string | `"corp-root-cert"` | Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert \--\from-file=corp-root-ca.crt`` |
+| buildWorker.truststore.enabled | bool | `false` | Enable truststore for entreprise certificates |
 
 ### Duckling
 
@@ -175,17 +187,21 @@ This creates values, but sectioned into their own section tables if a section co
 | duckling.containerSecurityContext.runAsUser | int | `99` | Run as user id |
 | duckling.environment.tock_default_log_level | string | `"info"` | log level |
 | duckling.environment.tock_env | string | `"prod"` | tock environment (prod, dev, integ) |
+| duckling.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
 | duckling.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
 | duckling.image.registry | string | `"docker.io"` | Docker image registry |
 | duckling.image.repository | string | `"tock/duckling"` | Docker image name |
-| duckling.image.tag | string | `"25.10.7"` | Docker image tag |
+| duckling.image.tag | string | `"26.9.0"` | Docker image tag |
 | duckling.nodeSelector | object | `{}` | node selector |
 | duckling.podSecurityContext.enabled | bool | `true` | Configure Pod Security Context |
 | duckling.podSecurityContext.fsGroup | int | `99` | fsGroup |
 | duckling.podSecurityContext.sysctls | list | `[]` | sysctls |
 | duckling.replicas | string | `nil` | should be > 1 in production |
-| duckling.resources | object | `{"limits":{},"requests":{}}` | Duckling resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
+| duckling.resources | object | `{}` | Duckling resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
 | duckling.tolerations | list | `[]` | tolerations |
+| duckling.truststore.certKey | string | `"corp-root-ca.crt"` | Key (file name) of the certificate inside the Secret |
+| duckling.truststore.certSecret | string | `"corp-root-cert"` | Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert \--\from-file=corp-root-ca.crt`` |
+| duckling.truststore.enabled | bool | `false` | Enable truststore for entreprise certificates |
 
 ### genAiOrchestrator
 
@@ -203,6 +219,7 @@ This creates values, but sectioned into their own section tables if a section co
 | genAiOrchestrator.environment.tock_gen_ai_orchestrator_llm_provider_timeout | int | `120` | llm timeout |
 | genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_credentials_secret_name | string | `nil` | Vector Store secret manager secret name |
 | genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_database | string | `nil` | Vector Store index |
+| genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_host | string | `"opensearch-node1"` | Vector Store host |
 | genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_k | int | `4` | Vector K |
 | genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_port | int | `9200` | Vector Store port |
 | genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_provider | string | `"OpenSearch"` | Vector Store host, Cloud be OpenSearch or PGVector |
@@ -211,10 +228,11 @@ This creates values, but sectioned into their own section tables if a section co
 | genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_test_query | string | `"What knowledge do you have?"` | Vector Store test query |
 | genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_timeout | int | `5` | Vector Store timeout |
 | genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_user | string | `"admin"` | Vector Store login |
+| genAiOrchestrator.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
 | genAiOrchestrator.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
 | genAiOrchestrator.image.registry | string | `"docker.io"` | Docker image registry |
 | genAiOrchestrator.image.repository | string | `"tock/gen-ai-orchestrator-server"` | Docker image name |
-| genAiOrchestrator.image.tag | string | `"25.10.7"` | Docker image tag |
+| genAiOrchestrator.image.tag | string | `"26.9.0"` | Docker image tag |
 | genAiOrchestrator.langchain.tiktokencache.enabled | bool | `false` | Tiktoken cache image for Langchain. On omprem plateform tiktoken data's can't be automatically load by langchain. You can provide it as a an init container . Data will be copied from the init container to an emptyDir volume. |
 | genAiOrchestrator.langchain.tiktokencache.registry | string | `"your-data-container-registry"` | Your data image  docker image registry |
 | genAiOrchestrator.langchain.tiktokencache.repository | string | `"tiktoken-data"` | Your data image docker image name |
@@ -224,8 +242,10 @@ This creates values, but sectioned into their own section tables if a section co
 | genAiOrchestrator.podSecurityContext.fsGroup | int | `99` | fsGroup |
 | genAiOrchestrator.podSecurityContext.sysctls | list | `[]` | sysctls |
 | genAiOrchestrator.replicas | int | `1` | should be > 1 in production |
-| genAiOrchestrator.resources | object | `{"limits":{},"requests":{}}` | gen-ai-orchestrator-server resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
+| genAiOrchestrator.resources | object | `{}` | gen-ai-orchestrator-server resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
 | genAiOrchestrator.tolerations | list | `[]` | tolerations |
+| genAiOrchestrator.truststore.certKey | string | `"corp-root-ca.crt"` | Key (file name) of the certificate inside the Secret |
+| genAiOrchestrator.truststore.certSecret | string | `"corp-root-cert"` | Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert \--\from-file=corp-root-ca.crt`` |
 | genAiOrchestrator.truststore.enabled | bool | `false` | Enable truststore for entreprise certificates |
 
 ### Global
@@ -271,15 +291,16 @@ This creates values, but sectioned into their own section tables if a section co
 | kotlinCompiler.environment.tock_default_log_level | string | `"info"` | log level |
 | kotlinCompiler.environment.tock_env | string | `"prod"` | tock environment (prod, dev, integ) |
 | kotlinCompiler.environment.tock_kotlin_compiler_classpath | string | `"/maven"` | compiler classpath |
+| kotlinCompiler.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
 | kotlinCompiler.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
 | kotlinCompiler.image.registry | string | `"docker.io"` | Docker image registry |
 | kotlinCompiler.image.repository | string | `"tock/kotlin_compiler"` | Docker image name |
-| kotlinCompiler.image.tag | string | `"25.10.7"` | Docker image tag |
+| kotlinCompiler.image.tag | string | `"26.9.0"` | Docker image tag |
 | kotlinCompiler.nodeSelector | object | `{}` | node selector |
 | kotlinCompiler.podSecurityContext.enabled | bool | `true` | Configure Pod Security Context |
 | kotlinCompiler.podSecurityContext.fsGroup | int | `99` | fsGroup |
 | kotlinCompiler.podSecurityContext.sysctls | list | `[]` | sysctls |
-| kotlinCompiler.resources | object | `{"limits":{},"requests":{}}` | KotlinCompiler resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
+| kotlinCompiler.resources | object | `{}` | KotlinCompiler resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
 | kotlinCompiler.tolerations | list | `[]` | tolerations |
 
 ### mongodb
@@ -322,17 +343,21 @@ This creates values, but sectioned into their own section tables if a section co
 | nlpApi.environment.tock_web_use_default_cors_handler_allowed_methods | string | `""` | cors handler allowed methods, could be "GET, POST, PUT, DELETE, OPTIONS, HEAD" |
 | nlpApi.environment.tock_web_use_default_cors_handler_url | string | `"*"` | cors handler URL |
 | nlpApi.environment.tock_web_use_default_cors_handler_with_credentials | string | `"false"` | cors handler with credentials |
+| nlpApi.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
 | nlpApi.image.pullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ e.g: pullSecrets:   - myRegistryKeySecretName |
 | nlpApi.image.registry | string | `"docker.io"` | Docker image registry |
 | nlpApi.image.repository | string | `"tock/nlp_api"` | Docker image name |
-| nlpApi.image.tag | string | `"25.10.7"` | Docker image tag |
+| nlpApi.image.tag | string | `"26.9.0"` | Docker image tag |
 | nlpApi.nodeSelector | object | `{}` | node selector |
 | nlpApi.podSecurityContext.enabled | bool | `true` | Configure Pod Security Context |
 | nlpApi.podSecurityContext.fsGroup | int | `99` | fsGroup |
 | nlpApi.podSecurityContext.sysctls | list | `[]` | sysctls |
 | nlpApi.replicas | int | `1` | should be > 1 in production |
-| nlpApi.resources | object | `{"limits":{},"requests":{}}` | nlpApi resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
+| nlpApi.resources | object | `{}` | nlpApi resource requests and limits ref: https://kubernetes.io/docs/user-guide/compute-resources/ |
 | nlpApi.tolerations | list | `[]` | tolerations |
+| nlpApi.truststore.certKey | string | `"corp-root-ca.crt"` | Key (file name) of the certificate inside the Secret |
+| nlpApi.truststore.certSecret | string | `"corp-root-cert"` | Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert \--\from-file=corp-root-ca.crt`` |
+| nlpApi.truststore.enabled | bool | `false` | Enable truststore for entreprise certificates |
 
 ### openSearch
 
@@ -347,10 +372,91 @@ This creates values, but sectioned into their own section tables if a section co
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| botApi.truststore.certSecret | string | `"corp-root-cert"` |  |
-| genAiOrchestrator.environment.tock_gen_ai_orchestrator_vector_store_host | string | `"opensearch-node1"` |  |
+| adminWeb.extraEnv | list | `[]` |  |
+| adminWeb.extraVolumeMounts | list | `[]` |  |
+| adminWeb.extraVolumes | list | `[]` |  |
+| adminWeb.podAnnotations | object | `{}` |  |
+| adminWeb.priorityClassName | string | `""` |  |
+| adminWeb.serviceAccountName | string | `""` |  |
+| adminWeb.startupProbe.enabled | bool | `true` |  |
+| adminWeb.startupProbe.failureThreshold | int | `30` |  |
+| adminWeb.startupProbe.initialDelaySeconds | int | `15` |  |
+| adminWeb.startupProbe.periodSeconds | int | `10` |  |
+| adminWeb.startupProbe.timeoutSeconds | int | `5` |  |
+| adminWeb.terminationGracePeriodSeconds | int | `30` |  |
+| botApi.extraEnv | list | `[]` |  |
+| botApi.extraVolumeMounts | list | `[]` |  |
+| botApi.extraVolumes | list | `[]` |  |
+| botApi.podAnnotations | object | `{}` |  |
+| botApi.priorityClassName | string | `""` |  |
+| botApi.serviceAccountName | string | `""` |  |
+| botApi.startupProbe.enabled | bool | `true` |  |
+| botApi.startupProbe.failureThreshold | int | `30` |  |
+| botApi.startupProbe.initialDelaySeconds | int | `20` |  |
+| botApi.startupProbe.periodSeconds | int | `10` |  |
+| botApi.startupProbe.timeoutSeconds | int | `5` |  |
+| botApi.terminationGracePeriodSeconds | int | `30` |  |
+| buildWorker.extraEnv | list | `[]` |  |
+| buildWorker.extraVolumeMounts | list | `[]` |  |
+| buildWorker.extraVolumes | list | `[]` |  |
+| buildWorker.podAnnotations | object | `{}` |  |
+| buildWorker.priorityClassName | string | `""` |  |
+| buildWorker.serviceAccountName | string | `""` |  |
+| buildWorker.startupProbe.enabled | bool | `true` |  |
+| buildWorker.startupProbe.failureThreshold | int | `30` |  |
+| buildWorker.startupProbe.initialDelaySeconds | int | `15` |  |
+| buildWorker.startupProbe.periodSeconds | int | `10` |  |
+| buildWorker.startupProbe.timeoutSeconds | int | `5` |  |
+| buildWorker.terminationGracePeriodSeconds | int | `30` |  |
+| duckling.extraEnv | list | `[]` |  |
+| duckling.extraVolumeMounts | list | `[]` |  |
+| duckling.extraVolumes | list | `[]` |  |
+| duckling.podAnnotations | object | `{}` |  |
+| duckling.priorityClassName | string | `""` |  |
+| duckling.serviceAccountName | string | `""` |  |
+| duckling.startupProbe.enabled | bool | `true` |  |
+| duckling.startupProbe.failureThreshold | int | `30` |  |
+| duckling.startupProbe.initialDelaySeconds | int | `15` |  |
+| duckling.startupProbe.periodSeconds | int | `10` |  |
+| duckling.startupProbe.timeoutSeconds | int | `5` |  |
+| duckling.terminationGracePeriodSeconds | int | `30` |  |
+| genAiOrchestrator.extraEnv | list | `[]` |  |
+| genAiOrchestrator.extraVolumeMounts | list | `[]` |  |
+| genAiOrchestrator.extraVolumes | list | `[]` |  |
 | genAiOrchestrator.langchain.tiktokencache.pullSecrets | list | `[]` |  |
-| genAiOrchestrator.truststore.certSecret | string | `"corp-root-cert"` |  |
+| genAiOrchestrator.podAnnotations | object | `{}` |  |
+| genAiOrchestrator.priorityClassName | string | `""` |  |
+| genAiOrchestrator.serviceAccountName | string | `""` |  |
+| genAiOrchestrator.startupProbe.enabled | bool | `true` |  |
+| genAiOrchestrator.startupProbe.failureThreshold | int | `30` |  |
+| genAiOrchestrator.startupProbe.initialDelaySeconds | int | `20` |  |
+| genAiOrchestrator.startupProbe.periodSeconds | int | `10` |  |
+| genAiOrchestrator.startupProbe.timeoutSeconds | int | `5` |  |
+| genAiOrchestrator.terminationGracePeriodSeconds | int | `30` |  |
+| kotlinCompiler.extraEnv | list | `[]` |  |
+| kotlinCompiler.extraVolumeMounts | list | `[]` |  |
+| kotlinCompiler.extraVolumes | list | `[]` |  |
+| kotlinCompiler.podAnnotations | object | `{}` |  |
+| kotlinCompiler.priorityClassName | string | `""` |  |
+| kotlinCompiler.serviceAccountName | string | `""` |  |
+| kotlinCompiler.startupProbe.enabled | bool | `true` |  |
+| kotlinCompiler.startupProbe.failureThreshold | int | `30` |  |
+| kotlinCompiler.startupProbe.initialDelaySeconds | int | `15` |  |
+| kotlinCompiler.startupProbe.periodSeconds | int | `10` |  |
+| kotlinCompiler.startupProbe.timeoutSeconds | int | `5` |  |
+| kotlinCompiler.terminationGracePeriodSeconds | int | `30` |  |
+| nlpApi.extraEnv | list | `[]` |  |
+| nlpApi.extraVolumeMounts | list | `[]` |  |
+| nlpApi.extraVolumes | list | `[]` |  |
+| nlpApi.podAnnotations | object | `{}` |  |
+| nlpApi.priorityClassName | string | `""` |  |
+| nlpApi.serviceAccountName | string | `""` |  |
+| nlpApi.startupProbe.enabled | bool | `true` |  |
+| nlpApi.startupProbe.failureThreshold | int | `30` |  |
+| nlpApi.startupProbe.initialDelaySeconds | int | `20` |  |
+| nlpApi.startupProbe.periodSeconds | int | `10` |  |
+| nlpApi.startupProbe.timeoutSeconds | int | `5` |  |
+| nlpApi.terminationGracePeriodSeconds | int | `30` |  |
 | opensearch.extraEnvs[0].name | string | `"OPENSEARCH_INITIAL_ADMIN_PASSWORD"` |  |
 | opensearch.extraEnvs[0].value | string | `"DoThisOne12+"` |  |
 | postgresql.architecture | string | `"standalone"` |  |
@@ -408,7 +514,7 @@ https://artifacthub.io/packages/helm/bitnami/mongodb/14.8.3
 ## Deployment sample on Rancher Desktop or k3s
 
 ```console
-$ helm install mytock oci://ghcr.io/theopenconversationkit/charts/tock --version 0.6.3 -f ./rancher-values.yaml
+$ helm install mytock oci://ghcr.io/theopenconversationkit/charts/tock --version 0.7.0 -f ./rancher-values.yaml
 ```
 
 `rancher-values.yaml`
@@ -456,7 +562,7 @@ adminWeb:
 ## Deployment sample on GKE
 
 ```console
-$ helm install mytock oci://ghcr.io/theopenconversationkit/charts/tock --version 0.6.3 -f ./gke-values.yaml
+$ helm install mytock oci://ghcr.io/theopenconversationkit/charts/tock --version 0.7.0 -f ./gke-values.yaml
 ```
 
 `gke-values.yaml`
@@ -490,23 +596,73 @@ adminWeb:
 
 ## Add enterprise certificates
 
-If you have to integrate coded stories that require enterprise certificates, you can use the truststore feature.
+If you have to integrate coded stories that require enterprise certificates, or need outbound HTTPS calls
+(e.g. to LLM providers) to trust a corporate CA, you can use the truststore feature.
 
-To enable it, set the following values in your `values.yaml` file:
+The truststore feature is available on `adminWeb`, `botApi`, `buildWorker`, `duckling`, `nlpApi` and
+`genAiOrchestrator`. To enable it on a given component, set the following values in your `values.yaml`
+file (example for `botApi`):
 
 ```yaml
 botApi:
   truststore:
     enabled: true
     certSecret: "corp-root-cert"
+    certKey: "corp-root-ca.crt"
 ```
-This will enable the truststore and use the certificates from the specified Secret.
+This will enable the truststore and use the certificates from the specified Secret (`certSecret`), reading the
+certificate from the key `certKey` (default `corp-root-ca.crt`). An init container
+builds a JVM truststore (`cacerts`) from the default certificates plus the enterprise CA(s) found in the
+Secret, and the component is started with
+`JAVA_TOOL_OPTIONS=-Djavax.net.ssl.trustStore=/truststore/cacerts -Djavax.net.ssl.trustStorePassword=changeit`.
+
 You can create the Secret with the following command:
 
 ```console
 kubectl create secret generic corp-root-cert --from-file=corp-root-ca.crt
 ```
 
+This will create a Secret named `corp-root-cert` with the certificate file `corp-root-ca.crt`.
+If your file has another name, set `certKey` to that name: it must match the key inside the Secret.
+
+### Enforce TLS to an external MongoDB with an enterprise certificate
+
+If your MongoDB is external to this chart (`global.deployMongoDb.enabled: false`) and already requires TLS
+with a server certificate signed by an enterprise CA, every pod connecting to MongoDB needs to trust that
+CA. Since `adminWeb`, `botApi`, `buildWorker`, `duckling` and `nlpApi` all connect to MongoDB, enable the
+truststore feature on all five, pointing them to the same Secret containing your enterprise CA:
+
+```yaml
+global:
+  deployMongoDb:
+    enabled: false
+  # Append tls=true to the connection string so the MongoDB driver negotiates TLS
+  mongodbUrls: "mongodb://myuser:mypass@fqdn-node1:27017,fqdn-node2:27017,fqdn-node3:27017/mydb?replicaSet=rs0&tls=true"
+
+adminWeb:
+  truststore:
+    enabled: true
+    certSecret: "corp-root-cert"
+botApi:
+  truststore:
+    enabled: true
+    certSecret: "corp-root-cert"
+buildWorker:
+  truststore:
+    enabled: true
+    certSecret: "corp-root-cert"
+duckling:
+  truststore:
+    enabled: true
+    certSecret: "corp-root-cert"
+nlpApi:
+  truststore:
+    enabled: true
+    certSecret: "corp-root-cert"
+```
+
+This feature only makes the pods trust the CA (server TLS verification). It does not enable TLS on the
+bundled Bitnami MongoDB subchart, and it does not support mutual TLS (client certificates).
 This will create a Secret named `corp-root-cert` with the certificate file `corp-root-ca.crt`.
 
 ## Solve langchain and tiktoken issues on on-premise deployments

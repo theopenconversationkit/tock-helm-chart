@@ -188,6 +188,12 @@ adminWeb:
     # -- Vector store provider. Allowed values: OpenSearch, PgVector
     # @section -- adminWeb
     tock_gen_ai_orchestrator_vector_store_provider: "OpenSearch"
+    # -- Tock default namespace. This is the namespace where the bot will be created by default. All users will arrive in this namespace per default. It can be changed in the admin web interface.
+    # @section -- adminWeb
+    tock_default_namespace: "app"
+    # -- Client request timeout to the bot REST API in milliseconds
+    # @section -- adminWeb
+    tock_bot_rest_client_request_timeout_ms: null
 
 
     # Following values are per default computed by the chart
@@ -227,7 +233,18 @@ adminWeb:
   # -- Replication settings, should be = 1 in production
   # @section -- adminWeb
   replicas: 1 # should be = 1 in production
-  
+
+  truststore:
+    # -- Enable truststore for entreprise certificates
+    # @section -- adminWeb
+    enabled: false
+    # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert \--\from-file=corp-root-ca.crt``
+    # @section -- adminWeb
+    certSecret: "corp-root-cert"
+    # -- Key (file name) of the certificate inside the Secret
+    # @section -- adminWeb
+    certKey: "corp-root-ca.crt"
+
   image:
     # -- Docker image registry
     # @section -- adminWeb
@@ -237,7 +254,10 @@ adminWeb:
     repository: tock/bot_admin 
     # -- Docker image tag
     # @section -- adminWeb
-    tag: 25.10.7
+    tag: 26.9.0
+    # -- Image pull policy
+    # @section -- adminWeb
+    pullPolicy: IfNotPresent
     # -- Optionally specify an array of imagePullSecrets.
     # Secrets must be manually created in the namespace.
     # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -335,18 +355,33 @@ adminWeb:
     alternativeHosts: []
     
 
-  ## adminWeb resource requests and limits
-  ## ref: https://kubernetes.io/docs/user-guide/compute-resources/
-  ## @param resources.limits The resources limits for the haproxy containers
-  ## @param resources.requests The requested resources for the haproxy containers
-  ##
-  resources: 
-    # -- resources limits
-    # @section -- adminWeb
-    limits: {}
-    # -- resources requests
-    # @section -- adminWeb
-    requests: {}
+  # Example:
+  #resources:
+  #  limits:
+  #    cpu: 1000m
+  #    memory: 1.5Gi
+  #  requests:
+  #    cpu: 500m
+  #    memory: 768Mi
+
+  # -- adminWeb resource requests and limits
+  # ref: https://kubernetes.io/docs/user-guide/compute-resources/
+  # @section -- adminWeb
+  resources: {}
+
+  podAnnotations: {}
+  serviceAccountName: ""
+  priorityClassName: ""
+  terminationGracePeriodSeconds: 30
+  startupProbe:
+    enabled: true
+    initialDelaySeconds: 15
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 30
+  extraEnv: []
+  extraVolumes: []
+  extraVolumeMounts: []
 
   # -- node selector
   # @section -- adminWeb
@@ -457,9 +492,12 @@ botApi:
     # -- Enable truststore for entreprise certificates
     # @section -- botApi
     enabled: false
-    # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert --from-file=corp-root-ca.crt`
+    # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert \--\from-file=corp-root-ca.crt``
     # @section -- botApi
     certSecret: "corp-root-cert"
+    # -- Key (file name) of the certificate inside the Secret
+    # @section -- botApi
+    certKey: "corp-root-ca.crt"
   image:
     # -- Docker image registry
     # @section -- botApi
@@ -469,7 +507,10 @@ botApi:
     repository: tock/bot_api # docker image name
     # -- Docker image tag
     # @section -- botApi
-    tag: 25.10.7
+    tag: 26.9.0
+    # -- Image pull policy
+    # @section -- botApi
+    pullPolicy: IfNotPresent
     # -- Optionally specify an array of imagePullSecrets.
     # Secrets must be manually created in the namespace.
     # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -560,12 +601,33 @@ botApi:
     #                    number: 8080
     alternativeHosts: []
   
+  # Example:
+  #resources:
+  #  limits:
+  #    cpu: 1500m
+  #    memory: 2Gi
+  #  requests:
+  #    cpu: 750m
+  #    memory: 1Gi
+
   # -- botApi resource requests and limits
   # ref: https://kubernetes.io/docs/user-guide/compute-resources/
   # @section -- botApi
-  resources: # resources limits and request
-    limits: {} # resources limits
-    requests: {}  # resources requests
+  resources: {}
+
+  podAnnotations: {}
+  serviceAccountName: ""
+  priorityClassName: ""
+  terminationGracePeriodSeconds: 30
+  startupProbe:
+    enabled: true
+    initialDelaySeconds: 20
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 30
+  extraEnv: []
+  extraVolumes: []
+  extraVolumeMounts: []
 
   # -- node selector
   # @section -- botApi
@@ -594,6 +656,17 @@ buildWorker:
     # @section -- buildWorker
     JAVA_ARGS: -Xmx1g -XX:MaxMetaspaceSize=256m
 
+  truststore:
+    # -- Enable truststore for entreprise certificates
+    # @section -- buildWorker
+    enabled: false
+    # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert \--\from-file=corp-root-ca.crt``
+    # @section -- buildWorker
+    certSecret: "corp-root-cert"
+    # -- Key (file name) of the certificate inside the Secret
+    # @section -- buildWorker
+    certKey: "corp-root-ca.crt"
+
   image:
     # -- Docker image registry
     # @section -- buildWorker
@@ -603,7 +676,10 @@ buildWorker:
     repository: tock/build_worker
     # -- Docker image tag
     # @section -- buildWorker
-    tag: 25.10.7
+    tag: 26.9.0
+    # -- Image pull policy
+    # @section -- buildWorker
+    pullPolicy: IfNotPresent
     # -- Optionally specify an array of imagePullSecrets.
     # Secrets must be manually created in the namespace.
     # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -640,12 +716,33 @@ buildWorker:
       # @section -- buildWorker
       sysctls: []
 
+  # Example:
+  #resources:
+  #  limits:
+  #    cpu: 1000m
+  #    memory: 1.5Gi
+  #  requests:
+  #    cpu: 500m
+  #    memory: 768Mi
+
   # -- buildWorker resource requests and limits
   # ref: https://kubernetes.io/docs/user-guide/compute-resources/
   # @section -- buildWorker
-  resources: #resources limits and request
-    limits: {} # resources limits
-    requests: {}  # resources requests
+  resources: {}
+
+  podAnnotations: {}
+  serviceAccountName: ""
+  priorityClassName: ""
+  terminationGracePeriodSeconds: 30
+  startupProbe:
+    enabled: true
+    initialDelaySeconds: 15
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 30
+  extraEnv: []
+  extraVolumes: []
+  extraVolumeMounts: []
 
   # -- node selector
   # @section -- buildWorker
@@ -674,6 +771,18 @@ duckling:
   # -- should be > 1 in production
   # @section -- Duckling
   replicas:
+
+  truststore:
+    # -- Enable truststore for entreprise certificates
+    # @section -- Duckling
+    enabled: false
+    # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert \--\from-file=corp-root-ca.crt``
+    # @section -- Duckling
+    certSecret: "corp-root-cert"
+    # -- Key (file name) of the certificate inside the Secret
+    # @section -- Duckling
+    certKey: "corp-root-ca.crt"
+
   image:
     # -- Docker image registry
     # @section -- Duckling
@@ -683,7 +792,10 @@ duckling:
     repository: tock/duckling
     # -- Docker image tag
     # @section -- Duckling
-    tag: 25.10.7
+    tag: 26.9.0
+    # -- Image pull policy
+    # @section -- Duckling
+    pullPolicy: IfNotPresent
     # -- Optionally specify an array of imagePullSecrets.
     # Secrets must be manually created in the namespace.
     # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -719,12 +831,33 @@ duckling:
       # @section -- Duckling
       sysctls: []
 
+  # Example:
+  #resources:
+  #  limits:
+  #    cpu: 1000m
+  #    memory: 1.5Gi
+  #  requests:
+  #    cpu: 500m
+  #    memory: 768Mi
+
   # -- Duckling resource requests and limits
   # ref: https://kubernetes.io/docs/user-guide/compute-resources/
   # @section -- Duckling
-  resources: #resources limits and request
-    limits: {} # resources limits
-    requests: {}  # resources requests
+  resources: {}
+
+  podAnnotations: {}
+  serviceAccountName: ""
+  priorityClassName: ""
+  terminationGracePeriodSeconds: 30
+  startupProbe:
+    enabled: true
+    initialDelaySeconds: 15
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 30
+  extraEnv: []
+  extraVolumes: []
+  extraVolumeMounts: []
 
   # -- node selector
   # @section -- Duckling
@@ -763,7 +896,10 @@ kotlinCompiler:
     repository: tock/kotlin_compiler
     # -- Docker image tag
     # @section -- KotlinCompiler
-    tag: 25.10.7
+    tag: 26.9.0
+    # -- Image pull policy
+    # @section -- KotlinCompiler
+    pullPolicy: IfNotPresent
     # -- Optionally specify an array of imagePullSecrets.
     # Secrets must be manually created in the namespace.
     # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -799,12 +935,33 @@ kotlinCompiler:
       # @section -- KotlinCompiler
       sysctls: []
 
+  # Example:
+  #resources:
+  #  limits:
+  #    cpu: 1000m
+  #    memory: 1.5Gi
+  #  requests:
+  #    cpu: 500m
+  #    memory: 768Mi
+
   # -- KotlinCompiler resource requests and limits
   # ref: https://kubernetes.io/docs/user-guide/compute-resources/
   # @section -- KotlinCompiler
-  resources: #resources limits and request
-    limits: {} # resources limits
-    requests: {}  # resources requests
+  resources: {}
+
+  podAnnotations: {}
+  serviceAccountName: ""
+  priorityClassName: ""
+  terminationGracePeriodSeconds: 30
+  startupProbe:
+    enabled: true
+    initialDelaySeconds: 15
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 30
+  extraEnv: []
+  extraVolumes: []
+  extraVolumeMounts: []
 
   # -- node selector
   # @section -- KotlinCompiler
@@ -855,6 +1012,18 @@ nlpApi:
   # -- should be > 1 in production
   # @section -- nlpApi
   replicas: 1 # should be > 1 in production
+
+  truststore:
+    # -- Enable truststore for entreprise certificates
+    # @section -- nlpApi
+    enabled: false
+    # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert \--\from-file=corp-root-ca.crt``
+    # @section -- nlpApi
+    certSecret: "corp-root-cert"
+    # -- Key (file name) of the certificate inside the Secret
+    # @section -- nlpApi
+    certKey: "corp-root-ca.crt"
+
   image:
     # -- Docker image registry
     # @section -- nlpApi
@@ -864,7 +1033,10 @@ nlpApi:
     repository: tock/nlp_api
     # -- Docker image tag
     # @section -- nlpApi
-    tag: 25.10.7
+    tag: 26.9.0
+    # -- Image pull policy
+    # @section -- nlpApi
+    pullPolicy: IfNotPresent
     # -- Optionally specify an array of imagePullSecrets.
     # Secrets must be manually created in the namespace.
     # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -900,12 +1072,33 @@ nlpApi:
       # @section -- nlpApi
       sysctls: []
 
+  # Example:
+  #resources:
+  #  limits:
+  #    cpu: 1500m
+  #    memory: 2Gi
+  #  requests:
+  #    cpu: 750m
+  #    memory: 1Gi
+
   # -- nlpApi resource requests and limits
   # ref: https://kubernetes.io/docs/user-guide/compute-resources/
   # @section -- nlpApi
-  resources: #resources limits and request
-    limits: {} # resources limits
-    requests: {}  # resources requests
+  resources: {}
+
+  podAnnotations: {}
+  serviceAccountName: ""
+  priorityClassName: ""
+  terminationGracePeriodSeconds: 30
+  startupProbe:
+    enabled: true
+    initialDelaySeconds: 20
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 30
+  extraEnv: []
+  extraVolumes: []
+  extraVolumeMounts: []
 
   # -- node selector
   # @section -- nlpApi
@@ -945,7 +1138,7 @@ genAiOrchestrator:
     # @section -- genAiOrchestrator
     tock_gen_ai_orchestrator_vector_store_provider: OpenSearch
 
-    # @section -- genAiOrchestrator
+    # -- Vector Store host
     # @section -- genAiOrchestrator
     tock_gen_ai_orchestrator_vector_store_host: opensearch-node1
     # -- Vector Store port
@@ -986,9 +1179,12 @@ genAiOrchestrator:
     # -- Enable truststore for entreprise certificates
     # @section -- genAiOrchestrator
     enabled: false
-    # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert --from-file=corp-root-ca.crt`
+    # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert \--\from-file=corp-root-ca.crt``
     # @section -- genAiOrchestrator
     certSecret: "corp-root-cert"
+    # -- Key (file name) of the certificate inside the Secret
+    # @section -- genAiOrchestrator
+    certKey: "corp-root-ca.crt"
   image:
     # -- Docker image registry
     # @section -- genAiOrchestrator
@@ -998,7 +1194,10 @@ genAiOrchestrator:
     repository: tock/gen-ai-orchestrator-server
     # -- Docker image tag
     # @section -- genAiOrchestrator
-    tag: 25.10.7
+    tag: 26.9.0
+    # -- Image pull policy
+    # @section -- genAiOrchestrator
+    pullPolicy: IfNotPresent
     # -- Optionally specify an array of imagePullSecrets.
     # Secrets must be manually created in the namespace.
     # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -1054,12 +1253,33 @@ genAiOrchestrator:
       # @section -- genAiOrchestrator
       sysctls: []
 
+  # Example:
+  #resources:
+  #  limits:
+  #    cpu: 2000m
+  #    memory: 3Gi
+  #  requests:
+  #    cpu: 1000m
+  #    memory: 1.5Gi
+
   # -- gen-ai-orchestrator-server resource requests and limits
   # ref: https://kubernetes.io/docs/user-guide/compute-resources/
   # @section -- genAiOrchestrator
-  resources: #resources limits and request
-    limits: {} # resources limits
-    requests: {}  # resources requests
+  resources: {}
+
+  podAnnotations: {}
+  serviceAccountName: ""
+  priorityClassName: ""
+  terminationGracePeriodSeconds: 30
+  startupProbe:
+    enabled: true
+    initialDelaySeconds: 20
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 30
+  extraEnv: []
+  extraVolumes: []
+  extraVolumeMounts: []
 
   # -- node selector
   # @section -- genAiOrchestrator

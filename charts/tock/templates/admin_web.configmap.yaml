@@ -12,6 +12,9 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 data:
     tock_mongo_url: '{{ template "urls.mongo" . }}'
+{{- if .Values.adminWeb.truststore.enabled }}
+    JAVA_TOOL_OPTIONS: '-Djavax.net.ssl.trustStore=/truststore/cacerts -Djavax.net.ssl.trustStorePassword=changeit'
+{{- end }}
 {{- if .Values.adminWeb.environment.nlp_duckling_url }}
     nlp_duckling_url: '{{ tpl .Values.adminWeb.environment.nlp_duckling_url . }}'
  {{- else }}
@@ -73,4 +76,10 @@ data:
 {{- end }}  
 {{- if  .Values.adminWeb.environment.tock_gcp_region }}
     tock_gcp_region: '{{ .Values.adminWeb.environment.tock_gcp_region }}'
+{{- end }}
+{{- if  .Values.adminWeb.environment.tock_default_namespace }}
+    tock_default_namespace: '{{ .Values.adminWeb.environment.tock_default_namespace }}'
+{{- end }}
+{{- if  .Values.adminWeb.environment.tock_bot_rest_client_request_timeout_ms }}
+    tock_bot_rest_client_request_timeout_ms: '{{ .Values.adminWeb.environment.tock_bot_rest_client_request_timeout_ms }}'
 {{- end }}
