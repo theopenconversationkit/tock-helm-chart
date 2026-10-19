@@ -186,8 +186,10 @@ botApi:
   truststore:
     enabled: true
     certSecret: "corp-root-cert"
+    certKey: "corp-root-ca.crt"
 ```
-This will enable the truststore and use the certificates from the specified Secret. An init container
+This will enable the truststore and use the certificates from the specified Secret (`certSecret`), reading the
+certificate from the key `certKey` (default `corp-root-ca.crt`). An init container
 builds a JVM truststore (`cacerts`) from the default certificates plus the enterprise CA(s) found in the
 Secret, and the component is started with
 `JAVA_TOOL_OPTIONS=-Djavax.net.ssl.trustStore=/truststore/cacerts -Djavax.net.ssl.trustStorePassword=changeit`.
@@ -199,6 +201,7 @@ kubectl create secret generic corp-root-cert --from-file=corp-root-ca.crt
 ```
 
 This will create a Secret named `corp-root-cert` with the certificate file `corp-root-ca.crt`.
+If your file has another name, set `certKey` to that name: it must match the key inside the Secret.
 
 ### Enforce TLS to an external MongoDB with an enterprise certificate
 

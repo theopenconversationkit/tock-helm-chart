@@ -396,6 +396,7 @@ Usage: {{ include "truststore.initContainer" (dict "root" $ "component" .Values.
 {{- define "truststore.initContainer" -}}
 {{- $root := .root -}}
 {{- $component := .component -}}
+{{- $certKey := $component.truststore.certKey | default "corp-root-ca.crt" -}}
 - name: truststore-generator
   image: {{ include "truststoreContainer.image" $root }}
   imagePullPolicy: {{ $root.Values.global.truststoreContainerImage.pullPolicy | default "IfNotPresent" }}
@@ -408,7 +409,7 @@ Usage: {{ include "truststore.initContainer" (dict "root" $ "component" .Values.
       set -e
       rm -f /truststore/cacerts
       cp "$JAVA_HOME/lib/security/cacerts" /truststore/cacerts
-      csplit -f /tmp/corp- -b '%02d.pem' /etc/ssl/certs/{{ $component.truststore.certSecret }}.crt '/-----BEGIN CERTIFICATE-----/' '{*}' >/dev/null || true
+      csplit -f /tmp/corp- -b '%02d.pem' /etc/ssl/certs/{{ $certKey }} '/-----BEGIN CERTIFICATE-----/' '{*}' >/dev/null || true
       i=0
       for f in /tmp/corp-*.pem; do
         [ -s "$f" ] || continue
@@ -423,8 +424,8 @@ Usage: {{ include "truststore.initContainer" (dict "root" $ "component" .Values.
       chmod 0444 /truststore/cacerts
   volumeMounts:
     - name: cert-volume
-      mountPath: /etc/ssl/certs/{{ $component.truststore.certSecret }}.crt
-      subPath: {{ $component.truststore.certSecret }}.crt
+      mountPath: /etc/ssl/certs/{{ $certKey }}
+      subPath: {{ $certKey }}
       readOnly: true
     - name: truststore-volume
       mountPath: /truststore

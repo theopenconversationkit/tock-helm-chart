@@ -241,6 +241,9 @@ adminWeb:
     # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert \--\from-file=corp-root-ca.crt``
     # @section -- adminWeb
     certSecret: "corp-root-cert"
+    # -- Key (file name) of the certificate inside the Secret
+    # @section -- adminWeb
+    certKey: "corp-root-ca.crt"
 
   image:
     # -- Docker image registry
@@ -495,6 +498,9 @@ botApi:
     # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert \--\from-file=corp-root-ca.crt``
     # @section -- botApi
     certSecret: "corp-root-cert"
+    # -- Key (file name) of the certificate inside the Secret
+    # @section -- botApi
+    certKey: "corp-root-ca.crt"
   image:
     # -- Docker image registry
     # @section -- botApi
@@ -657,6 +663,9 @@ buildWorker:
     # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert \--\from-file=corp-root-ca.crt``
     # @section -- buildWorker
     certSecret: "corp-root-cert"
+    # -- Key (file name) of the certificate inside the Secret
+    # @section -- buildWorker
+    certKey: "corp-root-ca.crt"
 
   image:
     # -- Docker image registry
@@ -767,6 +776,9 @@ duckling:
     # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert \--\from-file=corp-root-ca.crt``
     # @section -- Duckling
     certSecret: "corp-root-cert"
+    # -- Key (file name) of the certificate inside the Secret
+    # @section -- Duckling
+    certKey: "corp-root-ca.crt"
 
   image:
     # -- Docker image registry
@@ -999,6 +1011,9 @@ nlpApi:
     # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert \--\from-file=corp-root-ca.crt``
     # @section -- nlpApi
     certSecret: "corp-root-cert"
+    # -- Key (file name) of the certificate inside the Secret
+    # @section -- nlpApi
+    certKey: "corp-root-ca.crt"
 
   image:
     # -- Docker image registry
@@ -1155,6 +1170,9 @@ genAiOrchestrator:
     # -- Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert \--\from-file=corp-root-ca.crt``
     # @section -- genAiOrchestrator
     certSecret: "corp-root-cert"
+    # -- Key (file name) of the certificate inside the Secret
+    # @section -- genAiOrchestrator
+    certKey: "corp-root-ca.crt"
   image:
     # -- Docker image registry
     # @section -- genAiOrchestrator

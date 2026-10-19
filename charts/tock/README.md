@@ -90,6 +90,7 @@ This creates values, but sectioned into their own section tables if a section co
 | adminWeb.service.port | int | `8080` | kubernetes service port |
 | adminWeb.service.type | string | `"ClusterIP"` | kubernetes service type |
 | adminWeb.tolerations | list | `[]` | tolerations |
+| adminWeb.truststore.certKey | string | `"corp-root-ca.crt"` | Key (file name) of the certificate inside the Secret |
 | adminWeb.truststore.certSecret | string | `"corp-root-cert"` | Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert \--\from-file=corp-root-ca.crt`` |
 | adminWeb.truststore.enabled | bool | `false` | Enable truststore for entreprise certificates |
 
@@ -144,6 +145,7 @@ This creates values, but sectioned into their own section tables if a section co
 | botApi.service.port | int | `8080` | kubernetes service port |
 | botApi.service.type | string | `"ClusterIP"` | kubernetes service type |
 | botApi.tolerations | list | `[]` | tolerations |
+| botApi.truststore.certKey | string | `"corp-root-ca.crt"` | Key (file name) of the certificate inside the Secret |
 | botApi.truststore.certSecret | string | `"corp-root-cert"` | Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert \--\from-file=corp-root-ca.crt`` |
 | botApi.truststore.enabled | bool | `false` | Enable truststore for entreprise certificates |
 
@@ -170,6 +172,7 @@ This creates values, but sectioned into their own section tables if a section co
 | buildWorker.podSecurityContext.fsGroup | int | `99` | fsGroup |
 | buildWorker.podSecurityContext.sysctls | list | `[]` | sysctls |
 | buildWorker.tolerations | list | `[]` | tolerations |
+| buildWorker.truststore.certKey | string | `"corp-root-ca.crt"` | Key (file name) of the certificate inside the Secret |
 | buildWorker.truststore.certSecret | string | `"corp-root-cert"` | Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert \--\from-file=corp-root-ca.crt`` |
 | buildWorker.truststore.enabled | bool | `false` | Enable truststore for entreprise certificates |
 
@@ -196,6 +199,7 @@ This creates values, but sectioned into their own section tables if a section co
 | duckling.podSecurityContext.sysctls | list | `[]` | sysctls |
 | duckling.replicas | string | `nil` | should be > 1 in production |
 | duckling.tolerations | list | `[]` | tolerations |
+| duckling.truststore.certKey | string | `"corp-root-ca.crt"` | Key (file name) of the certificate inside the Secret |
 | duckling.truststore.certSecret | string | `"corp-root-cert"` | Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert \--\from-file=corp-root-ca.crt`` |
 | duckling.truststore.enabled | bool | `false` | Enable truststore for entreprise certificates |
 
@@ -240,6 +244,7 @@ This creates values, but sectioned into their own section tables if a section co
 | genAiOrchestrator.podSecurityContext.sysctls | list | `[]` | sysctls |
 | genAiOrchestrator.replicas | int | `1` | should be > 1 in production |
 | genAiOrchestrator.tolerations | list | `[]` | tolerations |
+| genAiOrchestrator.truststore.certKey | string | `"corp-root-ca.crt"` | Key (file name) of the certificate inside the Secret |
 | genAiOrchestrator.truststore.certSecret | string | `"corp-root-cert"` | Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert \--\from-file=corp-root-ca.crt`` |
 | genAiOrchestrator.truststore.enabled | bool | `false` | Enable truststore for entreprise certificates |
 
@@ -350,6 +355,7 @@ This creates values, but sectioned into their own section tables if a section co
 | nlpApi.podSecurityContext.sysctls | list | `[]` | sysctls |
 | nlpApi.replicas | int | `1` | should be > 1 in production |
 | nlpApi.tolerations | list | `[]` | tolerations |
+| nlpApi.truststore.certKey | string | `"corp-root-ca.crt"` | Key (file name) of the certificate inside the Secret |
 | nlpApi.truststore.certSecret | string | `"corp-root-cert"` | Secret that contains enterprise certificates. Create it with `kubectl create secret generic corp-root-cert \--\from-file=corp-root-ca.crt`` |
 | nlpApi.truststore.enabled | bool | `false` | Enable truststore for entreprise certificates |
 
@@ -595,8 +601,10 @@ botApi:
   truststore:
     enabled: true
     certSecret: "corp-root-cert"
+    certKey: "corp-root-ca.crt"
 ```
-This will enable the truststore and use the certificates from the specified Secret. An init container
+This will enable the truststore and use the certificates from the specified Secret (`certSecret`), reading the
+certificate from the key `certKey` (default `corp-root-ca.crt`). An init container
 builds a JVM truststore (`cacerts`) from the default certificates plus the enterprise CA(s) found in the
 Secret, and the component is started with
 `JAVA_TOOL_OPTIONS=-Djavax.net.ssl.trustStore=/truststore/cacerts -Djavax.net.ssl.trustStorePassword=changeit`.
@@ -608,6 +616,7 @@ kubectl create secret generic corp-root-cert --from-file=corp-root-ca.crt
 ```
 
 This will create a Secret named `corp-root-cert` with the certificate file `corp-root-ca.crt`.
+If your file has another name, set `certKey` to that name: it must match the key inside the Secret.
 
 ### Enforce TLS to an external MongoDB with an enterprise certificate
 
