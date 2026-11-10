@@ -2,7 +2,7 @@
 
 A helm chart for Tock. Tock is an open conversational AI platform. It's a complete solution to build conversational agents aka bots.Tock can integrate and experiment with both classic and Generative AI (LLM, RAG) models
 
-![Version: 0.7.0](https://img.shields.io/badge/Version-0.7.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 26.9.0](https://img.shields.io/badge/AppVersion-26.9.0-informational?style=flat-square)
+![Version: 0.7.1](https://img.shields.io/badge/Version-0.7.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 26.9.1](https://img.shields.io/badge/AppVersion-26.9.1-informational?style=flat-square)
 
 ## Usage
 
@@ -14,7 +14,7 @@ The chart is distributed as an OCI Artifact as well as via a traditional Helm Re
 ## Install Chart
 
 ```console
-$ helm install [RELEASE_NAME] oci://ghcr.io/theopenconversationkit/charts/tock --version 0.7.0
+$ helm install [RELEASE_NAME] oci://ghcr.io/theopenconversationkit/charts/tock --version 0.7.1
 ```
 
 or
@@ -23,7 +23,7 @@ or
 helm repo add tock https://theopenconversationkit.github.io/tock-helm-chart/
 helm repo update
 helm search repo tock
-helm install [RELEASE_NAME] tock/tock --version 0.7.0
+helm install [RELEASE_NAME] tock/tock --version 0.7.1
 ```
 
 ## Introduction
@@ -514,7 +514,7 @@ https://artifacthub.io/packages/helm/bitnami/mongodb/14.8.3
 ## Deployment sample on Rancher Desktop or k3s
 
 ```console
-$ helm install mytock oci://ghcr.io/theopenconversationkit/charts/tock --version 0.7.0 -f ./rancher-values.yaml
+$ helm install mytock oci://ghcr.io/theopenconversationkit/charts/tock --version 0.7.1 -f ./rancher-values.yaml
 ```
 
 `rancher-values.yaml`
@@ -562,7 +562,7 @@ adminWeb:
 ## Deployment sample on GKE
 
 ```console
-$ helm install mytock oci://ghcr.io/theopenconversationkit/charts/tock --version 0.7.0 -f ./gke-values.yaml
+$ helm install mytock oci://ghcr.io/theopenconversationkit/charts/tock --version 0.7.1 -f ./gke-values.yaml
 ```
 
 `gke-values.yaml`

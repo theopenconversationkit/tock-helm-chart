@@ -254,7 +254,7 @@ adminWeb:
     repository: tock/bot_admin 
     # -- Docker image tag
     # @section -- adminWeb
-    tag: 26.9.0
+    tag: 26.9.1
     # -- Image pull policy
     # @section -- adminWeb
     pullPolicy: IfNotPresent
@@ -507,7 +507,7 @@ botApi:
     repository: tock/bot_api # docker image name
     # -- Docker image tag
     # @section -- botApi
-    tag: 26.9.0
+    tag: 26.9.1
     # -- Image pull policy
     # @section -- botApi
     pullPolicy: IfNotPresent
@@ -676,7 +676,7 @@ buildWorker:
     repository: tock/build_worker
     # -- Docker image tag
     # @section -- buildWorker
-    tag: 26.9.0
+    tag: 26.9.1
     # -- Image pull policy
     # @section -- buildWorker
     pullPolicy: IfNotPresent
@@ -792,7 +792,7 @@ duckling:
     repository: tock/duckling
     # -- Docker image tag
     # @section -- Duckling
-    tag: 26.9.0
+    tag: 26.9.1
     # -- Image pull policy
     # @section -- Duckling
     pullPolicy: IfNotPresent
@@ -896,7 +896,7 @@ kotlinCompiler:
     repository: tock/kotlin_compiler
     # -- Docker image tag
     # @section -- KotlinCompiler
-    tag: 26.9.0
+    tag: 26.9.1
     # -- Image pull policy
     # @section -- KotlinCompiler
     pullPolicy: IfNotPresent
@@ -1033,7 +1033,7 @@ nlpApi:
     repository: tock/nlp_api
     # -- Docker image tag
     # @section -- nlpApi
-    tag: 26.9.0
+    tag: 26.9.1
     # -- Image pull policy
     # @section -- nlpApi
     pullPolicy: IfNotPresent
@@ -1194,7 +1194,7 @@ genAiOrchestrator:
     repository: tock/gen-ai-orchestrator-server
     # -- Docker image tag
     # @section -- genAiOrchestrator
-    tag: 26.9.0
+    tag: 26.9.1
     # -- Image pull policy
     # @section -- genAiOrchestrator
     pullPolicy: IfNotPresent
